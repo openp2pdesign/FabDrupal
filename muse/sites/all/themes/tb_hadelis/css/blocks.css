@@ -1,0 +1,815 @@
+/**
+ * Common Block
+ */
+ 
+/* --- Blocks --- */
+.block {
+  margin: 0;
+}
+
+.block-inner {
+  padding: 20px;
+}
+
+.block-title {
+}
+
+.grey-title {
+  color: #999;
+}
+
+.block-content {
+}
+
+/* --- Block Lists --- */
+.block ul {
+}
+
+.block ul li {
+  margin: 0 0 0 0.5em;
+}
+
+.block ol {
+}
+
+.block ol li {
+}
+
+/* Block Item list */
+.block .item-list ul {
+}
+
+.block .item-list ul li {
+}
+
+/* Block Links List */
+.block ul.links {
+}
+
+.block ul.links li {
+}
+
+/* Block More Links */
+.block .more-link {
+  margin-top: 5px;
+}
+
+.block .more-link a {
+}
+
+/* --- Block Styles--- */
+/* Dark Gray Block */
+.dark-gray-color {
+  background: url(../images/bg-black.gif) repeat left top;
+}
+
+.dark-gray-color .block-title {
+  color: #fff;
+}
+
+/* Yellow Block */
+.yellow-color {
+  background: #fdfbe9;
+  color: #625747;
+  border: 1px solid #e8dbbc;
+  text-align: center;
+}
+
+.yellow-color q {
+  font-family: Georgia, "Times New Roman", Times, serif
+}
+
+.yellow-color a {
+  color: #d76c31;
+}
+
+/* White Block */
+.white-color {
+  background: #fff;
+  border: 1px solid #eaeaea;
+}
+
+.white-color .block-title {
+  color: #333 !important;
+}
+
+/* Quote Block */
+.block-quote {
+  margin-top: 2.5em;
+  position: relative;
+}
+
+.quote {
+  background: url(../images/bg-quote.png);
+  right: -20px;
+  height: 40px;
+  position: absolute;
+  top: -20px;
+  width: 40px;
+}
+
+.block-quote .quote {
+  background-position: 0 0;
+}
+
+/* --- Sidebar Blocks --- */
+.sidebar .block {
+  color: #999;
+  margin-bottom: 1.667em;
+}
+
+.sidebar .block-inner {
+}
+
+.sidebar .block-title {  
+  font-size: 1.167em;
+  margin-bottom: .5em;
+  margin-top: 0;
+  text-transform: uppercase;
+}
+
+.sidebar .block-content {
+}
+
+.sidebar .img-about {
+  border: 1px solid #2a2a2a;
+  float: right;
+}
+
+.intro-text .readmore, 
+.block-style .author {
+ margin-bottom: 0;
+}
+
+/* First Sidebar Blocks */
+#sidebar-first .block {
+}
+
+#sidebar-first .block-inner {
+}
+
+#sidebar-first .block-title {
+}
+
+#sidebar-first .block-content {
+}
+
+/* Second Sidebar Blocks */
+#sidebar-second .block {
+}
+
+#sidebar-second .block-inner {
+}
+
+#sidebar-second .block-title {
+}
+
+#sidebar-second .block-content {
+}
+
+/* --- Header Blocks --- */
+#header-wrapper .block {
+}
+
+/* ---- Footer Blocks --- */
+#footer-wrapper .block {
+}
+
+/* --- First Panels Blocks --- */
+#panel-first-wrapper .block {
+}
+
+#panel-first-wrapper .block-inner {
+  color: #999;
+  font-size: 1.167em;
+  padding: 2.857em 5.714em 1.857em;
+  text-align: center;
+}
+
+/* --- Second Panels Blocks --- */
+#panel-second-wrapper .block {
+}
+
+#panel-second-wrapper .block-inner {
+  padding: 3.333em 1.25em 1.667em;
+  text-align:center;
+}
+
+#panel-second-wrapper .block-title {
+  color: #222;
+  font-size: 1.167em;
+  text-transform:uppercase;
+}
+
+#panel-second-wrapper .sub-title {
+  color: #999;
+  font-size: 0.833em;
+  text-transform:uppercase;
+  
+}
+
+/* --- Third Panels Blocks --- */
+#panel-third-wrapper {
+  margin-bottom: 2.5em;
+}
+
+#panel-third-wrapper .block-inner {
+  background: url(../images/bg-black.gif) repeat top left;
+  padding: 1.5em 1.667em;
+}
+
+#panel-third-wrapper .block-content {
+  overflow: hidden;
+}
+
+#panel-third-wrapper .block-content p {
+  color: #999;
+  margin: .3em 0 0;
+  vertical-align: middle;
+  width: 70%;
+}
+
+#panel-third-wrapper .block-custom {
+  padding: 0;
+  overflow:	hidden;
+}
+
+#panel-third-wrapper .block-content span {
+  color: #fff;
+}
+
+#panel-third-wrapper .block-content a.btn-start {
+  background: url(../images/bg-button.gif) repeat top left;
+  color: #333;
+  display: inline-block;
+  float: right;
+  font-size: .833em;
+  padding: .6em 4em;
+  text-align: right;
+  text-decoration: none;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+#panel-third-wrapper .block-content a.btn-start:hover, 
+#panel-third-wrapper .block-content a.btn-start:focus, 
+#panel-third-wrapper .block-content a.btn-start:active {
+  background: url(../images/bg-button-hover.gif) repeat top left;
+  color: #fff;
+}
+/* --- Fourth Blocks --- */
+.jcarousel-skin-default {
+  margin: 0 -50px;
+}
+
+.jcarousel-skin-default .jcarousel-container-horizontal,
+.jcarousel-skin-default .jcarousel-clip-horizontal {
+  height: 110px;
+  width: 900px;
+}
+
+.jcarousel-skin-default .jcarousel-container-horizontal {
+  padding: 10px 40px;
+}
+
+.jcarousel-skin-default .jcarousel-next, 
+.jcarousel-skin-default .jcarousel-prev {
+  background: url(../images/btn-jcarousel.png) no-repeat;
+}
+
+.jcarousel-skin-default .jcarousel-prev-horizontal {
+  background-position: 0 0;
+  left: 0;
+}
+
+.jcarousel-skin-default .jcarousel-prev-horizontal:hover,
+.jcarousel-skin-default .jcarousel-prev-horizontal:active {
+  background-position: 0 -40px;
+}
+
+.jcarousel-skin-default .jcarousel-next-horizontal {
+  background-position: -38px 0;
+  right: 0;
+}
+
+.jcarousel-skin-default .jcarousel-next-horizontal:hover,
+.jcarousel-skin-default .jcarousel-next-horizontal:active {
+  background-position: -38px -40px;
+}
+
+.jcarousel-skin-default .jcarousel-item {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  cursor: pointer;
+  padding: 4px 0;
+  position: relative;
+  width: 208px !important;
+}
+
+.jcarousel-skin-default .jcarousel-item:hover {
+  background: #ffdd00;
+  border-color: #ffdd00;
+}
+
+.jcarousel-skin-default .jcarousel-item .views-field-view-node span {
+  background: url(../images/bg-dark-trans.png) repeat top left;
+  display: none;
+  height: 100px;
+  left: 0;
+  margin: 4px;
+  position: absolute; 
+  top: 0;
+  width: 200px;
+}
+
+.jcarousel-skin-default .jcarousel-item .views-field-view-node span a {
+  background: url(../images/btn-zoom-in.png) repeat top left;
+  height: 30px;
+  left: 85px;
+  position: absolute;
+  top: 35px;
+  width: 30px;
+}
+
+.jcarousel-skin-default .jcarousel-item:hover .views-field-view-node span {
+  display: block;
+}
+
+.jcarousel-skin-default .jcarousel-item-horizontal {
+  margin: 0 8px 0 7px;
+}
+
+/* --- Fifth Panels Blocks --- */
+#panel-fifth-wrapper .block-title {
+  color: #fff;
+  font-size: 1.167em;
+  margin-top: 0;
+  margin-bottom: 1.071em;
+  text-transform: uppercase;
+}
+
+#panel-fifth-wrapper .block-inner {  
+  padding-left: 8px;
+  padding-top: 28px;
+}
+
+#panel-fifth-wrapper dd {
+  margin-left: 0;
+  margin-bottom: 1.667em;
+}
+
+#panel-fifth-wrapper .telephone-number,
+#panel-fifth-wrapper .email-address {
+  display: block;
+  line-height: 1;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+#panel-fifth-wrapper .telephone-number {
+  color: #fff;
+  padding-bottom: 12px;
+}
+
+#panel-fifth-wrapper .email-address a {
+  color: #d76c31;
+  text-decoration: none;
+}
+
+
+#panel-fifth-wrapper .block-content ul {
+  margin: 0;
+  width: 100% !important;
+}
+
+#panel-fifth-wrapper .block-content ul li {    
+  list-style: none;
+  margin: 0;  
+  padding-bottom: 1em;
+}
+
+#panel-fifth-wrapper .block-content ul li a {
+  background: url(../images/bullet-1.png) no-repeat left top;
+  color: #999;
+  padding-left: 1.833em;
+}
+
+#panel-fifth-wrapper .block-content ul li a:hover,
+#panel-fifth-wrapper .block-content ul li a:active,
+#panel-fifth-wrapper .block-content ul li a:focus {
+  background: url(../images/bullet-1-h.png) no-repeat left top;
+  color: #fff;
+  text-decoration: none;
+}
+
+p.readmore a {
+  background: url(../images/bg-readmore.png) no-repeat top left;
+  color: #999;  
+  font-size: .917em;
+  padding: .12em 1.818em;
+}
+
+p.readmore a:hover,
+p.readmore a:focus {
+  background: url(../images/bg-readmore-hover.png) no-repeat top left;
+  color: #fff;
+  text-decoration: none;
+}
+
+/**
+ * Specfic Blocks
+ */
+ 
+/* --- Menu Block --- */
+.block-menu {
+  border: 1px solid #eaeaea;
+}
+
+.sidebar .block-menu .block-title {
+  margin-bottom: 1em;
+}
+
+.block-menu ul.menu {
+  margin-bottom: 0;
+  margin-left: 0;
+}
+
+.block-menu ul.menu ul {
+  margin-left: 2.333em;
+  margin-top: 0.909em;
+}
+
+/* --- Node Blocks --- */
+.block-node .block-content {
+}
+
+.block-node table {
+  overflow: hidden;
+  width: 100%;
+}
+
+.block-node tbody {
+  border-top: 0;
+}
+
+.block-node table tr td {
+  border-bottom: 1px dotted #CCC;
+}
+
+.block-node table .title-author {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.block-node table .node-title {
+  font-size: 1em;
+}
+
+.block-node table .node-title a {
+  color: #666;
+
+}
+
+.block-node table .node-title a:hover,
+.block-node table .node-title a:active,
+.block-node table .node-title a:focus {
+  color: #FFF;
+}
+
+.block-node table .node-author {
+  color: #999;
+  font-size: 1em;
+}
+
+body.not-logged-in .block-node table td.edit,
+body.not-logged-in .block-node table td.delete {
+  display: none; /* Hide Edit & Delete TD if not log-in */
+}
+
+/* --- Forums Block --- */
+.block-forum .item-list ul {
+  margin: 0;
+  padding: 0;
+}
+
+.block-forum .item-list ul li {
+}
+
+.block-forum .item-list ul li:first-child {
+}
+
+.block-forum .item-list ul li a {
+}
+
+.block-forum .item-list ul li a:hover,
+.block-forum .item-list ul li a:active,
+.block-forum .item-list ul li a:focus {
+}
+
+.block-forum .more-link {
+}
+
+.block-forum .contextual-links-wrapper {
+  display: none; /* Drupal Bug. Temporary hiding this link */
+}
+
+/* --- Comment Blocks --- */
+.block-comment {
+}
+
+/* --- Aggregator Blocks --- */
+block-aggregator {
+}
+
+.block-aggregator .item-list ul {
+  margin: 0;
+  padding: 0;
+}
+
+.block-aggregator .item-list ul li {
+  background-image: none;
+  border-bottom: 1px dotted #CCC;
+  padding: .5em 0;
+}
+
+.block-aggregator .item-list ul li:first-child {
+  padding-top: 0;
+}
+
+.block-aggregator .item-list ul li a {
+  color: #666;
+}
+
+.block-aggregator .item-list ul li a:hover,
+.block-aggregator .item-list ul li a:active,
+.block-aggregator .item-list ul li a:focus {
+  background: #333;
+  color: #FFF;
+  text-decoration: none;
+}
+
+/* --- Search Blocks --- */
+.block-search .block-inner {
+  padding: 0;
+}
+
+/* Search blocks in header */
+#header .block-search .block-inner,
+#header .block-search .form-item,
+#header #search-block-form {
+  margin: 0;
+  padding: 0;
+}
+
+#header .block-search .container-inline div {
+  display: block;
+  float: left;
+}
+
+#header #search-block-form .form-text {
+  background: #FFF;
+  border: 1px solid #DDD;
+  font-size: 1em;
+  height: 28px;
+  line-height: 28px;
+  padding: 0 12px;
+  width: 160px;
+}
+
+#header #search-block-form .form-submit {
+  background: #DDD;
+  border: 0;
+  color: #7B7B7B;
+  font-size: 1em;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 12px;
+  vertical-align: top;
+}
+
+#header #search-block-form .form-submit:hover {
+  background: #C00;
+  color: #FFF;
+}
+
+/* --- User Blocks --- */
+.block-user {
+}
+
+.block-user .form-item {
+}
+
+.block-user .form-item label {
+}
+
+.block-user .form-item-name {
+}
+
+.block-user .form-item-name input {
+  width: 95%;
+}
+
+.block-user .form-item-pass {
+}
+
+.block-user .form-item-pass input {
+  width: 95%;
+}
+
+.block-user .item-list li {
+}
+
+.block-user p {
+  margin: 0;
+}
+
+/* --- Poll Blocks --- */
+.block-poll {
+}
+
+.block-poll .poll {
+}
+
+.block-poll .title {
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.block-poll .links {
+  margin-top: .5em;
+}
+
+/* --- Book Blocks --- */
+.block-book {
+}
+
+/* --- Quicktabs Blocks --- */
+.block-quicktabs {
+}
+
+.block-quicktabs .block-inner {
+  border: 1px solid #eaeaea;
+  padding: 0;
+}
+
+.block-quicktabs .block-inner .block-inner {
+  border: none;
+  margin: 0; /* Prevent extra padding in nested blocks */
+  padding: 0;
+}
+
+/* --- Views Blocks --- */
+.block-views {
+}
+
+/**
+ * Misc.
+ */
+ 
+/* Login Block - horizontal (theme setting) basic styles */
+.lb-h {
+  margin-top: 1px;
+  min-width: 320px;
+}
+
+.region-header .lb-h {
+  float: right;
+}
+
+ 
+.lb-h .block-inner,
+.lb-h .block-content {
+  background: none;
+  padding: 0;
+}
+
+.lb-h #user-login-form {
+  margin: 0;
+}
+
+.lb-h #user-login-form label {
+  line-height: 1.2;
+}
+
+.lb-h .form-item {
+  float: left;
+  margin: 0;
+}
+
+.lb-h input.form-text {
+  margin: 0 3px 0 0;
+  width: 110px;
+}
+
+.lb-h #edit-actions {
+  margin: 0;
+}
+
+.lb-h input.form-submit {
+  margin: 0;
+  position: absolute;
+  top: 1.2em;
+}
+
+.lb-h .form-required,
+.lb-h .item-list {
+  display: none;
+}
+
+.lb-h h2 {
+  display: none;
+}
+
+/* Skinr block title alignment */
+.ta-l .block-title,
+.ta-l .mini-panel-title {
+  text-align: left;
+}
+
+.ta-r .block-title,
+.ta-r .mini-panel-title {
+  text-align: right;
+}
+
+.ta-c .block-title,
+.ta-c .mini-panel-title {
+  text-align: center;
+}
+
+/* Mini panels */
+.mini-panel-title {
+  margin: 0 10px;
+}
+
+/* Gpanel blocks */
+.gpanel .block-inner {
+}
+
+.gpanel .block-title {
+}
+
+.gpanel .block-content {
+}
+
+#main-content .gpanel .block-inner {
+}
+
+#main-content .gpanel .block-title {
+}
+
+#main-content .gpanel .block-content {
+}
+
+/* Block wrapper for Mini Panels */
+.block-panels_mini {
+}
+
+.block-panels_mini .block-inner {
+}
+
+.block-panels_mini .block-content {
+}
+
+.block-panels_mini .mini-panel-title {
+  margin: 0 10px;
+}
+
+/* Block for icons */
+.block-icon span.icon {
+  background: url(../images/icon.png) 0 0 no-repeat;
+  display: block;
+  height: 100px;
+  margin: 0 auto;
+  overflow: hidden;
+  text-indent: -999em;
+  width: 100px;
+}
+
+.block-icon-1 span.icon {
+  background-position: 0 0;
+}
+
+.block-icon-1:hover span.icon {
+  background-position: -100px 0;
+}
+
+.block-icon-2 span.icon {
+  background-position: 0 -100px;
+}
+
+.block-icon-2:hover span.icon {
+  background-position: -100px -100px;
+}
+
+.block-icon-3 span.icon {
+  background-position: 0 -200px;
+}
+
+.block-icon-3:hover span.icon{
+  background-position: -100px -200px;
+}
+
+/* Login block - slider (theme setting) */
+/* TODO: add the login slider styles
+ * Uses the class .lb-s {}
+ */

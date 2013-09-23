@@ -1,0 +1,88 @@
+<?php
+/**
+ * @file
+ *   Defines a flash provider for Scald.
+ *
+ */
+
+/**
+ * Implements hook_scald_atom_providers.
+ * Tell Scald that we'll be providing some flash atoms.
+ */
+function scald_flash_scald_atom_providers() {
+  return array(
+    'flash' => 'Embed swf object (Flash)'
+  );
+}
+
+
+function scald_flash_scald_add_form(&$form, &$form_state) {
+  $form['file_swf'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('SWF File'),
+    '#upload_location' => 'public://atoms/swf/',
+    '#upload_validators' => array('file_validate_extensions' => array('swf')),
+  );
+}
+
+/**
+ * Implements hook_scald_add_form_fill.
+ */
+function scald_flash_scald_add_form_fill(&$atom, $form, $form_state) {
+  $file = file_load($form_state['values']['file_swf']);
+  $atom->title = $file->filename;
+  $atom->base_id = $file->fid;
+  $size_infos = getimagesize($file->uri);
+  $atom->data['flash_width'] = $size_infos[0];
+  $atom->data['flash_height'] = $size_infos[1];
+  $atom->scald_width[LANGUAGE_NONE][0]['value'] = $size_infos[0];
+  $atom->scald_height[LANGUAGE_NONE][0]['value'] = $size_infos[1];
+}
+
+/**
+* Implements hook_scald_fetch.
+*/
+function scald_flash_scald_fetch($atom, $type) {
+  // Get the tweet thumbnail
+  $file = file_load($atom->base_id);
+  $atom->base_entity = $file;
+  $atom->file_source = $file->uri;
+
+  if (!empty($atom->scald_thumbnail)) {
+    $file_image = $atom->scald_thumbnail[LANGUAGE_NONE][0];
+    $atom->thumbnail_source = $file_image['uri'];
+  }
+
+  // remove the legend, not needed for a tweet
+  $atom->omit_legend = TRUE;
+}
+
+/**
+ * Implements hook_scald_prerender.
+ */
+function scald_flash_scald_prerender($atom, $context, $options, $mode) {
+  if ($mode == 'atom') {
+    $atom->rendered->player = theme('scald_flash_object',
+      array('vars' =>
+        array(
+          'flash_uri'      => file_create_url($atom->file_source),
+          'flash_width'   => ($atom->scald_width[LANGUAGE_NONE][0]['value'] ? $atom->scald_width[LANGUAGE_NONE][0]['value'] : 480),
+          'flash_height'  => ($atom->scald_height[LANGUAGE_NONE][0]['value'] ? $atom->scald_height[LANGUAGE_NONE][0]['value'] : 365),
+          'thumbnail'     => $atom->thumbnail_source,
+        ),
+      )
+    );
+  }
+}
+
+/**
+ * Implements hook_theme.
+ */
+function scald_flash_theme() {
+  return array(
+    'scald_flash_object' => array(
+      'variables' => array('vars' => NULL),
+      'template' => 'scald_flash_object'
+    ),
+  );
+}

@@ -1,0 +1,3 @@
+type, name, description, help, merci_type_setting, merci_max_hours_per_reservation, merci_allow_overnight, merci_allow_weekends, merci_late_fee_per_hour, merci_rate_per_hour, merci_fee_free_hours, merci_status, merci_spare_items 
+"room","Room","This is a room and stuff",,"resource",3,0,0,20,30,1,1,0
+"dv_camera","DV camera","This is a DV camera and stuff",,"bucket",3,0,0,20,30,1,1,0

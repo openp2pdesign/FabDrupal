@@ -1,0 +1,268 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  flickrgallery_albums.tpl.php: n/a
+#  flickrgallery_photoset.tpl.php: n/a
+#  flickrgallery.admin.inc: n/a
+#  flickrgallery.module: n/a
+#  flickrgallery.info: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2012-01-06 08:13+0100\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: flickrgallery_albums.tpl.php:15
+msgid "Total"
+msgstr ""
+
+#: flickrgallery_photoset.tpl.php:14
+msgid "Back to sets"
+msgstr ""
+
+#: flickrgallery.admin.inc:13;21
+msgid "small square 75x75"
+msgstr ""
+
+#: flickrgallery.admin.inc:14;22
+msgid "thumbnail, 100 on longest side"
+msgstr ""
+
+#: flickrgallery.admin.inc:15;23
+msgid "small, 240 on longest side"
+msgstr ""
+
+#: flickrgallery.admin.inc:16;24
+msgid "medium 640, 640 on longest side"
+msgstr ""
+
+#: flickrgallery.admin.inc:17;25
+msgid "large, 1024 on longest side"
+msgstr ""
+
+#: flickrgallery.admin.inc:30
+msgid "API Key"
+msgstr ""
+
+#: flickrgallery.admin.inc:31
+msgid "Fill in your API key."
+msgstr ""
+
+#: flickrgallery.admin.inc:31
+msgid "Get your API key"
+msgstr ""
+
+#: flickrgallery.admin.inc:37
+msgid "Secret Key"
+msgstr ""
+
+#: flickrgallery.admin.inc:38
+msgid "Fill in your secret key."
+msgstr ""
+
+#: flickrgallery.admin.inc:38
+msgid "Get your secret key"
+msgstr ""
+
+#: flickrgallery.admin.inc:44
+msgid "User ID"
+msgstr ""
+
+#: flickrgallery.admin.inc:45
+msgid "Fill in your user ID."
+msgstr ""
+
+#: flickrgallery.admin.inc:45
+msgid "Find your User ID"
+msgstr ""
+
+#: flickrgallery.admin.inc:51
+msgid "Show private pictures"
+msgstr ""
+
+#: flickrgallery.admin.inc:52
+msgid "Show your private pictures, by default this is turned off."
+msgstr ""
+
+#: flickrgallery.admin.inc:54
+msgid "No"
+msgstr ""
+
+#: flickrgallery.admin.inc:54
+msgid "Yes"
+msgstr ""
+
+#: flickrgallery.admin.inc:59
+msgid "Token for private pictures"
+msgstr ""
+
+#: flickrgallery.admin.inc:60
+msgid "Go to"
+msgstr ""
+
+#: flickrgallery.admin.inc:60
+msgid "http://www.flickr.com/services/api/keys/"
+msgstr ""
+
+#: flickrgallery.admin.inc:61
+msgid "and edit your API key details, set 'authentication type' to web application and as 'callback url': <em>http://phpflickr.com/tools/auth/auth.php</em>"
+msgstr ""
+
+#: flickrgallery.admin.inc:62
+msgid "Visit"
+msgstr ""
+
+#: flickrgallery.admin.inc:62
+msgid "http://phpflickr.com/tools/auth/"
+msgstr ""
+
+#: flickrgallery.admin.inc:63
+msgid "and fill in your API and Secret keys to generate a token, copy the token in this field."
+msgstr ""
+
+#: flickrgallery.admin.inc:69
+msgid "Title sets page"
+msgstr ""
+
+#: flickrgallery.admin.inc:70
+msgid "Provide a title for the sets page."
+msgstr ""
+
+#: flickrgallery.admin.inc:76
+msgid "Description"
+msgstr ""
+
+#: flickrgallery.admin.inc:77
+msgid "Provide a description for the sets page."
+msgstr ""
+
+#: flickrgallery.admin.inc:83
+msgid "Lightbox type"
+msgstr ""
+
+#: flickrgallery.admin.inc:84
+msgid "Fill in what type of Lightbox you would like to use. Examples: lightbox, shadowbox, colorbox, ...<br />This field will be used as the link rel tag and class name. (You need to download these modules separately)"
+msgstr ""
+
+#: flickrgallery.admin.inc:90
+msgid "Display sets images size."
+msgstr ""
+
+#: flickrgallery.admin.inc:91
+msgid "Select the size for the sets images"
+msgstr ""
+
+#: flickrgallery.admin.inc:98
+msgid "Display thumbnails on a set page"
+msgstr ""
+
+#: flickrgallery.admin.inc:99
+msgid "Select the size for the thumbnails on a set page."
+msgstr ""
+
+#: flickrgallery.admin.inc:106
+msgid "Display large images from a set"
+msgstr ""
+
+#: flickrgallery.admin.inc:107
+msgid "Select the size for the larger images"
+msgstr ""
+
+#: flickrgallery.admin.inc:114
+msgid "Extra options"
+msgstr ""
+
+#: flickrgallery.admin.inc:120
+msgid "Add more information to the images (You need to override the template files)"
+msgstr ""
+
+#: flickrgallery.admin.inc:121
+msgid "Select this option is you want to override the template files and have more information about the images available. Not recommended because this will lead to slower performance."
+msgstr ""
+
+#: flickrgallery.admin.inc:127
+msgid "Enable caching on the gallery."
+msgstr ""
+
+#: flickrgallery.admin.inc:128
+msgid "This will cache the Flickr API calls"
+msgstr ""
+
+#: flickrgallery.admin.inc:133
+msgid "When all settings are filled in correctly, you can visit your"
+msgstr ""
+
+#: flickrgallery.admin.inc:133 flickrgallery.module:47 flickrgallery.info:0
+msgid "Flickr Gallery"
+msgstr ""
+
+#: flickrgallery.admin.inc:155
+msgid "Unable to create Flickr Gallery cache directory. Check the permissions on your files directory."
+msgstr ""
+
+#: flickrgallery.module:12
+msgid "This module shows the sets and photo's from a Flickr account."
+msgstr ""
+
+#: flickrgallery.module:22
+msgid "View photosets"
+msgstr ""
+
+#: flickrgallery.module:23
+msgid "View the sets and images from the Flickr Gallery"
+msgstr ""
+
+#: flickrgallery.module:26
+msgid "Administer Flickr settings"
+msgstr ""
+
+#: flickrgallery.module:27
+msgid "Administer the settings for the Flickr Gallery"
+msgstr ""
+
+#: flickrgallery.module:189
+msgid "No pictures available"
+msgstr ""
+
+#: flickrgallery.module:245
+msgid "This set doesn't exists or there aren't any pictures available for this set."
+msgstr ""
+
+#: flickrgallery.module:141;217
+msgid "flickrgallery"
+msgstr ""
+
+#: flickrgallery.module:141;217
+msgid "The cache directory for Flickr Gallery could not be created or is not accessible."
+msgstr ""
+
+#: flickrgallery.module:39
+msgid "Flickr settings"
+msgstr ""
+
+#: flickrgallery.module:40
+msgid "Configure options for the flickr Gallery module"
+msgstr ""
+
+#: flickrgallery.module:55
+msgid "Flickr Gallery Set"
+msgstr ""
+
+#: flickrgallery.info:0
+msgid "Show your photo sets from Flickr"
+msgstr ""
+
+#: flickrgallery.info:0
+msgid "Flickr"
+msgstr ""
+

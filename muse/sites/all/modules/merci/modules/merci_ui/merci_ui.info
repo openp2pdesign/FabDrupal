@@ -1,0 +1,19 @@
+name = MERCI UI 
+package = MERCI
+description = "Includes several views for managing reservations and adds tabs to user and reservable items"
+
+core = 7.x
+
+dependencies[] = merci
+dependencies[] = views
+dependencies[] = date_views
+
+files[] = merci_ui.module
+files[] = merci_ui.views_default.inc
+
+; Information added by drupal.org packaging script on 2013-05-16
+version = "7.x-2.0"
+core = "7.x"
+project = "merci"
+datestamp = "1368726615"
+

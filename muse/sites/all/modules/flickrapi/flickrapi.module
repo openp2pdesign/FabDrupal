@@ -1,0 +1,215 @@
+<?php
+
+/**
+ * @file
+ * FlickAPI integration module.
+ *
+ * The Flickr API module is as a helper module for other Drupal Flickr modules.
+ * You don't need this module unless another module requires it or you want to
+ * develop a new Flickr-based module.
+ */
+
+module_load_include('inc', 'flickapi', 'flickrapi.admin');
+
+/**
+ * Implements hook_menu().
+ */
+function flickrapi_menu() {
+  $items = array();
+  $items['admin/config/media/flickrapi'] = array(
+    'title' => 'Flickr API Settings',
+    'description' => 'Configure Flickr API credentials.',
+    'access arguments' => array('configure flickr api'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('flickrapi_admin_settings'),
+    'file' => 'flickrapi.admin.inc',
+  );
+  $items['admin/config/media/flickrapi/authenticate'] = array(
+    'title' => 'Authenticate Flickr Credentials',
+    'access arguments' => array('configure flickr api'),
+    'page callback' => 'flickrapi_oauth_authenticate',
+    'file' => 'flickrapi.admin.inc',
+  );
+  $items['admin/config/media/flickrapi/clear'] = array(
+    'title' => 'Clear Flickr Credentials',
+    'access arguments' => array('configure flickr api'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('flickrapi_oauth_clear_form'),
+    'file' => 'flickrapi.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function flickrapi_permission() {
+  return array(
+    'configure flickr api' => array(
+      'title' => t('Configure Flickr API'),
+      'description' => t('Set API keys and cache times for flickr queries'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_flush_caches().
+ */
+function flickrapi_flush_caches() {
+  flickrapi_phpFlickr(TRUE);
+}
+
+/**
+ * Returns the phpFlickr object.
+ *
+ * If we need to change anything, such as making the cache configuration,
+ * then it'll all be done here.
+ *
+ * @return phpFlickr
+ *   The phpFlickr object
+ */
+function flickrapi_phpFlickr($clear_cache = FALSE) {
+  $api_key = variable_get('flickrapi_api_key', '');
+  $api_secret = variable_get('flickrapi_api_secret', '');
+  $cache = variable_get('flickrapi_cache', '');
+  $cache_dir = variable_get('flickrapi_cache_path', '');
+
+  if (empty($api_key) || empty($api_secret)) {
+    drupal_set_message(t("Flickr API key not set"), 'error');
+    if (user_access('configure flickr api')) {
+      drupal_set_message(t('Please !configure', array('!configure' => l(t('configure the Flickr API settings'), 'admin/config/media/flickrapi'))));
+    }
+  }
+  $flickr = new phpFlickr($api_key, $api_secret);
+
+  // Override the default post function to enable OAuth.
+  $flickr->setCustomPost('_flickrapi_post');
+
+  // Enable caching.
+  if ($cache == TRUE) {
+    if ($clear_cache == TRUE) {
+      $flickr->enableCache('fs', $cache_dir, 0);
+    }
+    else {
+      $flickr->enableCache('fs', $cache_dir);
+    }
+  }
+
+  return $flickr;
+}
+
+/**
+ * Custom post function to enable OAuth requests.
+ *
+ * @param String $url
+ *   the callback url for the API
+ *
+ * @param Array $data
+ *   associative array with all Flickr paramters
+ *
+ * @return String
+ *   serialized PHP response format
+ *   see: http://www.flickr.com/services/api/response.php.html
+ */
+function _flickrapi_post($url, $data) {
+  $consumer = DrupalOAuthConsumer::load(variable_get('flickrapi_api_key', ''), FALSE);
+  $sig_method = FlickrApiOAuthClient::signatureMethod();
+  $client = new FlickrApiOAuthClient($consumer, NULL, $sig_method);
+  $response = $client->get($url, array('token' => TRUE, 'params' => $data));
+
+  return $response;
+}
+
+/**
+ * Override DrupalOAuthClient to use its protected get() function
+ */
+class FlickrApiOAuthClient extends DrupalOAuthClient {
+  /**
+   * Make an OAuth request.
+   */
+  function get($path, $options = array()) {
+    return parent::get($path, $options);
+  }
+}
+
+/**
+ * Tries to match an 'identifier' onto a flickr nsid
+ *
+ * This function will first see whether $identifier is already
+ * a nsid (format check only, no api call).  If it is not and the
+ * identifier has the format of an email, an api call will be made to
+ * check whether there is an nsid for that email.  If this is not the
+ * case, the $identifier is treated as a username and an api call is
+ * made to find the nsid for that username.
+ *
+ * If none of these succees, the result will be false
+ *
+ * @param Array $identifier
+ *   identifier to find an nsid for
+ *
+ * @return String
+ *   valid nsid or false if none can be found
+ */
+function flickrapi_get_user_nsid($identifier) {
+  if (flickrapi_is_nsid($identifier)) {
+    // Identifier is an NSID.
+    return $identifier;
+  }
+  $f = flickrapi_phpFlickr();
+  if (valid_email_address($identifier) && ($user = $f->people_findByEmail($identifier))) {
+    return $user['nsid'];
+  }
+  if ($user = $f->people_findByUsername($identifier)) {
+    return $user['nsid'];
+  }
+
+  return FALSE;
+}
+
+/**
+ * Do a preg_match to check if the given ID is a valid Flickr user ID.
+ *
+ * @param String $id
+ *   identifier to find an nsid for
+ *
+ * @return Boolean
+ *   TRUE/FALSE
+ */
+function flickrapi_is_nsid($id) {
+  return preg_match('/^\d+@N\d+$/', $id) ? TRUE : FALSE;
+}
+
+/**
+ * Checks if a Flickr account has been already authenticated
+ *
+ * @return Boolean
+ *   TRUE if the consumer key and consumer secret tokens were found
+ */
+function _flickrapi_is_authenticated() {
+  return variable_get('flickrapi_api_key', '') && variable_get('flickrapi_api_secret', '');
+}
+
+/**
+ * Clears OAuth token and keys
+ *
+ * @return Boolean
+ *   TRUE if keys and oauth token were found
+ */
+function _flickrapi_oauth_clear() {
+  $consumer_key = variable_get('flickrapi_api_key');
+  $secret = variable_get('flickrapi_api_secret');
+  // TODO get rid of this query and use an oauth_common API method when available
+  $csid = db_query("SELECT csid FROM {oauth_common_consumer} WHERE consumer_key = :consumer_key AND secret = :secret", array(
+    ':consumer_key' => $consumer_key,
+    ':secret' => $secret,
+    )
+  )->fetchField();
+  if ($csid) {
+    DrupalOAuthConsumer::deleteConsumer($csid);
+    variable_del('flickrapi_api_key');
+    variable_del('flickrapi_api_secret');
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}

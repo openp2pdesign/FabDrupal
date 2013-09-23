@@ -1,0 +1,23 @@
+name = Registration
+description = Entity based registration system.
+package = Registration
+core = 7.x
+
+dependencies[] = entity
+
+files[] = tests/registration.test
+files[] = lib/registration.entity.inc
+files[] = lib/registration.metadata.inc
+files[] = lib/registration_state.controller.inc
+files[] = lib/registration_state.entity.inc
+files[] = lib/registration_state.ui_controller.inc
+files[] = lib/registration_type.entity.inc
+files[] = lib/registration_type.ui_controller.inc
+
+
+; Information added by drupal.org packaging script on 2013-08-16
+version = "7.x-1.2"
+core = "7.x"
+project = "registration"
+datestamp = "1376675001"
+

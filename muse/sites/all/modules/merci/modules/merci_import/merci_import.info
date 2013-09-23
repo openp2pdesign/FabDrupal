@@ -1,0 +1,22 @@
+name = MERCI Import 
+package = MERCI
+description = "Provides a feeds processor plugin to import data into MERCI."
+
+core = 7.x
+
+dependencies[] = merci
+dependencies[] = feeds 
+
+
+files[] = merci_import.module
+files[] = merci_import.install
+files[] = MerciItemProcessor.inc
+files[] = MerciTypeProcessor.inc
+
+
+; Information added by drupal.org packaging script on 2013-05-16
+version = "7.x-2.0"
+core = "7.x"
+project = "merci"
+datestamp = "1368726615"
+

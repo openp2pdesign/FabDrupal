@@ -1,0 +1,13 @@
+name = Registration Entity Access
+description = Provides per entity access control for registration.
+package = Registration
+core = 7.x
+
+dependencies[] = registration
+
+; Information added by drupal.org packaging script on 2013-08-16
+version = "7.x-1.2"
+core = "7.x"
+project = "registration"
+datestamp = "1376675001"
+

@@ -1,0 +1,17 @@
+<?php
+
+
+/**
+ * @file
+ */
+
+function merci_staff_update_7001() {
+  db_query("UPDATE {system} SET weight = 10 WHERE name = 'merci_staff'");
+  return array(array('success' => TRUE, 'query' => 'Should only be doing db updates.  But I am doing a lot more.'));
+}
+/**
+ * Implementation of hook_install().
+ */
+function merci_staff_install() {
+  db_query("UPDATE {system} SET weight = 10 WHERE name = 'merci_staff'");
+}

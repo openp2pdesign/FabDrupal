@@ -1,0 +1,15 @@
+name = Scald file
+description = Allows the creation and edition of Files.
+package = Scald Providers
+core = 7.x
+dependencies[] = scald
+
+stylesheets[all][] = scald_file.css
+
+
+; Information added by drupal.org packaging script on 2013-05-29
+version = "7.x-1.0-beta2"
+core = "7.x"
+project = "scald_file"
+datestamp = "1369866979"
+

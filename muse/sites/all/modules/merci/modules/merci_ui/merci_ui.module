@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * merci_ui functions
+ */
+
+/**
+ * Implementation of hook_views_api().
+ */
+function merci_ui_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'merci_ui'),
+  );
+}
+
+function merci_ui_preprocess_views_view(&$variables) {
+  if(isset($variables['name'])) {
+    if ($variables['name'] == 'merci_ui_user_reservations' or $variables['name'] == 'merci_ui_node_reservations') {
+      $output = '<div id="make-merci-reservation">';
+      $output .= l(t('Make a Reservation'), 'node/add/merci-reservation');
+      $output .= '</div>';
+      $variables['footer'] .= $output;
+    }
+  }
+}
+

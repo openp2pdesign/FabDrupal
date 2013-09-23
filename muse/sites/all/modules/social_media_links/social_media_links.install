@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Social Media Link module's install and uninstall code.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function social_media_links_install() {
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function social_media_links_uninstall() {
+  variable_del('social_media_links_platforms');
+  variable_del('social_media_links_appearance');
+  variable_del('social_media_links_link_attributes');
+  variable_del('social_media_links_icon_style');
+}

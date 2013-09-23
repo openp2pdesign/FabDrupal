@@ -1,0 +1,17 @@
+INSTALLATION:
+
+1) Place this module directory in your modules folder (this will usually be
+   "sites/all/modules/").
+
+2) Enable the module.
+
+3) Go to admin/config/media/flickrapi
+
+4) Enter your API Key and optionally your API Shared Secret. See
+   http://www.flickr.com/services/api to register for a key.
+
+5) After saving, the form will send you to Flickr.com to authenticate
+   your website using OAuth. You will have 'read' permissions by default.
+
+6) More permissions (write/delete) or disabling caching can be set using the
+   the Advanced Settings. Changing permissions afterwards forces you to re-authenticate.

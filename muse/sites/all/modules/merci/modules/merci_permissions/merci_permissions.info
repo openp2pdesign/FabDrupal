@@ -1,0 +1,15 @@
+name = "MERCI Permissions"
+package = MERCI
+description = "Administration form to more easily manage reservation permissions for MERCI."
+core = 7.x
+dependencies[] = merci 
+project = "merci"
+
+files[] = merci_permissions.module
+
+; Information added by drupal.org packaging script on 2013-05-16
+version = "7.x-2.0"
+core = "7.x"
+project = "merci"
+datestamp = "1368726615"
+

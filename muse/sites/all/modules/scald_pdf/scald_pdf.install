@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Scald PDF Installation
+ */
+
+
+
+/**
+ * Implementation of hook_install().
+ */
+function scald_pdf_install() {
+  scald_add_type('document', 'Document', 'Office documents (PDF, doc, xls...)');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function scald_pdf_uninstall() {
+}
+

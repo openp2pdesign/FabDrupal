@@ -1,0 +1,260 @@
+<?php
+
+
+/**
+ * @file
+ * Provides functions for resetting permissions on the permission page.
+ */
+function merci_permissions_menu() {
+
+
+    // Administration settings.
+  $items['admin/merci/manage/permissions'] = array(
+      'title' => 'Permissions',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('merci_permissions_form'),
+      'access callback' => 'user_access',
+      'access arguments' => array('administer site configuration'),
+      'description' => t('Configure reservation permissions for MERCI.'),
+      'type' => MENU_NORMAL_ITEM,
+      'weight' => 3,
+    );
+ 
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function merci_permissions_theme() {
+  return array(
+    'merci_permissions_form' => array(
+      'render element' => 'form',
+    ),
+  );
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function theme_merci_permissions_form($variables) {
+  $form = $variables['form'];
+  $roles = user_roles();
+  $rows = array();
+  foreach (element_children($form['permission']) as $key) {
+    // Don't take form control structures
+    if (is_array($form['permission'][$key])) {
+      // Module name
+      $row = array();
+      if (is_numeric($key)) {
+        $row[] = array(
+          'data' => drupal_render($form['permission'][$key]),
+          'class' => array('module'),
+          'id' => 'module-' . $form['permission'][$key]['#id'],
+          'colspan' => count($form['role_names']['#value']) + 1,
+        );
+      }
+      else {
+        $row[] = array(
+          'data' => drupal_render($form['permission'][$key]),
+          'class' => array('permission'),
+        );
+        foreach (element_children($form['checkboxes']) as $rid) {
+          if (is_array($form['checkboxes'][$rid])) {
+            $form['checkboxes'][$rid][$key]['#title'] = $roles[$rid] . ': ' . $form['permission'][$key]['#markup'];
+            $form['checkboxes'][$rid][$key]['#title_display'] = 'invisible';
+            $row[] = array(
+              'data' => drupal_render($form['checkboxes'][$rid][$key]),
+              'class' => array('checkbox'),
+            );
+          }
+        }
+      }
+      $rows[] = $row;
+    }
+  }
+  $header[] = (t('Permission'));
+  foreach (element_children($form['role_names']) as $rid) {
+    if (is_array($form['role_names'][$rid])) {
+      $header[] = array(
+        'data' => drupal_render($form['role_names'][$rid]),
+        'class' => array('checkbox'),
+      );
+    }
+  }
+  $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'permissions')));
+  $output .= drupal_render_children($form);
+  return $output;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function merci_permissions_form($form, &$form_state) {
+  $role_names = user_roles();
+
+  // Retrieve role names for columns.
+  $role_names = user_roles();
+  // Fetch permissions for all roles or the one selected role.
+  $role_permissions = user_role_permissions($role_names);
+
+  $merci_types = merci_permissions_load_merci_type_settings();
+  if (empty($merci_types)) {
+    drupal_set_message(t("You need to add some reservable content types to make this form usefull."));
+    return;
+  }
+  $options = array();
+  $admin = array();
+  $form['permission'][] = array('#markup' => t("General Permissions"));
+  //$form['permission']['admin all reservations'] = array('#markup' => t('Admin all reservations'));
+  //$options['admin all reservations'] = '';
+  $merci_perms = merci_permission();
+
+  foreach ($merci_perms as $perm => $data) {
+    $options[$perm] = '';
+    $form['permission'][$perm] = array('#markup' => t($perm));
+    foreach ($role_names as $rid => $name) {
+      // Builds arrays for checked boxes for each role
+      if (isset($role_permissions[$rid][$perm])) {
+        $status[$rid][] = $perm;
+      }
+    }
+  }
+  $form['permission'][] = array(
+    '#markup' => t('Bucket and Resource Permissions'),
+  );
+  foreach ($merci_types as $type => $name) {
+    $perm = "reserve $type";
+    $options[$perm] = '';
+    $form['permission'][$perm] = array('#markup' => t($name));
+    foreach ($role_names as $rid => $name) {
+      // Builds arrays for checked boxes for each role
+      if (
+        isset($role_permissions[$rid]['delete own ' . $type . ' content']) &&
+        isset($role_permissions[$rid]['edit own ' . $type . ' content']) 
+      ) {
+        $status[$rid][] = $perm;
+      }
+      if (
+        isset($role_permissions[$rid]['delete any ' . $type . ' content']) &&
+        isset($role_permissions[$rid]['edit any ' . $type . ' content']) 
+      ) {
+        if (!strstr($admin[$rid], 'false')) {
+          $admin[$rid] = 'true';
+        }
+      }
+      else {
+        $admin[$rid] = 'false';
+      }
+    }
+  }
+  /*
+  foreach ($role_names as $rid => $name) {
+    if (strstr($admin[$rid], 'true')) {
+      $status[$rid][] = 'admin all reservations';
+    }
+  }
+   */
+
+  // Have to build checkboxes here after checkbox arrays are built
+  foreach ($role_names as $rid => $name) {
+    $form['checkboxes'][$rid] = array(
+      '#type' => 'checkboxes',
+      '#options' => $options,
+      '#default_value' => isset($status[$rid]) ? $status[$rid] : array(),
+    );
+    $form['role_names']['#value'][] = $name;
+    $form['role_names'][$rid] = array(
+      '#markup' => $name,
+      '#tree' => TRUE,
+    );
+  }
+
+
+  $form['buttons']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save Permissions'),
+  );
+  $form['#submit'][] = 'merci_permissions_settings_form_submit';
+  return $form;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function merci_permissions_load_merci_type_settings() {
+  $result = db_query("SELECT nt.type,nt.name FROM {node_type} nt INNER JOIN {merci_node_type} m ON nt.type = m.type WHERE m.merci_type_setting <> :typesetting", array(':typesetting' => 'disabled'));
+  $merci_types = array();
+  foreach($result as $merci_type) {
+    $merci_types[$merci_type->type] = $merci_type->name;
+  }
+  return $merci_types;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function merci_permissions_settings_form_submit($form, &$form_state) {
+
+  $result      = db_query('SELECT * FROM {role}');
+  $merci_types = merci_permissions_load_merci_type_settings();
+  $merci_perms = merci_permission();
+  foreach($result as $role) {
+    if (isset($form_state['values'][$role->rid])) {
+
+      $add_perms = array();
+      $revoke_perms = array();
+      foreach ($form_state['values'][$role->rid] as $key => $value) {
+        list($cruft, $type) = explode(' ', $key);
+
+        $perms = array();
+        if (array_key_exists($type, $merci_types)) {
+          $perms[] = "edit own $type content";
+          $perms[] = "delete own $type content";
+          if ($value) {
+            $add_perms = array_merge($perms, $add_perms);
+          }
+          else {
+            $revoke_perms = array_merge($perms, $revoke_perms);
+          }
+        }
+        /*
+        elseif (strstr('admin all reservations', $key)) {
+          foreach ($merci_types as $type => $name) {
+            $perms[] = "edit own $type content";
+            $perms[] = "delete own $type content";
+            $perms[] = "delete any $type content";
+            $perms[] = "edit any $type content";
+          }
+          if ($value) {
+            $add_perms = array_merge($perms, $add_perms);
+          }
+          else {
+            $revoke_perms = array_merge($perms, $revoke_perms);
+          }
+        }
+         */
+        elseif (array_key_exists($key, $merci_perms)) {
+          if ($value) {
+            $add_perms[] = $key;
+          }
+          else {
+            $revoke_perms[] = $key;
+          }
+        }
+      }
+
+      if (!empty($add_perms)) {
+        user_role_grant_permissions($role->rid, $add_perms);
+      }
+      if (!empty($revoke_perms)) {
+        user_role_revoke_permissions($role->rid, $revoke_perms);
+      }
+    }
+  }
+}
+

@@ -1,0 +1,254 @@
+/**
+ * Common View Elements
+ */
+ 
+/* --- Views Field --- */
+.views-field {
+}
+
+.field-content {
+}
+
+/* Views Field Title */
+.views-field-title {
+}
+
+.views-field-title .field-content {
+}
+
+/* Views Field Image */
+.views-field-field-image {
+}
+
+.views-field-field-image .field-content {
+}
+
+/* Views Field Body */
+.views-field-body {
+}
+
+.views-field-body .field-content {
+}
+
+/* Views Field Changed */
+.views-field-changed {
+}
+
+.views-field-changed .field-content {
+}
+
+/* --- Views Inline Grid --- */
+.views-row {
+}
+
+.views-row-odd {
+}
+
+.views-row-even {
+}
+
+.views-col {
+}
+
+.cols-1 .views-col {
+  width: 100%;
+}
+
+.cols-2 .views-col {
+  width: 50%;
+}
+
+.cols-3 .views-col {
+  width: 33.3%;
+}
+
+.cols-4 .views-col {
+  width: 25%;
+}
+
+.cols-5 .views-col {
+  width: 20%;
+}
+
+.cols-6 .views-col {
+  width: 16.66%;
+}
+
+/**
+ * Supported Views Formats
+ */
+/* --- Slideshow --- */
+#slideshow-wrapper .container {
+}
+
+#slideshow-wrapper .block-content {
+  padding: 0;
+}
+
+#slideshow-wrapper .region-slideshow {
+  background: url(../images/bg-slideshow.png) 0 0 no-repeat;
+  height: 285px;
+  margin:0 auto;
+  padding: 80px 90px;
+  position: relative;
+  width: 465px;  
+}
+
+/* Titles */
+#slideshow-wrapper .views-field-title {
+  background: #333;
+  bottom: 0;
+  color: #FFF;
+  font-size: 0.875em;
+  left: 0;
+  position: absolute;
+  text-transform: uppercase;
+  display: none; /* Hide the title . Remove this line to show. */
+}
+
+#slideshow-wrapper .views-field-title .field-content {
+  display: block;
+  padding: .25em 2em;
+}
+
+#slideshow-wrapper .views-field-title a {
+  color: #FFF;
+}
+
+#slideshow-wrapper .views-field-title a:hover,
+#slideshow-wrapper .views-field-title a:active,
+#slideshow-wrapper .views-field-title a:focus {
+  color: #FFF;
+  text-decoration: none;
+}
+
+/* Slideshow Navigator */
+#slideshow-wrapper .views-slideshow-controls-bottom {
+  bottom: 110px;
+  font-size: .92em;
+  height: auto;
+  position: absolute;
+  left: 295px;
+  text-align: center;
+  width: auto;
+  z-index: 20; /* if you have more than 18 images in slideshow, increase this value */
+}
+
+#slideshow-wrapper .views-slideshow-pager-field-item {
+  float: left; 
+  margin-right: 5px;
+}
+
+#slideshow-wrapper .views-content-nid {
+  background: url(../images/ico-paging.png) 0 0 no-repeat;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -999em;
+  width: 15px; 
+}
+
+#slideshow-wrapper .views-slideshow-pager-field-item.active .views-content-nid {
+  background-position: 0 -20px;
+}
+
+#slideshow-wrapper .region-slideshow:hover .views-slideshow-controls-bottom {
+  display: block;
+}
+
+#slideshow-wrapper .views-slideshow-controls-top {
+  top: 100px;
+  font-size: .92em;
+  height: auto;
+  position: absolute;
+  left: 295px;
+  text-align: center;
+  width: auto;
+  z-index: 20; /* if you have more than 18 images in slideshow, increase this value */
+}
+
+#slideshow-wrapper .views_slideshow_controls_text {
+  background: #333;
+  color: #CCC;
+  float: left;
+}
+
+#slideshow-wrapper .views_slideshow_controls_text span {
+  cursor: pointer;
+  display: inline-block;
+  padding: .25em 1em;
+}
+
+#slideshow-wrapper .views_slideshow_controls_text span:hover {
+  background: #666;
+  color: #FFF;
+}
+
+#slideshow-wrapper .views_slideshow_slide_counter {
+  background: #C00;
+  color: #FFF;
+  float: left;
+  padding: .25em 1em;
+  margin-left: 1px;
+}
+
+/* Slideshow Full Pager */
+#slideshow-wrapper .view > .pager {
+  bottom: 0;
+  height: auto;
+  position: absolute;
+  right: 0;
+  width: auto;
+  z-index: 20; /* if you have more than 18 images in slideshow, increase this value */
+}
+
+/* Slideshow Mini Pager */
+#slideshow-wrapper .views-mini-pager {
+  bottom: 0;
+  height: auto;
+  position: absolute;
+  right: 0;
+  width: auto;
+  z-index: 20; /* if you have more than 18 images in slideshow, increase this value */
+}
+
+/* Mass bottom */
+#mass-bottom-wrapper .views-field-field-image img {
+  border: 1px solid #eaeaea;
+  margin-bottom: 1em;
+  padding: 4px;
+}
+
+#mass-bottom-wrapper .views-field-title {
+  color: #222;
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+#mass-bottom-wrapper .views-field-title a {
+  color: #222;
+}
+
+#mass-bottom-wrapper .views-field-title a:hover, 
+#mass-bottom-wrapper .views-field-title a:active, 
+#mass-bottom-wrapper .views-field-title a:focus {
+  color: #D76C31;
+}
+
+#mass-bottom-wrapper .views-field-view-node {
+  overflow: hidden;
+}
+
+#mass-bottom-wrapper .views-field-view-node .field-content a {
+ background: url(../images/bg-readmore-2.png) 0 3px no-repeat;
+  display: inline-block;
+  font-size: 0.917em;
+  padding: 3px 0 3px 20px;
+}
+
+#mass-bottom-wrapper .views-field-view-node .field-content a:hover,
+#mass-bottom-wrapper .views-field-view-node .field-content a:active,
+#mass-bottom-wrapper .views-field-view-node .field-content a:focus {
+  background-position: 0 -21px;
+  color: #222;
+  text-decoration: none;
+}

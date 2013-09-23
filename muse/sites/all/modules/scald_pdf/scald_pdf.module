@@ -1,0 +1,101 @@
+<?php
+
+/**
+ * @file
+ * Scald PDF is a Scald Atom Provider for PDF documents.
+ */
+
+/**
+ * Implements hook_scald_atom_providers.
+ */
+function scald_pdf_scald_atom_providers() {
+  return array(
+    'document' => 'PDF document'
+  );
+}
+
+/**
+ * Implements hook_scald_add_form.
+ */
+function scald_pdf_scald_add_form(&$form, &$form_state) {
+  $form['file'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('PDF Documents'),
+    '#upload_validators' => array('file_validate_extensions' => array('pdf')),
+    '#upload_location' => 'public://atoms/document/',
+  );
+}
+
+/**
+ * Implements hook_scald_add_form_fill.
+ */
+function scald_pdf_scald_add_form_fill(&$atoms, $form, $form_state) {
+  $atom = is_array($atoms) ? reset($atoms) : $atoms;
+  $file = file_load($form_state['values']['file']);
+  $atom->title = $file->filename;
+  $atom->base_id = $file->fid;
+}
+
+/**
+ * Implements hook_scald_atom_insert.
+ */
+function scald_pdf_scald_atom_insert($atom) {
+  if ($atom->provider == 'scald_pdf') {
+    $file = file_load($atom->base_id);
+    if ($file) {
+      $file->status = FILE_STATUS_PERMANENT;
+      file_save($file);
+      file_usage_add($file, 'scald_pdf', 'scald_atom', $atom->sid);
+    }
+  }
+}
+
+/**
+ * Implements hook_scald_fetch.
+ */
+function scald_pdf_scald_fetch($atom, $type) {
+  if ($type == 'atom') {
+    $file = file_load($atom->base_id);
+    $atom->base_entity = $file;
+    if (!empty($atom->scald_thumbnail)) {
+      $atom->thumbnail_source = $atom->scald_thumbnail[LANGUAGE_NONE][0]['uri'];
+    }
+  }
+}
+
+/**
+ * Implements hook_scald_prerender().
+ */
+function scald_pdf_scald_prerender($atom, $context, $options, $mode) {
+  if ($mode == 'transcoder' && empty($atom->rendered->player) || $mode == 'atom') {
+    if ($context != 'sdl_library_item') {
+      $file = isset($atom->base_entity) ? $atom->base_entity : file_load($atom->base_id);
+      $config = scald_context_config_load($context);
+      $transcoder = isset($config->transcoder[$atom->type]['*']) ? $config->transcoder[$atom->type]['*'] : 'passthrough';
+      $theme = preg_match('/^file_field_pdf_/', $transcoder) ? str_replace('file_field_pdf_', 'pdf_formatter_', $transcoder) : 'pdf_formatter_default';
+      $atom->rendered->player = theme($theme, array('file' => $file));
+    }
+  }
+}
+
+/**
+ * Implements hook_scald_transcoders.
+ */
+function scald_pdf_scald_transcoders() {
+  $transcoders = array();
+  if (module_exists('file_entity')) {
+    foreach (file_info_formatter_types() as $name => $formatter) {
+      if (!preg_match('/^file_field_pdf_/', $name)) {
+        continue;
+      }
+
+      $transcoders[$name] = array(
+        'title' => $formatter['label'],
+        'description' => $formatter['label'],
+        'formats' => array('document' => 'passthrough'),
+      );
+    }
+  }
+  return $transcoders;
+}
+

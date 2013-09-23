@@ -1,0 +1,21 @@
+
+.form-item-latitude,
+.form-item-longitude,
+.form-item-zoom {
+  float: left;
+  padding-right: 2em;
+}
+.form-item-zoom {
+  width: 200px;
+}
+
+.leaflet-gallery-map {
+  padding: 5px;
+/* Include the two lines below to tile maps at a fixed width
+  width: 300px;
+  float: left;
+ */
+}
+.leaflet-container {
+  border: 1px solid lightgrey;
+}

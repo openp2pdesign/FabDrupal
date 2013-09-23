@@ -1,0 +1,525 @@
+<?php
+/**
+ * @file
+ * Defines a Flickr provider for Scald.
+ */
+
+define('SCALD_FLICKR_PHOTOS', 'www.flickr.com/photos/');
+define('SCALD_FLICKR_API_REST', 'http://api.flickr.com/services/rest');
+define('SCALD_FLICKR_PHOTO_SOURCE', 'http://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg');
+
+/**
+ * Implements hook_scald_atom_providers().
+ * @description
+ *  Tell Scald that we'll be providing some image atoms.
+ */
+function scald_flickr_scald_atom_providers() {
+  return array(
+    'image' => 'Images hosted on Flickr',
+  );
+}
+
+/**
+ * Implements hook_scald_add_form().
+ */
+function scald_flickr_scald_add_form(&$form, &$form_state) {
+
+  if (isset($_GET['flickr-id'])) {
+    $identifier = $_GET['flickr-id'];
+  }
+  else {
+    $identifier = '';
+  }
+
+  $form['identifier'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Flickr image identifier or URL'),
+    '#element_validate' => array('scald_flickr_validate_id'),
+    '#default_value' => $identifier,
+  );
+  if (!$identifier) {
+    $attributes = array();
+    if (!empty($form_state['ajax'])) {
+      $attributes['target'] = '_blank';
+      $attributes['class'][] = 'overlay-exclude';
+    }
+    $form['search'] = array(
+      '#type' => 'item',
+      '#markup' => l(t('Search on Flickr'), 'atoms/flickr/search', array('attributes' => $attributes)),
+    );
+  }
+}
+
+/**
+ * Implements hook_scald_add_form_fill().
+ * @description
+ *   Called after the id validation (scald_flickr_validate_id()).
+ */
+function scald_flickr_scald_add_form_fill(&$atom, $form, $form_state) {
+  scald_flickr_update_atom($atom, $form_state['scald_flickr']['image_infos']);
+}
+
+/**
+ * Implements hook_scald_fetch().
+ */
+function scald_flickr_scald_fetch($atom, $type) {
+  $image_uri = $atom->scald_thumbnail[LANGUAGE_NONE][0]['uri'];
+  if (file_exists($image_uri)) {
+    $atom->file_source = $atom->thumbnail_source = $image_uri;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function scald_flickr_theme() {
+  return array(
+    'scald_flickr_search_results_table' => array(
+      'render element' => 'form',
+      'file' => 'scald_flickr.pages.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_perm().
+ */
+function scald_flickr_permission() {
+  return array(
+    'administer flickr settings' => array(
+      'title' => t('Administer flickr settings'),
+    ),
+    'import flickr images' => array(
+      'title' => t('Import flickr images'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function scald_flickr_menu() {
+  $items['admin/config/media/scald_flickr'] = array(
+    'title' => 'Scald Flickr Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('scald_flickr_settings_form'),
+    'access arguments' => array('administer flickr settings'),
+    'description' => 'Configure API keys for Flickr API',
+    'file' => 'scald_flickr.admin.inc',
+  );
+
+  $items['atoms/flickr/search'] = array(
+    'title' => 'Flickr search',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('scald_flickr_search_form', 2, 3),
+    'access arguments' => array('import flickr images'),
+    'description' => 'Search for new images to import into this site',
+    'file' => 'scald_flickr.pages.inc',
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  $items['atoms/flickr/search/terms'] = array(
+    'title' => 'Flickr search by term',
+    'file' => 'scald_flickr.pages.inc',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  $items['atoms/flickr/search/user'] = array(
+    'title' => 'Flickr search by user',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('scald_flickr_search_user_form', 2, 4),
+    'access arguments' => array('import flickr images'),
+    'description' => 'Search for new images to import into this site',
+    'file' => 'scald_flickr.pages.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['atoms/flickr/import'] = array(
+    'title' => 'Flickr image import',
+    'page callback' => 'scald_flickr_import',
+    'page arguments' => array(),
+    'access arguments' => array('import flickr images'),
+    'description' => 'Import a flickr image',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Analyze a Flickr feed (JSON).
+ *
+ * @description
+ * Reformating the informations about its
+ * items in an easy to manipulate objects containing the informations we're
+ * interested in.
+ *
+ * @param string $type
+ *   Flickr feed type. 'image', 'search', 'search_user'
+ *
+ * @param string $id
+ *   The identifier, related to the type mentionned above. If you're requestion
+ *   a user feed, then, its the user id...
+ *
+ * @return array
+ *   An array containing Flickr photos objects later used to 
+ *   update the scald flickr atom.
+ *
+ * @see scald_flickr_update_atom()
+ */
+function scald_flickr_feed($type, $id) {
+
+  $scald_flickr_api_key = variable_get('scald_flickr_api_key', '');
+  $scald_flickr_api_secret = variable_get('scald_flickr_api_secret', '');
+
+  $feed_methods_info = array(
+    'image' => array(
+      'method' => 'flickr.photos.getInfo',
+      'id' => 'photo_id',
+    ),
+    'search' => array(
+      'method' => 'flickr.photos.search',
+      'id' => 'text',
+    ),
+    'search_user' => array(
+      'method' => 'flickr.people.getPublicPhotos',
+      'id' => 'user_id',
+    ),
+    'search_user_id' => array(
+      'method' => 'flickr.people.findByUsername',
+      'id' => 'username',
+    ),
+  );
+  // If pager, get current page.
+  $page = pager_find_page();
+
+  $url = SCALD_FLICKR_API_REST;
+  $url .= '/?method=' . $feed_methods_info[$type]['method'];
+  $url .= '&api_key=' . $scald_flickr_api_key;
+  $url .= '&' . $feed_methods_info[$type]['id'] . '=' . urlencode($id);
+  $url .= '&format=json&nojsoncallback=1&extras=original_format';
+  $url .= '&page=' . ($page + 1);
+  
+  if ($scald_flickr_api_key != '') {
+
+    $response = drupal_http_request($url);
+    if ($response->code != 404 && !empty($response->data)) {
+
+      $items = array();
+      $data = json_decode($response->data);
+
+      if ($type == 'search' || $type == 'search_user' && isset($data->photos)) {
+
+        scald_flickr_import_page_count(
+          $data->photos->pages,
+          $data->photos->page,
+          $data->photos->perpage,
+          $data->photos->total
+        );
+
+        foreach ($data->photos->photo as $key => $photo) {
+          $photo->thumbnail = array(
+            'src' => scald_flickr_parse_url($photo, 'm', 'photo_source'),
+          );
+          $items[] = $photo;
+        }
+
+      }
+      elseif ($type == 'search_user_id' && isset($data->user)) {
+        $items['nsid'] = $data->user->nsid;
+      }
+      elseif ($type == 'image' && isset($data->photo)) {
+        $items['photo'] = $data->photo;
+      }
+
+    }
+    else {
+      drupal_set_message(t('Flickr API key must be set ' . l('Here', 'admin/config/media/scald_flickr') . '.'), 'error');
+    }
+  }
+  else {
+    drupal_set_message(t('Flickr API key must be set ' . l('Here', 'admin/config/media/scald_flickr') . '.'), 'error');
+    return;
+  }
+
+  return $items;
+
+}
+
+/**
+ * Set static variables for flickr pager.
+ *
+ * @return array
+ *   An array containing : page count, active page, number of images per page,
+ *   total image count.
+ */
+function scald_flickr_import_page_count($page_count = NULL, $active_page = NULL, $per_page = NULL, $total = NULL) {
+  $flickr_import_pager = &drupal_static(__FUNCTION__);
+
+  if (isset($page_count)) {
+    $flickr_import_pager['page_count'] = $page_count;
+  }
+  elseif (!isset($flickr_import_pager['page_count'])) {
+    $flickr_import_pager['page_count'] = 1;
+  }
+
+  if (isset($active_page)) {
+    $flickr_import_pager['active_page'] = $active_page;
+  }
+  elseif (!isset($flickr_import_pager['active_page'])) {
+    $flickr_import_pager['active_page'] = 1;
+  }
+
+  if (isset($per_page)) {
+    $flickr_import_pager['per_page'] = $per_page;
+  }
+  elseif (!isset($flickr_import_pager['per_page'])) {
+    $flickr_import_pager['per_page'] = 100;
+  }
+
+  if (isset($total)) {
+    $flickr_import_pager['total'] = $total;
+  }
+  elseif (!isset($flickr_import_pager['total'])) {
+    $flickr_import_pager['total'] = 0;
+  }
+
+  return $flickr_import_pager;
+}
+
+/**
+ * Get information on a specific image.
+ *
+ * @param int $id
+ *   The Flickr image id.
+ *
+ * @return object
+ *   An object containing the image informations. For information on
+ *   the object format, see @scald_flickr_feed.
+ */
+function scald_flickr_image($id) {
+  $items = scald_flickr_feed('image', $id);
+  return $items['photo'];
+}
+
+/**
+ * Checks if a image has already been imported, based on its image id.
+ *
+ * @param int $id
+ *   The image identifier
+ *
+ * @return bool
+ *   FALSE if the image was never imported, else the scald identifier
+ */
+function scald_flickr_already_imported($id) {
+  $query = array('provider' => 'scald_flickr', 'base_id' => $id);
+  return scald_search($query, FALSE, TRUE);
+}
+
+/**
+ * Form element validation handler for Flickr identifier.
+ */
+function scald_flickr_validate_id($element, &$form_state) {
+
+  // Get the flickr photo identifier.
+  $id = scald_flickr_parse_id('photo', $form_state['values']['identifier'], TRUE);
+
+  if (!$id) {
+    form_error($element, t('Invalid Flickr image identifier.'));
+  }
+  elseif (scald_flickr_already_imported($id)) {
+    form_error($element, t('Flickr image already imported.'));
+  }
+  else {
+    $image_infos = scald_flickr_image($id);
+    if (!count($image_infos)) {
+      form_error($element, t('The Flickr image does not exists or is private.'));
+    }
+    else {
+      // Store the image informations temporarily before
+      // updating the atom in scald_flick_add_form_fill.
+      $form_state['scald_flickr']['image_infos'] = $image_infos;
+    }
+  }
+
+}
+
+/**
+ * Parse a Flickr ID and check validity.
+ *
+ * @param string $type
+ *   Type of flickr content.
+ *   - photo: http://www.flickr.com/photos/{user-id}/{photo-id}
+ *   - user: id pattern like [0-9]+@N[0-9]{2} or a username string.
+ *
+ * @param string $string
+ *   The identifier.
+ *
+ * @return string
+ *   A flickr id for scald_flickr internal use.
+ */
+function scald_flickr_parse_id($type, $string) {
+
+  $id = NULL;
+  $string = trim($string);
+
+  switch ($type) {
+
+    case 'photo':
+      // If the string is a full flickr url,
+      // it must begin with the constant SCALD_FLICKR_PHOTOS.
+      if (preg_match('#^(http://)?' . SCALD_FLICKR_PHOTOS . '#', $string)) {
+
+        $string = str_replace('http://', '', $string);
+
+        // Flickr url tokens.
+        $tokens = explode('/', str_replace(SCALD_FLICKR_PHOTOS, '', $string));
+
+        // If token[1] is numeric, can be a {photo-id}.
+        if ($type == 'photo' && preg_match('/^[0-9]+$/', $tokens[1])) {
+          $id = $tokens[1];
+        }
+
+      }
+      // If the parsed string is numeric, can be a {photo-id}.
+      elseif (preg_match('/^[0-9]+$/', $string)) {
+        $id = $string;
+      }
+      // This may be a shortened url (http://bit.ly, etc...).
+      elseif (preg_match('#^http://#', $string)) {
+        $response = drupal_http_request($string);
+        if ($response->code == 200 && isset($response->redirect_code) && ($response->redirect_code == 301 || $response->redirect_code == 302)) {
+          return scald_flickr_parse_id($type, $response->redirect_url);
+        }
+      }
+
+      break;
+
+    case 'user':
+      // User id validation.
+      if (preg_match('/^[0-9]+@N[0-9]{2}/', $string)) {
+        $id = $string;
+      }
+      // User id validation (recursion on user name).
+      else {
+        $feed_data = scald_flickr_feed('search_user_id', $string);
+        if (isset($feed_data['nsid'])) {
+          return scald_flickr_parse_id('user', $feed_data['nsid']);
+        }
+      }
+
+      break;
+
+  }
+
+  return $id;
+}
+
+/**
+ * Import proxy page, fill the identifier.
+ */
+function scald_flickr_import() {
+  // The edit page is nothing else other than the add page, at the Add step. We
+  // prepare data for this step then send back to the add page.
+  $types = scald_types();
+  $storage = array(
+    'type' => $types['image'],
+    'source' => 'scald_flickr',
+  );
+  ctools_include('object-cache');
+  ctools_object_cache_set('scald_atom', 'add', $storage);
+
+  module_load_include('inc', 'scald', 'includes/scald.pages');
+  return scald_atom_add_page(FALSE, $types['image'], 'add');
+}
+
+/**
+ * Get the flickr url from an object returned by the flickr feed.
+ *
+ * @param object $photo
+ *   A Flickr image object.
+ *
+ * @param string $photo_size
+ *   s small square 75x75
+ *   q large square 150x150
+ *   t thumbnail, 100 on longest side
+ *   m small, 240 on longest side
+ *   n small, 320 on longest side
+ *   - medium, 500 on longest side
+ *   z medium 640, 640 on longest side
+ *   c medium 800, 800 on longest side†
+ *   b large, 1024 on longest side*
+ *   o original image, either a jpg, gif or png, depending on source format
+ *
+ * @param string $url_type
+ *   Left for futur use.
+ *
+ * @see http://www.flickr.com/services/api/misc.urls.html
+ *
+ * @return string
+ *   A flickr image url.
+ */
+function scald_flickr_parse_url($photo, $photo_size = 'm', $url_type = 'photo_source') {
+  $source = array('{farm-id}', '{server-id}', '{id}', '{secret}', '[mstzb]');
+  $p = $photo;
+  $value = array($p->farm, $p->server, $p->id, $p->secret, $photo_size);
+  $url = str_replace($source, $value, constant('SCALD_FLICKR_' . strtoupper($url_type)));
+  return $url;
+}
+
+/**
+ * Filling a scald flickr atom.
+ *
+ * @param object &$atom
+ *   A scald atom.
+ *
+ * @param object $infos
+ *   An array containing the image informations.
+ *
+ * @return object
+ *   A scald flickr atom.
+ */
+function scald_flickr_update_atom(&$atom, $infos) {
+
+  $atom->base_id = $infos->id;
+
+  // If title if empty, it means Untitled.
+  if (!$infos->title->_content) {
+    $infos->title->_content = t('Untitled');
+  }
+  $atom->title = $infos->title;
+
+  // Prefill the author.
+  $atom->scald_authors[LANGUAGE_NONE][0] = array(
+    'tid' => 0,
+    'taxonomy_term' => (object) (array('name' => $infos->owner->username)),
+  );
+
+  // Prefill tags.
+  foreach ($infos->tags->tag as $index => $tag) {
+    $atom->scald_tags[LANGUAGE_NONE][$index] = array(
+      // Beware, this is not a real tid, it's just an index.
+      'tid' => $index,
+      'taxonomy_term' => (object) (array('name' => $tag->_content)),
+    );
+  }
+
+  // Download a copy of the image. This makes it possible
+  // to do interesting manipulation with image styles presets.
+  $image = drupal_http_request(scald_flickr_parse_url($infos, 'b', 'photo_source'));
+
+  $dir = 'public://flickr';
+  if ($image->code == 200 && file_prepare_directory($dir, FILE_CREATE_DIRECTORY)) {
+    $dest = $dir . '/' . $infos->id . '.jpg';
+    $file = file_save_data($image->data, $dest);
+
+    // Set the file status to temporary.
+    $query = db_update('file_managed')
+      ->condition('fid', $file->fid)
+      ->fields(array('status' => 0))
+      ->execute();
+
+    $atom->scald_thumbnail[LANGUAGE_NONE][0] = (array) $file;
+  }
+
+}

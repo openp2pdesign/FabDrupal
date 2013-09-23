@@ -1,0 +1,91 @@
+/**
+ * IE 7 Compatibility Tweaks
+ */
+ 
+/* forms.css */
+input.form-submit,
+a.button {
+  padding: 1px 10px;
+}
+
+span.button input.form-submit, 
+span.button input.form-submit:hover, 
+span.button input.form-submit:focus {
+   border: none;
+   padding-bottom: 6px;
+   padding-top: 6px;
+}
+
+
+#comment-form textarea {
+  border: 0;
+  border-bottom: 1px solid #CCC;
+  padding: 1%;
+  width: 98%;
+}
+
+#comment-form .form-textarea-wrapper {
+  border: 1px solid #CCC;
+  border-bottom: 0;
+}
+
+.description,
+.form-item .description {
+  margin-top: 2px;
+}
+
+div.resizable-textarea textarea {
+  margin-top: 0;
+  padding: 5px 3px 5px 4px;
+  width: 98%;
+}
+
+.resizable-textarea .grippie {
+  margin-top: -1px;
+}
+
+/* superfish mneu */
+.sf-menu.sf-style-hadelis li, 
+.sf-menu.sf-style-hadelis.sf-navbar li li {
+ display: inline;
+}
+
+.front .field-type-taxonomy-term-reference {
+  margin-bottom: 1.5em;
+}
+
+/* poll */
+.page-poll .region-content .block-content ul li {
+  background-position: 0 7px;
+}
+
+/* Navigation */
+.block ul.menu li a {
+  background-position: 10px 9px;
+}
+
+.block ul.menu li.active-trail > a, 
+.block ul.menu li > a.active {
+  background-position: 10px -30px;
+} 
+
+.block ul.menu li li a,
+.block ul.menu li li a.active,
+.block ul.menu li li a.active-trail {
+  background-position: 0 7px;  
+}
+
+.article ul.links li a {
+  padding-bottom: 0;
+}
+
+/* Forums Table */
+#forum table {
+  margin-bottom: 0;
+ 
+}
+
+/* Field */
+.field-type-taxonomy-term-reference ul li a {
+  padding: 1px 10px 2px;
+}

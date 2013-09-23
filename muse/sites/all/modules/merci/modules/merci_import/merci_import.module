@@ -1,0 +1,29 @@
+<?php
+
+/**
+* Implementation of hook_feeds_plugins().
+*/
+function merci_import_feeds_plugins() {
+  $info = array();
+  $info['MerciTypeProcessor'] = array(
+    'name' => 'MERCI type processor',
+    'description' => 'Processes data into MERCI types.',
+    'handler' => array(
+      'parent' => 'FeedsProcessor', // A plugin needs to derive either directly or indirectly from FeedsFetcher, FeedsParser or FeedsProcessor.
+      'class' => 'MerciTypeProcessor',
+      'file' => 'MerciTypeProcessor.inc',
+      'path' => drupal_get_path('module', 'merci_import'),
+    ),
+  );
+  $info['MerciItemProcessor'] = array(
+    'name' => 'MERCI item processor',
+    'description' => 'Processes data into MERCI items.',
+    'handler' => array(
+      'parent' => 'FeedsNodeProcessor', // A plugin needs to derive either directly or indirectly from FeedsFetcher, FeedsParser or FeedsProcessor.
+      'class' => 'MerciItemProcessor',
+      'file' => 'MerciItemProcessor.inc',
+      'path' => drupal_get_path('module', 'merci_import'),
+    ),
+  );
+  return $info;
+}

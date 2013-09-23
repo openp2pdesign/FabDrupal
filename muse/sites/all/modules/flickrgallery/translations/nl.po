@@ -1,0 +1,268 @@
+# $Id$
+#
+# Dutch translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  flickrgallery_albums.tpl.php: n/a
+#  flickrgallery_photoset.tpl.php: n/a
+#  flickrgallery.admin.inc: n/a
+#  flickrgallery.module: n/a
+#  flickrgallery.info: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2012-01-06 08:16+0100\n"
+"PO-Revision-Date: 2012-01-06 08:16+0100\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Dutch <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: flickrgallery_albums.tpl.php:15
+msgid "Total"
+msgstr "Aantal"
+
+#: flickrgallery_photoset.tpl.php:14
+msgid "Back to sets"
+msgstr "Terug naar de sets"
+
+#: flickrgallery.admin.inc:13;21
+msgid "small square 75x75"
+msgstr "klein vierkant 75 x 75"
+
+#: flickrgallery.admin.inc:14;22
+msgid "thumbnail, 100 on longest side"
+msgstr "thumbnail, 100 op de langste zijde"
+
+#: flickrgallery.admin.inc:15;23
+msgid "small, 240 on longest side"
+msgstr "klein, 240 op de langste zijde"
+
+#: flickrgallery.admin.inc:16;24
+msgid "medium 640, 640 on longest side"
+msgstr "medium 640, 640 op de langste zijde"
+
+#: flickrgallery.admin.inc:17;25
+msgid "large, 1024 on longest side"
+msgstr "groot, 1024 op de langste zijde"
+
+#: flickrgallery.admin.inc:30
+msgid "API Key"
+msgstr ""
+
+#: flickrgallery.admin.inc:31
+msgid "Fill in your API key."
+msgstr "Vul jouw API Key in."
+
+#: flickrgallery.admin.inc:31
+msgid "Get your API key"
+msgstr "Vul jouw API key in"
+
+#: flickrgallery.admin.inc:37
+msgid "Secret Key"
+msgstr ""
+
+#: flickrgallery.admin.inc:38
+msgid "Fill in your secret key."
+msgstr "Vul jouw secret key in."
+
+#: flickrgallery.admin.inc:38
+msgid "Get your secret key"
+msgstr "Vul jouw secret key in"
+
+#: flickrgallery.admin.inc:44
+msgid "User ID"
+msgstr "Gebruiker-ID"
+
+#: flickrgallery.admin.inc:45
+msgid "Fill in your user ID."
+msgstr "Vul jouw gebruikers ID in."
+
+#: flickrgallery.admin.inc:45
+msgid "Find your User ID"
+msgstr "Zoek jouw gebruikers ID"
+
+#: flickrgallery.admin.inc:51
+msgid "Show private pictures"
+msgstr "Toon privé afbeeldingen"
+
+#: flickrgallery.admin.inc:52
+msgid "Show your private pictures, by default this is turned off."
+msgstr "Toon jouw privé afbeeldingen, standaard is dit uitgeschakeld."
+
+#: flickrgallery.admin.inc:54
+msgid "No"
+msgstr "Nee"
+
+#: flickrgallery.admin.inc:54
+msgid "Yes"
+msgstr "Ja"
+
+#: flickrgallery.admin.inc:59
+msgid "Token for private pictures"
+msgstr "Token voor privé afbeeldingen"
+
+#: flickrgallery.admin.inc:60
+msgid "Go to"
+msgstr "Ga naar"
+
+#: flickrgallery.admin.inc:60
+msgid "http://www.flickr.com/services/api/keys/"
+msgstr ""
+
+#: flickrgallery.admin.inc:61
+msgid "and edit your API key details, set 'authentication type' to web application and as 'callback url': <em>http://phpflickr.com/tools/auth/auth.php</em>"
+msgstr "en bewerk jouw API key details, stel 'authentication type' in op web application en de 'callback url' op: <em>http://phpflickr.com/tools/auth/auth.php</em>"
+
+#: flickrgallery.admin.inc:62
+msgid "Visit"
+msgstr "Bezoek"
+
+#: flickrgallery.admin.inc:62
+msgid "http://phpflickr.com/tools/auth/"
+msgstr ""
+
+#: flickrgallery.admin.inc:63
+msgid "and fill in your API and Secret keys to generate a token, copy the token in this field."
+msgstr "en vul jouw API en Secret keys in om een token te genereren, kopieer de token in dit veld."
+
+#: flickrgallery.admin.inc:69
+msgid "Title sets page"
+msgstr "Titel sets pagina"
+
+#: flickrgallery.admin.inc:70
+msgid "Provide a title for the sets page."
+msgstr "Vul een titel in voor de sets pagina."
+
+#: flickrgallery.admin.inc:76
+msgid "Description"
+msgstr "Omschrijving"
+
+#: flickrgallery.admin.inc:77
+msgid "Provide a description for the sets page."
+msgstr "Vul een beschrijving in voor de sets pagina."
+
+#: flickrgallery.admin.inc:83
+msgid "Lightbox type"
+msgstr ""
+
+#: flickrgallery.admin.inc:84
+msgid "Fill in what type of Lightbox you would like to use. Examples: lightbox, shadowbox, colorbox, ...<br />This field will be used as the link rel tag and class name. (You need to download these modules separately)"
+msgstr "Vul in welk type van Lightbox je wenst te gebruiken. Voorbeelden: lightbox, shadowbox, colorbox, ...<br />Dit veld zal gebruikt worden voor de link rel tag en class naam. (Je dient deze module apart te downloaden en installeren)"
+
+#: flickrgallery.admin.inc:90
+msgid "Display sets images size."
+msgstr "Weergave grootte sets afbeeldingen."
+
+#: flickrgallery.admin.inc:91
+msgid "Select the size for the sets images"
+msgstr "Selecteer de grootte voor de sets afbeeldingen"
+
+#: flickrgallery.admin.inc:98
+msgid "Display thumbnails on a set page"
+msgstr "Weergave thumbnails op een set pagina"
+
+#: flickrgallery.admin.inc:99
+msgid "Select the size for the thumbnails on a set page."
+msgstr "Selecteer de grootte voor thumbnails op een set pagina."
+
+#: flickrgallery.admin.inc:106
+msgid "Display large images from a set"
+msgstr "Weergave grote afbeeldingen van een set"
+
+#: flickrgallery.admin.inc:107
+msgid "Select the size for the larger images"
+msgstr "Selecteer de grootte voor de grote afbeeldingen weergave"
+
+#: flickrgallery.admin.inc:114
+msgid "Extra options"
+msgstr "Extra opties"
+
+#: flickrgallery.admin.inc:120
+msgid "Add more information to the images (You need to override the template files)"
+msgstr "Voeg meer informatie toe aan de afbeeldingen (Je dient hiervoor de template bestanden te overschrijven)"
+
+#: flickrgallery.admin.inc:121
+msgid "Select this option is you want to override the template files and have more information about the images available. Not recommended because this will lead to slower performance."
+msgstr "Selecteer deze optie indien je extra informatie aan de afbeeldingen wenst toe te voegen en de template bestanden te overschrijven. De extra informatie voor afbeelding komt met performance verlies en is dus niet aangeraden."
+
+#: flickrgallery.admin.inc:127
+msgid "Enable caching on the gallery."
+msgstr "Schakel caching in op de galerij."
+
+#: flickrgallery.admin.inc:128
+msgid "This will cache the Flickr API calls"
+msgstr "Deze optie zal de Flickr API calls cachen"
+
+#: flickrgallery.admin.inc:133
+msgid "When all settings are filled in correctly, you can visit your"
+msgstr "Wanneer alle waardes correct ingevuld zijn, kan verder gaan naar jouw"
+
+#: flickrgallery.admin.inc:133 flickrgallery.module:47 flickrgallery.info:0
+msgid "Flickr Gallery"
+msgstr "Flickr Gallerij"
+
+#: flickrgallery.admin.inc:155
+msgid "Unable to create Flickr Gallery cache directory. Check the permissions on your files directory."
+msgstr "Het is niet mogelijk om de Flickr Gallery cache map aan te maken. Kijk aub de rechten na op je mappen structuur."
+
+#: flickrgallery.module:12
+msgid "This module shows the sets and photo's from a Flickr account."
+msgstr "Deze module toont de sets en foto's van een Flickr account."
+
+#: flickrgallery.module:22
+msgid "View photosets"
+msgstr "Bekijk foto sets"
+
+#: flickrgallery.module:23
+msgid "View the sets and images from the Flickr Gallery"
+msgstr "Bekijk de sets en afbeeldingen van de Flickr Gallerij"
+
+#: flickrgallery.module:26
+msgid "Administer Flickr settings"
+msgstr "Configureer Flickr settings"
+
+#: flickrgallery.module:27
+msgid "Administer the settings for the Flickr Gallery"
+msgstr "Configureer de instellingen voor de Flickr Gallerij"
+
+#: flickrgallery.module:189
+msgid "No pictures available"
+msgstr "Geen afbeeldingen beschikbaar"
+
+#: flickrgallery.module:245
+msgid "This set doesn't exists or there aren't any pictures available for this set."
+msgstr "Deze set bestaat niet of bevat geen afbeeldingen."
+
+#: flickrgallery.module:141;217
+msgid "flickrgallery"
+msgstr "Flickr Galerij"
+
+#: flickrgallery.module:141;217
+msgid "The cache directory for Flickr Gallery could not be created or is not accessible."
+msgstr "De cache map voor Flickr Galerij kon niet aangemaakt worden of is niet beschikbaar."
+
+#: flickrgallery.module:39
+msgid "Flickr settings"
+msgstr "Flickr instellingen"
+
+#: flickrgallery.module:40
+msgid "Configure options for the flickr Gallery module"
+msgstr "Beheer opties voor de Flickr Gallerij module"
+
+#: flickrgallery.module:55
+msgid "Flickr Gallery Set"
+msgstr "Flickr Gallerij Set"
+
+#: flickrgallery.info:0
+msgid "Show your photo sets from Flickr"
+msgstr "Toon jouw fotosets van Flickr"
+
+#: flickrgallery.info:0
+msgid "Flickr"
+msgstr ""
+

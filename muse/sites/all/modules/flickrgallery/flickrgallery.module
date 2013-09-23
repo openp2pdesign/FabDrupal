@@ -1,0 +1,301 @@
+<?php
+/**
+ * @file
+ * This module shows the sets and photo's from a Flickr account
+ */
+
+/**
+ * Implements hook_help().
+ */
+function flickrgallery_help($path, $arg) {
+  if ($path == 'admin/help#flickrgallery') {
+    return '<p>' . t('This module shows the sets and photo\'s from a Flickr account.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function flickrgallery_permission() {
+  return array(
+    'view photosets' => array(
+      'title' => t('View photosets'),
+      'description' => t('View the sets and images from the Flickr Gallery'),
+    ),
+    'administer flickr settings' => array(
+      'title' => t('Administer Flickr settings'),
+      'description' => t('Administer the settings for the Flickr Gallery'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function flickrgallery_menu() {
+  $items = array();
+
+  $items['admin/config/media/flickgallery/gallery'] = array(
+    'title' => 'Flickr Gallery',
+    'description' => 'Configure options for the flickr Gallery module',
+    'page callback' => 'flickrgallery_admin_settings',
+    'access arguments' => array('administer flickr settings'),
+    'file' => 'flickrgallery.admin.inc',
+  );
+
+  $items[variable_get('flickrgallery_path', 'flickr')] = array(
+    'title' => 'Flickr Gallery',
+    'page callback' => 'flickrgallery_wrapper_albums',
+    'access arguments' => array('view photosets'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => -100,
+  );
+
+  $setPath = variable_get('flickrgallery_path', 'flickr') . '/set/%';
+  $cntSetPath = count(explode("/", $setPath)) - 1;
+  $items[$setPath] = array(
+    'title' => 'Flickr Gallery Set',
+    'page callback' => 'flickrgallery_set',
+    'access arguments' => array('view photosets'),
+    'page arguments' => array($cntSetPath),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function flickrgallery_admin_settings() {
+  return drupal_get_form('flickrgallery_settings_form');
+}
+
+/*
+ * Implements hook_block_info().
+ */
+function flickrgallery_block_info() {
+  $blocks['flickrgallery_block'] = array(
+    'info' => t('FlickrGallery block'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function flickrgallery_theme($existing, $type, $theme, $path) {
+  return array(
+    'flickrgallery_wrapper_albums' => array(),
+    'flickrgallery_albums' => array(
+      'variables' => array('description' => NULL, 'albums' => NULL),
+      'template'  => 'flickrgallery_albums',
+    ),
+    'flickrgallery_set' => array('arguments' => 'set'),
+    'flickrgallery_photoset' => array(
+      'variables' => array('photoset' => NULL, 'meta' => NULL),
+      'template'  => 'flickrgallery_photoset',
+    ),
+    'flickrgallery_photo' => array(
+      'variables' => array('image' => NULL, 'image_meta' => NULL),
+      'template'  => 'flickrgallery_photo',
+    ),
+  );
+}
+
+function flickrgallery_wrapper_albums() {
+  return theme('flickrgallery_wrapper_albums', array());
+}
+
+function flickrgallery_set($set_id = null) {
+  return theme('flickrgallery_set', array('set_id' => $set_id));
+}
+
+function theme_flickrgallery_wrapper_albums() {
+  // Require FlickrAPI.
+  module_load_include('module', 'flickrapi');
+
+  // Add CSS file.
+  drupal_add_css(drupal_get_path('module', 'flickrgallery') . '/flickrgallery.css');
+  
+  // Set custom title, only when viewing the page -> not when using the block because it will override every page title
+  if (arg(0) == variable_get('flickrgallery_path', 'flickr')) {
+    drupal_set_title(t(variable_get('flickrgallery_title', 'Flickr Gallery')));
+  }
+
+  // Create Flickr object.
+  //$f = flickrapi_phpFlickr(); -> flickrapi does not support set token for private pictures
+  // @todo, use flickrapi when it supports token for private pictures
+  $f = new phpFlickr(variable_get('flickrapi_api_key', NULL), variable_get('flickrapi_api_secret', NULL));
+  
+  // Because we're not using flickrapi to create the flickr object, we need to handle cache ourselves
+  $cache = variable_get('flickrapi_cache', '');
+  $cache_dir = variable_get('flickrapi_cache_path', '');
+  
+  if ($cache == TRUE) {
+    $f->enableCache('fs', $cache_dir);
+  }
+  
+  // Check for private pictures
+  $token = variable_get('flickrgallery_token', NULL);
+  $private = variable_get('flickrgallery_private_pictures', NULL);
+  
+  if (!empty($token) && $private == 1) {
+    $f->setToken($token);
+  }
+    
+  // Get Flickr User info and User ID.
+  $flickr_user = $f->people_getInfo(variable_get('flickrgallery_userID', NULL));
+  $flickr_uid = $flickr_user['id'];
+  
+
+  // Get Flickr sets.
+  if (variable_get('flickrgallery_displaysets_bool') == 1) {
+    // If true, then select the flickrgallery_displaysets_values
+    $array_set = explode("\n", trim(variable_get('flickrgallery_displaysets_values')));
+    for ($j = 0; $j < count($array_set); $j++) {
+      $sets['photoset'][$j] = $f->photosets_getInfo($array_set[$j]);
+    }
+  }
+  else {
+    $sets = $f->photosets_getList ($flickr_uid);
+  }
+
+  $description = t(variable_get('flickrgallery_description', NULL));
+  $albums = array();
+  $flickr_path = variable_get('flickrgallery_path', 'flickr');
+  
+  if (!empty($sets)) {
+    foreach ($sets['photoset'] as $set) {
+      if (variable_get('flickrgallery_display_type') == 1 && module_exists('image') && module_exists('imagecache_external')) {
+        $original = "http://farm" . $set['farm'] . ".static.flickr.com/" . $set['server'] . "/" . $set['primary'] . "_" . $set['secret'] . "_b.jpg";
+        $img =  theme('imagecache_external', array('path' => $original, 'style_name'=> variable_get('flickrgallery_albums_imagestyle', 'thumbnail'))); 
+      }
+      else {
+        $thumb_url = "http://farm" . $set['farm'] . ".staticflickr.com/" . $set['server'] . "/" . $set['primary'] . "_" . $set['secret'] . "_" . variable_get('flickrgallery_albums', 's') . ".jpg";
+        $variables = array(
+          'path' => $thumb_url,
+          'alt' => $set['title'],
+          'title' => $set['title'],
+          'attributes' => array('class' => 'flickrgallery-set-image'),
+        );
+        $img = theme('image', $variables);
+      }
+      
+      $image = array();
+      $image['info'] = $set;
+      $image['total'] = $set['photos'];
+      $image['image_link'] = l($img,  $flickr_path . "/set/" . $set['id'], array('attributes' => array('class' => array('flickrgallery'), 'title' => $set['title']), 'html' => 'true'));
+      $image['title_link'] =  l($set['title'], $flickr_path . "/set/" . $set['id'], array('attributes' => array('class' => array('flickrgallery-title'), 'title' => $set['title']), 'html' => 'true'));
+
+      $albums[] = $image;
+    }
+    return theme('flickrgallery_albums', array('description' => $description, 'albums' => $albums));
+  }
+  else {
+    // If no sets, display msg.
+    return "<h2>" . t("No pictures available") . "</h2>";
+  }
+}
+
+function theme_flickrgallery_set($set_id = NULL) {
+  // Require FlickrAPI.
+  module_load_include('module', 'flickrapi');
+
+  // Add CSS file.
+  drupal_add_css(drupal_get_path('module', 'flickrgallery') . '/flickrgallery.css');
+
+  // Create Flickr object.
+  //$f = flickrapi_phpFlickr(); @todo fix when flickrapi supports private pictures -> token is missing
+  $f = new phpFlickr(variable_get('flickrapi_api_key', NULL), variable_get('flickrapi_api_secret', NULL));
+
+  // Because we're not using flickrapi to create the flickr object, we need to handle cache ourselves
+  $cache = variable_get('flickrapi_cache', '');
+  $cache_dir = variable_get('flickrapi_cache_path', '');
+  
+  if ($cache == TRUE) {
+    $f->enableCache('fs', $cache_dir);
+  }
+  
+  // Check for private pictures
+  $token = variable_get('flickrgallery_token', NULL);
+  $private = variable_get('flickrgallery_private_pictures', NULL);
+  
+  if (!empty($token) && $private == 1) {
+    $f->setToken($token);
+  }
+
+  // Get Flickr set title.
+  $set = $set_id['set_id'];
+  $set_info = ($f->photosets_getInfo($set));
+
+  // Set Flickr set title as page title.
+  drupal_set_title($set_info['title'], 'Flickr Set');
+
+  // Get Flickr photos for this set.
+  $photos = $f->photosets_getPhotos($set);
+
+  // Get META data for this set.
+  $meta = $f->photosets_getInfo($set);
+
+  // If there aren't any photo's, display message.
+  if (empty($set) || empty($photos)) {
+    drupal_set_message(t('This set doesn\'t exists or there aren\'t any pictures available for this set.'), 'error');
+    drupal_not_found();
+    exit();
+  }
+
+  // Get the type for Lightbox.
+  $type = variable_get('flickrgallery_lightbox_type', 'lighbox2');
+
+  // Declare variables.
+  $photoset = array();
+  $image_meta = array();
+
+  foreach ($photos['photoset']['photo'] as $photo ) {
+    if (variable_get('flickrgallery_display_type') == 1 && module_exists('image') && module_exists('imagecache_external')) {
+      $original = $f->buildPhotoURL($photo, 'large');
+      $img =  theme('imagecache_external', array('path' => $original, 'style_name'=> variable_get('flickrgallery_thumb_imagestyle', 'large'))); 
+      
+      $url_external = imagecache_external_generate_path($original, variable_get('flickrgallery_large_imagestyle', 'large'));
+      $url = image_style_url(variable_get('flickrgallery_large_imagestyle', 'large'), $url_external);
+    }
+    else {
+      $variables = array(
+        'path' => $f->buildPhotoURL($photo, variable_get('flickrgallery_thumb', 'square')),
+        'alt' => $photo['title'],
+        'title' => $photo['title'],
+        'attributes' => array('class' => 'flickrgallery-set-image'),
+      );
+      $img = theme('image', $variables);
+      $url = $f->buildPhotoURL ($photo, variable_get('flickrgallery_large', 'large'));
+    } 
+
+    $image = array();
+
+    // Get META data for this image, only if flickrgallery_override is set to TRUE in the admin screen
+    // This will lead to slower performance
+    if (variable_get('flickrgallery_override') == TRUE) {
+      $image_meta = $f->photos_getInfo($photo['id']);
+    }
+
+    $image['info'] = $photo;
+    $image['image'] = l($img, $url, array('attributes' => array('class' => 'flickrgallery-image ' . $type, 'rel' => $type . "[flickrgallery]", 'title' => $photo['title']), 'html' => 'true'));
+    $photoset[] = theme('flickrgallery_photo', array('image' => $image, 'image_meta' => $image_meta));
+  }
+
+  // Return the output.
+  return theme('flickrgallery_photoset', array('photoset' => $photoset, 'meta' => $meta));
+}
+
+/*
+ * Implements hook_block_view().
+ */
+function flickrgallery_block_view($delta) {
+  $block = array();
+  switch ($delta) {
+    case 'flickrgallery_block':
+      $block['subject'] = variable_get('flickrgallery_title', 'Flickr Gallery');
+      $block['content'] = theme_flickrgallery_wrapper_albums();
+      break;
+  }
+  
+  return $block;
+}

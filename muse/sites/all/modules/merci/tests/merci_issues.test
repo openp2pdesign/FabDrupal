@@ -1,0 +1,238 @@
+<?php
+
+/**
+ * @file
+ * Simpletest case for node_example module.
+ *
+ * Verify example module functionality.
+ */
+
+require_once drupal_get_path('module', 'merci') . '/tests/merci_testcase.php';
+class MerciIssueTestCase extends MerciTestCase {
+  public $bucket1;
+  public $bucket2;
+  public $resource;
+  public $merci_user;
+  public $merci_role;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'MERCI issue testing',
+      'description' => 'Prevent regression in MERCI issues.',
+      'group' => 'Merci',
+    );
+  }
+  function setUp() {
+    // Enable the module.
+    parent::setUp();
+    $this->bucket1 = $this->merciCreateItem('bucket');
+    $this->bucket2 = $this->merciCreateItem('bucket');
+    $this->resource = $this->merciCreateItem('resource');
+
+    $this->merci_role = $this->drupalCreateRole(array(
+      'view revisions',
+      'revert revisions',
+      'create confirmed reservations',
+      'edit own bucket content',
+      'delete own bucket content',
+      'edit own resource content',
+      'delete own resource content',
+      'create reservations',
+      //'access devel information'
+    ));
+    // Create merci user. 
+    $this->merci_user = $this->drupalCreateUser(array(
+      'view revisions',
+      'revert revisions',
+      'create confirmed reservations',
+      'edit own bucket content',
+      'delete own bucket content',
+      'edit own resource content',
+      'delete own resource content',
+      'create reservations',
+      //'access devel information',
+      'create merci_reservation content',
+      'edit own merci_reservation content',
+      'delete own merci_reservation content',
+    ));
+
+    $edit = array('roles' => ($this->merci_user->roles + array($this->merci_role => $this->merci_role)));
+    user_save($this->merci_user, $edit);
+
+    $edit = array('roles' => ($this->admin_user->roles + array($this->merci_role => $this->merci_role)));
+    user_save($this->admin_user, $edit);
+  }
+
+  function testIssue1103328() {
+
+    // Login the merci user.
+    $this->drupalLogin($this->merci_user);
+    // Test we can reserve our three bucket items all at the same time.
+    // Test the fourth reservation at the same time will fail.
+
+    // Create our first reservation
+    $node = $this->bucket1;
+    $edit = array(
+      'title' => $this->randomName(),
+      'field_merci_date[und][0][value][date]' => '2011-03-25',
+      'field_merci_date[und][0][value][time]' => '09:45',
+      'field_merci_date[und][0][value2][date]' => '2011-03-25',
+      'field_merci_date[und][0][value2][time]' => '10:45',
+      'merci_reservation_items[choice_1][merci_item_nid]' => $node->type
+    );
+
+    $first = $this->merciCreateNode('merci-reservation',$edit);
+    $this->assertText(t("@title has been created", array('@title' => $edit['title'])));
+
+    // Assign an item to test issue #1103328
+    // Login the admin user.
+    $this->drupalLogin($this->admin_user);
+    // Cancel the last reservation.  This should Pass
+    $node = $this->bucket2;
+    $edit = array(
+      'merci_reservation_items[1][merci_item_nid]' => $node->nid,
+      );
+
+    $title = $first->title;
+    $first = $this->merciUpdateNode($first->nid,$edit);
+    $this->assertText(t("@title has been updated.", array('@title' => $title)));
+    // Login the merci user.
+    $this->drupalLogin($this->merci_user);
+    // Create our second reservation
+    $node = $this->bucket2;
+    $edit = array(
+      'title' => $this->randomName(),
+      'field_merci_date[und][0][value][date]' => '2011-03-25',
+      'field_merci_date[und][0][value][time]' => '13:45',
+      'field_merci_date[und][0][value2][date]' => '2011-03-25',
+      'field_merci_date[und][0][value2][time]' => '15:45',
+      'merci_reservation_items[choice_1][merci_item_nid]' => $node->type
+    );
+
+    $second = $this->merciCreateNode('merci-reservation',$edit);
+    $this->assertText(t("@title has been created", array('@title' => $edit['title'])));
+
+    // Create our third reservation
+    $node = $this->bucket1;
+    $edit = array(
+      'title' => $this->randomName(),
+      'field_merci_date[und][0][value][date]' => '2011-03-25',
+      'field_merci_date[und][0][value][time]' => '10:15',
+      'field_merci_date[und][0][value2][date]' => '2011-03-25',
+      'field_merci_date[und][0][value2][time]' => '15:15',
+      'merci_reservation_items[choice_1][merci_item_nid]' => $node->type
+    );
+
+    $third = $this->merciCreateNode('merci-reservation',$edit);
+    $this->assertText(t("@title has been created", array('@title' => $edit['title'])));
+  }
+
+  function testIssue1070662() {
+    // Login the merci user.
+    $this->drupalLogin($this->merci_user);
+    // Create our reservation with no title.
+    $node = $this->resource;
+    $edit = array(
+      'field_merci_date[und][0][value][date]' => '2011-01-05',
+      'field_merci_date[und][0][value][time]' => '09:15',
+      'field_merci_date[und][0][value2][date]' => '2011-01-05',
+      'field_merci_date[und][0][value2][time]' => '11:15',
+      'merci_reservation_items[choice_1][merci_item_nid]' => $node->nid,
+    );
+
+    $third = $this->merciCreateNode('merci-reservation',$edit, FALSE);
+    $this->assertText(t("Title field is required."));
+    $this->assertNoText(t("Reservations cannot start at a time before"));
+  }
+
+  function testIssue1070658() {
+    // Login the merci user.
+    $this->drupalLogin($this->merci_user);
+    // Create our first reservation
+    $node = $this->bucket1;
+    $edit = array(
+      'title' => $this->randomName(),
+      'field_merci_date[und][0][value][date]' => '2011-01-05',
+      'field_merci_date[und][0][value][time]' => '09:15',
+      'field_merci_date[und][0][value2][date]' => '2011-01-05',
+      'field_merci_date[und][0][value2][time]' => '11:15',
+      'merci_reservation_items[choice_1][merci_item_nid]' => $node->type,
+      'merci_reservation_items[choice_2][merci_item_nid]' => $node->type
+    );
+
+    $first = $this->merciCreateNode('merci-reservation',$edit);
+    $this->assertText(t("@title has been created", array('@title' => $edit['title'])));
+
+    // Create merci staff user. 
+    $staff_user = $this->drupalCreateUser(array(
+      'view revisions',
+      'revert revisions',
+      'create confirmed reservations',
+      'edit own bucket content',
+      'delete own bucket content',
+      'edit own resource content',
+      'delete own resource content',
+      'create reservations',
+      //'access devel information',
+      'manage reservations',
+      'create merci_reservation content',
+      'edit any merci_reservation content',
+      'delete any merci_reservation content',
+      'administer nodes'
+    ));
+    $this->drupalLogin($staff_user);
+    $edit = array(
+      'merci_reservation_items[1][merci_item_nid]' => $node->nid,
+      'merci_reservation_items[2][merci_item_nid]' => $node->nid
+      );
+    $fourth = $this->merciUpdateNode($first->nid,$edit);
+    $this->assertText(t("You've selected too many @name", array('@name' => $node->title)));
+  }
+  // Reservation status is set to "checked in" after being checked out for a few hours
+  /*
+  function testIssue1295962() {
+    $today = date('Y-m-d');
+    $start = date('H:i', time() - 3600);
+    $start2 = date('H:i', time() - 1800);
+    $end = date('H:i', time() + 3600);
+    // Create our first reservation
+    $node = $this->resource;
+    $edit = array(
+      'title' => $this->randomName(),
+      'field_merci_date[und][0][value][date]' => $today,
+      'field_merci_date[und][0][value][time]' => $start,
+      'field_merci_date[und][0][value2][date]' => $today,
+      'field_merci_date[und][0][value2][time]' => $end,
+      'merci_reservation_items[choice_1][merci_item_nid]' => $node->nid,
+    );
+
+    $title = $edit['title'];
+    $first = $this->merciCreateNode('merci-reservation',$edit);
+    $this->assertText(t("@title has been created", array('@title' => $edit['title'])));
+
+    $this->drupalLogin($this->admin_user);
+    // Update reservation with merci user as author.  Should Fail.
+    $edit = array(
+      'merci_reservation_status' => MERCI_STATUS_CHECKED_OUT
+    );
+
+    $second = $this->merciUpdateNode($first->nid,$edit);
+    $this->assertText(t("@title has been updated.", array('@title' => $title)));
+    merci_cron();
+    $this->drupalGet('node/' . $second->nid);
+    $this->assertText(t('Checked out'));
+
+    $edit = array(
+      'field_merci_date[und][0][value][date]' => $today,
+      'field_merci_date[und][0][value][time]' => $start,
+      'field_merci_date[und][0][value2][date]' => $today,
+      'field_merci_date[und][0][value2][time]' => $start2,
+    );
+    $second = $this->merciUpdateNode($first->nid,$edit);
+    $this->assertText(t("@title has been updated.", array('@title' => $title)));
+    merci_cron();
+    $this->drupalGet('node/' . $second->nid);
+    $this->assertText(t('Checked in'));
+  }
+  */
+}

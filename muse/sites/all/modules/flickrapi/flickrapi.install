@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * Update functions for the FlickrAPI module.
+ */
+
+/**
+ * Use the string 'configure flickr api' instead of
+ * configure_flickr_api for permissions.
+ */
+function flickrapi_update_7000() {
+  db_update('role_permission')
+    ->fields(array(
+      'permission' => 'configure flickr api',
+    ))
+    ->condition('permission', 'configure_flickr_api')
+    ->execute();
+}
+
+/**
+ * Rename the variable 'flickrcachepath' to 'flickrapi_cache_path'
+ */
+function flickrapi_update_7001() {
+  variable_set('flickrapi_cache_path', variable_get('flickrcachepath', '/tmp'));
+  variable_del('flickrcachepath');
+}
+
+/**
+ * Implements hook_uninstall().
+ * Clean up old variables.
+ */
+function flickrapi_uninstall() {
+  variable_del('flickrapi_cache');
+  variable_del('flickrapi_cache_path');
+  variable_del('flickrapi_api_key');
+  variable_del('flickrapi_api_secret');
+  variable_del('flickrapi_cache_duration');
+  variable_del('flickrapi_default_nsid');
+  variable_del('flickrapi_access_permissions');
+  // flickrapi is disabled so we have to load it manually to use its functions.
+  module_load_include('module', 'flickrapi', 'flickrapi');
+  _flickrapi_oauth_clear();
+}

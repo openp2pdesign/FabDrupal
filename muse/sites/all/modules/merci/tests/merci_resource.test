@@ -1,0 +1,122 @@
+<?php
+
+/**
+ * @file
+ * Simpletest case for node_example module.
+ *
+ * Verify example module functionality.
+ */
+
+require_once drupal_get_path('module', 'merci') . '/tests/merci_testcase.php';
+class MerciResourceTestCase extends MerciTestCase {
+  public $resource1;
+  public $merci_user;
+  public $merci_role;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'MERCI resource testing',
+      'description' => 'Test MERCI Resources.',
+      'group' => 'Merci',
+    );
+  }
+  function setUp() {
+    // Enable the module.
+    parent::setUp();
+    $this->resource1 = $this->merciCreateItem('resource');
+
+    $this->merci_role = $this->drupalCreateRole(array(
+      'view revisions',
+      'revert revisions',
+      'create confirmed reservations',
+      'edit own resource content',
+      'delete own resource content',
+     // 'edit own resource content',
+      //'delete own resource content',
+      'create reservations',
+      //'access devel information'
+    ));
+    // Create merci user. 
+    $this->merci_user = $this->drupalCreateUser(array(
+      'view revisions',
+      'revert revisions',
+      'create confirmed reservations',
+      'edit own resource content',
+      'delete own resource content',
+      //'edit own resource content',
+      //'delete own resource content',
+      'create reservations',
+      //'access devel information',
+      'create merci_reservation content',
+      'edit own merci_reservation content',
+      'delete own merci_reservation content',
+    ));
+
+    $edit = array('roles' => ($this->merci_user->roles + array($this->merci_role => $this->merci_role)));
+    user_save($this->merci_user, $edit);
+
+    $edit = array('roles' => ($this->admin_user->roles + array($this->merci_role => $this->merci_role)));
+    user_save($this->admin_user, $edit);
+  }
+
+  function testMerciTooManyResources() {
+
+    // Login the merci user.
+    $this->drupalLogin($this->merci_user);
+
+    // Create our first reservation
+    $item = $this->resource1;
+
+    // Create a reservation for tomorrow.
+    $day = date('Y-m-d',time() + 3600 * 24);
+    $edit = array(
+      'title' => $this->randomName(),
+      'field_merci_date[und][0][value][date]' => $day,
+      'field_merci_date[und][0][value][time]' => '09:15',
+      'field_merci_date[und][0][value2][date]' => $day,
+      'field_merci_date[und][0][value2][time]' => '10:15',
+      'merci_reservation_items[choice_1][merci_item_nid]' => $item->nid,
+      'merci_reservation_items[choice_2][merci_item_nid]' => $item->nid,
+    );
+
+    $first = $this->merciCreateNode('merci-reservation',$edit);
+    $this->assertText(t("You've selected too many @title", array('@title' => $item->title)));
+  }
+
+  function testMerciTooManyPlusConflictResources() {
+
+    // Login the merci user.
+    $this->drupalLogin($this->merci_user);
+
+    // Create our first reservation
+    $item = $this->resource1;
+
+    // Create a reservation for tomorrow.
+    $day = date('Y-m-d',time() + 3600 * 24);
+    $edit = array(
+      'title' => $this->randomName(),
+      'field_merci_date[und][0][value][date]' => $day,
+      'field_merci_date[und][0][value][time]' => '09:15',
+      'field_merci_date[und][0][value2][date]' => $day,
+      'field_merci_date[und][0][value2][time]' => '10:15',
+      'merci_reservation_items[choice_1][merci_item_nid]' => $item->nid,
+    );
+
+    $first = $this->merciCreateNode('merci-reservation',$edit);
+    // Create a reservation for tomorrow.
+    $day = date('Y-m-d',time() + 3600 * 24);
+    $edit = array(
+      'title' => $this->randomName(),
+      'field_merci_date[und][0][value][date]' => $day,
+      'field_merci_date[und][0][value][time]' => '09:15',
+      'field_merci_date[und][0][value2][date]' => $day,
+      'field_merci_date[und][0][value2][time]' => '10:15',
+      'merci_reservation_items[choice_1][merci_item_nid]' => $item->nid,
+      'merci_reservation_items[choice_2][merci_item_nid]' => $item->nid,
+    );
+
+    $first = $this->merciCreateNode('merci-reservation',$edit);
+    $this->assertText(t("You've selected too many"));
+    $this->assertText(t("conflict with one or more existing reservations"));
+  }
+}

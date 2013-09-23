@@ -1,0 +1,301 @@
+.sf-menu.sf-style-hadelis {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.sf-menu.sf-style-hadelis ul {
+	padding-left: 0;
+}
+
+.sf-menu.sf-style-hadelis li {
+  display: inline-block;
+  float: none;
+  margin: 0 5px;
+}
+
+.sf-menu.sf-style-hadelis a {
+  background: #d7a060;
+  border: 1px solid #ffd19d;
+  color: #fff;
+  display: inline-block;
+  font-size: 1.167em; 
+  font-weight: bold;
+  padding: .5em 1.286em;
+  text-decoration: none;
+  text-transform: uppercase;	
+}
+
+.sf-sub-indicator {
+  background: url(../../images/arrow-menu-bar.png) 0 0 no-repeat;
+  height:6px;
+}
+
+a > .sf-sub-indicator {
+  	background-position: 0 0;
+	top: .9em;
+}
+
+/* "Have child" Item */
+.sf-menu.sf-style-hadelis li.menuparent {
+}
+
+.sf-menu.sf-style-hadelis a.menuparent {
+}
+
+/* Child Menu */
+.sf-menu.sf-style-hadelis ul {
+  background: #1a1a1a;
+  border: 1px solid #FFD19D;
+  border-top: none;
+  padding: 1.667em;
+  text-align: left;
+}
+
+.sf-menu.sf-style-hadelis ul li {
+  display: block;
+  margin: 0 0 5px;
+}
+
+.sf-menu.sf-style-hadelis ul li.last {
+  margin-bottom: 0;
+}
+
+.sf-menu.sf-style-hadelis ul li a {
+  background: #111 !important;
+  border: 1px solid #2a2a2a;
+  color: #999;
+  display: block; 
+  font-size: 1em;
+  font-weight: normal;
+  padding: 0.833em 1.167em;
+  text-transform: none;
+}
+
+.sf-menu li:hover ul, 
+.sf-menu li.sfHover ul { 
+  top: 2.4em;
+}
+
+/* Hover Links */
+.sf-menu.sf-style-hadelis li:hover > a,
+.sf-menu.sf-style-hadelis li.sfHover > a,
+.sf-menu.sf-style-hadelis a:hover,
+.sf-menu.sf-style-hadelis a:focus,
+.sf-menu.sf-style-hadelis a:active {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+a:focus > .sf-sub-indicator, 
+a:hover > .sf-sub-indicator, 
+a:active > .sf-sub-indicator, 
+li:hover > a > .sf-sub-indicator, 
+li.sfHover > a > .sf-sub-indicator, 
+.sf-with-ul  .sf-sub-indicator {
+  background-position: 0 -6px;
+}
+
+.sf-menu.sf-style-hadelis ul .sf-sub-indicator {
+  background-position: 0 -12px;
+  height: 8px;
+}
+
+.sf-menu ul a:focus > .sf-sub-indicator, 
+.sf-menu ul a:hover > .sf-sub-indicator, 
+.sf-menu ul a:active > .sf-sub-indicator, 
+.sf-menu ul li:hover > a > .sf-sub-indicator, 
+.sf-menu ul li.sfHover > a > .sf-sub-indicator {
+  background-position: 0 -12px;
+}
+
+/* Child Menu Items Hover */
+.sf-menu.sf-style-hadelis ul  ul {
+  border-top: 1px solid #FFD19D;
+}
+
+.sf-menu.sf-style-hadelis ul li:hover,
+.sf-menu.sf-style-hadelis ul li.sfHover,
+.sf-menu.sf-style-hadelis ul li a:focus,
+.sf-menu.sf-style-hadelis ul li a:hover,
+.sf-menu.sf-style-hadelis ul li a:active {
+	background: #111;
+	color: #FFF;
+}
+
+/* Active Links */
+.sf-menu.sf-style-hadelis a.active {
+  background: #1a1a1a;
+  color: #FFF;
+}
+
+.sf-menu.sf-style-hadelis .active-trail .sf-depth-1 {
+  background: #1a1a1a;
+  color: #FFF;
+}
+
+/* Child Menu Items Active */
+.sf-menu.sf-style-hadelis ul li a.active {
+  color: #FFF;
+}
+
+/* Navbar */
+.sf-menu.sf-style-hadelis.sf-navbar {
+  width: 100%;
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li:hover > ul, 
+.sf-menu.sf-style-hadelis.sf-navbar li.sfHover > ul {
+  background: none;
+  padding: 5px 0;
+  text-align: center;
+  top: 3.4em;
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li > ul {
+  border: none;
+  padding: 0.833em 1.667em;
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li li {
+  border-left: 1px solid #222;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+ }
+
+.sf-menu.sf-style-hadelis.sf-navbar li li:first-child {
+  border-left: none;
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li li a {
+  background: none;
+  border: none;
+  display:inline-block;
+  float: none;
+  padding: 3px 15px;
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li li a.sf-with-ul {
+  padding-right: 30px;
+ }
+
+.sf-menu.sf-style-hadelis.sf-navbar li li a.sf-with-ul .sf-sub-indicator {
+  background-position: 0 -21px;
+  right: 1.25em;
+  top: 0.5em; 
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li:hover > a.sf-with-ul .sf-sub-indicator, 
+.sf-menu.sf-style-hadelis.sf-navbar li.sfHover > a.sf-with-ul .sf-sub-indicator {
+   background-position: 0 -29px;
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li li ul {
+  background: #1a1a1a !important;
+  border: 1px solid #FFD19D;
+  padding: 1.667em !important;
+  text-align: left !important;
+  top: 1.8em !important;
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li li ul li {
+  display: block;
+  border:none !important;
+  margin-bottom: 5px !important;
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li li ul li.last {
+  margin-bottom: 0 !important;
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li li ul li a {
+    background:#111 !important;
+    border: 1px solid #2A2A2A;
+    color: #999;
+    display: block;
+    font-weight: normal;
+    padding: 0.833em 1.167em !important;
+    text-transform: none;
+}
+
+.sf-menu.sf-style-hadelis.sf-navbar li li ul li a:hover,
+.sf-menu.sf-style-hadelis.sf-navbar li li ul li a:focus,
+.sf-menu.sf-style-hadelis.sf-navbar li li ul li a:active {
+  color: #fff;
+}
+
+/* MegaMenu */
+.sf-menu.sf-style-hadelis span.sf-description {
+	color: #999;
+	display: block;
+	font-size: 0.8em;
+	line-height: 1.5em;
+	margin: 5px 0 0 5px;
+	padding: 0;
+}
+
+.sf-menu.sf-style-hadelis a.sf-with-ul {
+	padding-right: 2.071em;
+}
+
+.sf-menu.sf-style-hadelis.rtl a.sf-with-ul { /* RTL */
+	padding-left: 2.25em;
+	padding-right: 1em; 
+}
+
+.sf-menu.sf-style-hadelis ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+	display: inline;
+	float: left;
+	width: 12em;
+}
+
+.sf-menu.sf-style-hadelis.rtl ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+	float: right; /* RTL */
+}
+
+.sf-menu.sf-style-hadelis ul.sf-megamenu li.sf-megamenu-wrapper ol,
+.sf-menu.sf-style-hadelis ul.sf-megamenu li.sf-megamenu-wrapper ol li {
+	margin: 0;
+	padding: 0;
+}
+
+.sf-menu.sf-style-hadelis li.sf-parent-children-1 ul.sf-megamenu {
+	width: 12em;
+}
+
+.sf-menu.sf-style-hadelis li.sf-parent-children-10 ul.sf-megamenu {
+	width: 120em;
+}
+
+.sf-menu.sf-style-hadelis li.sf-parent-children-2 ul.sf-megamenu {
+	width: 24em;
+}
+
+.sf-menu.sf-style-hadelis li.sf-parent-children-3 ul.sf-megamenu {
+	width: 36em;
+}
+
+.sf-menu.sf-style-hadelis li.sf-parent-children-4 ul.sf-megamenu {
+	width: 48em;
+}
+
+.sf-menu.sf-style-hadelis li.sf-parent-children-5 ul.sf-megamenu {
+	width: 60em;
+}
+
+.sf-menu.sf-style-hadelis li.sf-parent-children-6 ul.sf-megamenu {
+	width: 72em;
+}
+
+.sf-menu.sf-style-hadelis li.sf-parent-children-7 ul.sf-megamenu {
+	width: 84em;
+}
+
+.sf-menu.sf-style-hadelis li.sf-parent-children-8 ul.sf-megamenu {
+	width: 96em;
+}
+
+.sf-menu.sf-style-hadelis li.sf-parent-children-9 ul.sf-megamenu {
+	width: 108em;
+}

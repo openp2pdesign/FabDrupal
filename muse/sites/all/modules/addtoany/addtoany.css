@@ -1,0 +1,31 @@
+.addtoany {
+  display: inline;
+}
+.addtoany .addtoany_list a img, .addtoany .addtoany_list a span {
+  vertical-align: bottom;
+  margin-bottom: 2px;
+}
+.addtoany_list { 
+	display: inline;
+}
+.addtoany_list a {
+	padding: 0 9px;
+}
+.addtoany_list a span { 
+	display: inline-block;
+	height: 16px;
+	overflow: hidden;
+	vertical-align: middle;
+	width: 16px;
+}
+.addtoany_list a:hover img, .addtoany_list a.addtoany_share_save img { 
+	opacity: 1;
+}
+.addtoany_list a.addtoany_share_save img { 
+	border: 0;
+	width: auto;
+	height: auto;
+}
+#a2apage_PTZ { 
+	display: none;
+}

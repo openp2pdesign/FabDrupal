@@ -1,0 +1,190 @@
+<?php
+
+/**
+ * @file
+ * merci inventory install / uninstall
+ */
+
+/**
+ * Implements hook_install().
+ */
+function merci_inventory_install() {
+  //module isn't enabled on install, calling this processes node_info so node types are created before processing create_content_types()
+  //this keeps the content type tied to the module, but simplifies the process of adding fields
+  drupal_load('module', 'merci_inventory');
+
+  drupal_set_message(t('MERCI Inventory module successfully installed. merci_inventory and merci_inventory_master content types created.  Do not add nodes to merci_inventory_master content type.  Only use it to push CCK fields out to other MERCI managed content types.'));
+}
+
+function merci_inventory_enable() {
+  // create content types
+//  include_once('./' . drupal_get_path('module', 'merci_inventory') . '/includes/content_types/content_types.inc');
+ // _merci_inventory_install_create_content_types();
+  merci_inventory_create_cck_fields();
+}
+// function merci_inventory_install
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function merci_inventory_uninstall() {
+
+
+  // delete any merci_inventory_master nodes... even though there really shouldn't be any
+  $result = db_query("SELECT nid FROM {node} n WHERE type IN ('merci_inventory_master', 'merci_inventory')");
+  foreach ($result as $node) {
+    node_delete($node->nid);
+  }
+
+  // Loop over each of the fields defined by this module and delete
+  // all instances of the field, their data, and the field itself.
+  // http://api.drupal.org/api/function/field_delete_field/7
+  foreach (array_keys(_merci_inventory_installed_fields()) as $field) {
+    field_delete_field($field);
+  }
+
+  // Loop over any remaining field instances attached to the node_example
+  // content type (such as the body field) and delete them individually.
+  // http://api.drupal.org/api/function/field_delete_field/7
+  $instances = field_info_instances('node', 'merci_inventory');
+  foreach ($instances as $instance_name => $instance) {
+    field_delete_instance($instance);
+  }
+  $instances = field_info_instances('node', 'merci_inventory_master');
+  foreach ($instances as $instance_name => $instance) {
+    field_delete_instance($instance);
+  }
+
+  // delete CCK content_types
+  $return = node_type_delete('merci_inventory_master');
+  $return = node_type_delete('merci_inventory');
+  // You'd think the uninstall submit function would take care of this
+  // but it doesn't look like it.
+  node_types_rebuild();
+  menu_rebuild();
+
+  drupal_set_message(t('MERCI Inventory module successfully uninstalled.  merci_inventory_master content type and nodes deleted.'));
+}
+// merci_inventory_uninstall
+
+function merci_inventory_create_cck_fields() {
+  foreach (_merci_inventory_installed_fields() as $field) {
+    if (!field_info_field($field['field_name'])) {
+      field_create_field($field);
+  }
+  }
+
+
+  foreach (_merci_inventory_installed_instances() as $instance) {
+    if (!field_info_instance($instance['entity_type'], $instance['field_name'], $instance['bundle'])) {
+      field_create_instance($instance);
+    }
+  }
+  $merci_inventory_fields = array (
+    0 => 
+    array (
+      'label' => 'Inventory item',
+      'field_name' => 'field_merci_inventory_item',
+      'type_name' => 'merci_inventory',
+      'type' => 'nodereference',
+      'widget_type' => 'nodereference_select',
+      'required' => 0,
+      'multiple' => '1',
+      'locked' => 1,
+    ),
+  );
+}
+
+function _merci_inventory_installed_fields () {
+
+  // Create the date field for the reservation.
+  return array(
+    'field_merci_inventory_item' => array(
+      'field_name' => 'field_merci_inventory_item',
+      'type' => 'entityreference',
+      'entity_types' => array('node'),
+
+      'module' => 'entityreference',
+      'locked' => '1',
+      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+    ),
+    'field_merci_model' => array(
+      'field_name' => 'field_merci_model',
+      'type' => 'text',
+      'entity_types' => array('node'),
+
+      'module' => 'text',
+    ),
+    'field_merci_make' => array(
+      'field_name' => 'field_merci_make',
+      'type' => 'text',
+      'entity_types' => array('node'),
+
+      'module' => 'text',
+    ),
+    'field_merci_serial_number' => array(
+      'field_name' => 'field_merci_serial_number',
+      'type' => 'text',
+      'entity_types' => array('node'),
+
+      'module' => 'text',
+    ),
+    'field_merci_inventory_code' => array(
+      'field_name' => 'field_merci_inventory_code',
+      'type' => 'text',
+      'entity_types' => array('node'),
+
+      'module' => 'text',
+    ),
+    'field_merci_warranty' => array(
+      'field_name' => 'field_merci_warranty',
+      'type' => 'text',
+      'entity_types' => array('node'),
+
+      'module' => 'text',
+    ),
+  );
+}
+function _merci_inventory_installed_instances () {
+
+  return  array(
+    'field_merci_inventory_item' => array(
+      'field_name' => 'field_merci_inventory_item',
+      'label' => 'Inventory item',
+      'entity_type' => 'node',
+      'bundle' => 'merci_inventory',
+    ),
+    'field_merci_model' => array(
+      'field_name' => 'field_merci_model',
+      'label' => 'Model',
+      'entity_type' => 'node',
+      'bundle' => 'merci_inventory_master',
+    ),
+    'field_merci_make' => array(
+      'field_name' => 'field_merci_make',
+      'label' => 'Make',
+      'entity_type' => 'node',
+      'bundle' => 'merci_inventory_master',
+    ),
+    'field_merci_serial_number' => array(
+      'field_name' => 'field_merci_serial_number',
+      'label' => 'Serial Number',
+      'entity_type' => 'node',
+      'bundle' => 'merci_inventory_master',
+    ),
+    'field_merci_inventory_code' => array(
+      'field_name' => 'field_merci_inventory_code',
+      'label' => 'Inventory Code',
+      'entity_type' => 'node',
+      'bundle' => 'merci_inventory_master',
+    ),
+    'field_merci_warranty' => array(
+      'field_name' => 'field_merci_warranty',
+      'label' => 'Warranty',
+      'entity_type' => 'node',
+      'bundle' => 'merci_inventory_master',
+    ),
+
+  );
+}
+

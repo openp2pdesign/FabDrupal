@@ -1,0 +1,5 @@
+type, title, body, merci_default_availability, merci_late_fee_per_hour, merci_rate_per_hour, merci_fee_free_hours 
+"room","Room #1","This is room 1",1,50,25,1
+"room","Room #2","This is room 2",1,100,50,0
+"dv_camera","Camera #1","This is camera 1",1,5,5,3
+"dv_camera","Camera #2","This is camera 2",1,10,10,5

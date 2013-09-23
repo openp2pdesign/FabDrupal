@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * @file
+ * Simpletest case for node_example module.
+ *
+ * Verify example module functionality.
+ */
+
+require_once drupal_get_path('module', 'merci') . '/tests/merci_testcase.php';
+
+class MerciAdminTestCase extends MerciTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'MERCI admin level testing',
+      'description' => 'Verify MERCI admin level functionality.',
+      'group' => 'Merci',
+    );
+  }
+  function setUp() {
+    // Enable the module.
+    parent::setUp();
+  }
+  function testMerciBucketContent() {
+    // Login the admin user.
+    //$this->drupalLogin($this->admin_user);
+    // Create resource content type
+    // Disable the rating for this content type: 0 for Disabled, 1 for Enabled.
+    $merci_settings = array(
+        'merci_max_hours_per_reservation' => 5,
+        'merci_allow_overnight' => TRUE,
+        'merci_allow_weekends' => TRUE,
+        'merci_spare_items' => 3 ,
+        'merci_min_cancel_hours' => 3,
+        'merci_autocheckout' => TRUE,
+        'merci_autocheckin' => TRUE,
+        'merci_selfcheckout' => TRUE,
+        'merci_auto_assign_bucket_item' => TRUE,
+        'merci_active_status' => MERCI_STATUS_ACTIVE,
+    );
+    $bucket = $this->merciCreateItem('bucket', NULL, $merci_settings);
+
+    $content_settings = merci_content_types($bucket->type);
+    $this->verbose('settings ' . var_export($content_settings, TRUE));
+    $this->verbose('settings ' . var_export($bucket, TRUE));
+
+    $this->_compareArrayForChanges($merci_settings,$content_settings,"!key matches");
+  }
+
+  function _compareArrayForChanges($fields, $data, $message, $prefix = '') {
+    foreach ($fields as $key => $value) {
+      $newprefix = ($prefix == '') ? $key : $prefix .']['. $key;
+      if (is_array($value)) {
+        $compare_to = isset($data[$key]) ? $data[$key] : array();
+        $this->_compareArrayForChanges($value, $compare_to, $message, $newprefix);
+      }
+      else {
+        $this->assertEqual($value, $data[$key], t($message, array('!key' => $newprefix)));
+      }
+    }
+  }
+  /*
+  function testMerciResourceContent() {
+    // TODO test creating a resource content item and all the settings are correct.
+  }
+
+  function testMerciTypeSettings() {
+    // TODO test creating a bucket and reource type and all the settings are correct (saved == retrieved).
+  }
+   */
+}

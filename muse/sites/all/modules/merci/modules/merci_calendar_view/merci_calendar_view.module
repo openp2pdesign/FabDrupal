@@ -1,0 +1,18 @@
+<?php
+
+
+/**
+ * @file
+ * merci_template functions
+ */
+
+/**
+ * Implementation of hook_views_api().
+ */
+function merci_calendar_view_views_api() {
+  return array(
+    'api' => 3.0,
+    'path' => drupal_get_path('module', 'merci_calendar_view'),
+  );
+}
+

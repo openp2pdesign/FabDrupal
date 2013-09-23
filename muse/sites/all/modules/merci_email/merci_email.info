@@ -1,0 +1,15 @@
+name = MERCI Email
+package = MERCI
+description = "Sends confirmation or receipt emails when reservation is created or confirmed"
+
+core = 7.x
+
+dependencies[] = merci
+dependencies[] = token
+
+; Information added by drupal.org packaging script on 2012-02-20
+version = "7.x-1.0-beta2"
+core = "7.x"
+project = "merci_email"
+datestamp = "1329769245"
+

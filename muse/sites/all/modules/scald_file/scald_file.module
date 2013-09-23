@@ -1,0 +1,151 @@
+<?php
+
+/**
+ * @file
+ * Scald File is a Scald Atom Provider for Files.
+ */
+
+/*******************************************************************************
+ * SCALD HOOK IMPLEMENTATIONS
+ */
+
+/**
+ * Implements hook_init().
+ */
+function scald_file_init() {
+  drupal_add_js(drupal_get_path('module', 'scald_file') . '/scald_file.js');
+  drupal_add_js(array('scaldFile' => array('path' => drupal_get_path('module', 'scald_file') . '/scald_file.css')), 'setting');
+}
+
+/**
+ * Implements hook_scald_atom_providers().
+ */
+function scald_file_scald_atom_providers() {
+  return array(
+    'file' => 'File upload'
+  );
+}
+
+/**
+ * Implements hook_scald_add_form().
+ */
+function scald_file_scald_add_form(&$form, &$form_state) {
+  $defaults = scald_atom_defaults('file');
+  $form['file'] = array(
+    '#type' => $defaults->upload_type,
+    '#title' => t('File'),
+    '#upload_location' => 'public://atoms/files/',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array(0 => 'ppt pptx xls xlsx doc docx odt pdf txt csv odg sxw ods rtf zip rar gz 7z tar'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_scald_add_atom_count().
+ */
+function scald_file_scald_add_atom_count(&$form, &$form_state) {
+  if (is_array($form_state['values']['file'])) {
+    return max(count($form_state['values']['file']), 1);
+  }
+  return 1;
+}
+
+/**
+ * Implements hook_scald_add_form_fill().
+ */
+function scald_file_scald_add_form_fill(&$atoms, $form, $form_state) {
+  foreach ($atoms as $delta => $atom) {
+    if (is_array($form_state['values']['file']) && module_exists('plupload')) {
+      module_load_include('inc', 'scald', 'includes/scald.plupload');
+      $file = scald_plupload_save_file($form_state['values']['file'][$delta]['tmppath'],
+        $form['file']['#upload_location'] . $form_state['values']['file'][$delta]['name']);
+    }
+    else {
+      $file = file_load($form_state['values']['file']);
+    }
+    $atom->title = $file->filename;
+    $atom->base_id = $file->fid;
+    $atom->scald_file[LANGUAGE_NONE][0] = (array)$file;
+  }
+}
+
+/**
+ * Implements hook_scald_fetch().
+ */
+function scald_file_scald_fetch($atom, $type) {
+  if ($type == 'atom') {
+    $file = file_load($atom->base_id);
+    $atom->base_entity = $file;
+    $atom->file_source = $file->uri;
+    $scald_thumbnail = field_get_items('scald_atom', $atom, 'scald_thumbnail');
+    if (!empty($scald_thumbnail)) {
+      $thumbnail = file_load($scald_thumbnail[0]['fid']);
+      $atom->thumbnail_source = $thumbnail->uri;
+    }
+    else {
+      $atom->thumbnail_source = drupal_get_path('module', 'scald_file') . '/icons/' . str_replace(array('/', '-'), array('_', '_'), $file->filemime) . '.png';
+    }
+  }
+}
+
+/**
+ * Synchronisation of scald_file field with base_id.
+ *
+ * The scald_file field is also the base entity. We keep them in synchronisation
+ * when user updates that field.
+ */
+function _scald_file_sync_file($atom) {
+  if ($atom->scald_file){
+    $atom->base_id = $atom->scald_file[LANGUAGE_NONE][0]['fid'];
+  }
+}
+
+/**
+ * Implements hook_scald_update_atom().
+ */
+function scald_file_scald_update_atom($atom, $mode) {
+  if ($mode == 'atom') {
+    _scald_file_sync_file($atom);
+  }
+}
+
+/**
+ * Implements hook_scald_register_atom().
+ */
+function scald_file_scald_register_atom($atom, $mode) {
+  if ($mode == 'atom') {
+    _scald_file_sync_file($atom);
+  }
+}
+
+/**
+ * Implements hook_scald_prerender().
+ */
+function scald_file_scald_prerender($atom, $context, $options, $mode) {
+  if ($mode == 'atom') {
+    if ($context != 'sdl_library_item') {
+      $atom->rendered->player = theme('scald_file_render',
+        array('vars' => array(
+          'file_id'      => $atom->base_id,
+          'file_source'  => $atom->file_source,
+          'thumbnail_source' => $atom->thumbnail_source,
+          'file_title'   => check_plain($atom->title),
+        ))
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function scald_file_theme() {
+  return array(
+    'scald_file_render' => array(
+      'variables' => array('vars' => NULL),
+      'template' => 'scald_file_render'
+    ),
+  );
+
+}

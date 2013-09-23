@@ -1,0 +1,29 @@
+.item-list ul.hybridauth-widget {
+  margin: 0;
+  padding: 0;
+}
+.item-list ul.hybridauth-widget li {
+  display: inline-block;
+  margin: 1px;
+  padding: 0;
+  list-style-type: none;
+  list-style-image: none;
+  background: none;
+}
+.item-list ul.hybridauth-widget li a {
+  padding: 0;
+  margin: 0;
+}
+
+#hybridauth-modal div.ctools-modal-content .modal-header {
+  background-color: #999;
+}
+#hybridauth-modal {
+  padding: 10px;
+  background-color: #000;
+}
+#hybridauth-modal .ctools-modal-content {
+  background-color: #fff;
+  border: 0;
+  padding-bottom: 20px;
+}

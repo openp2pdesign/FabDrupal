@@ -1,0 +1,77 @@
+<?php
+/**
+ * @file
+ * Install and uninstall hooks
+ * Remove variables from table while uninstalling
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function flickrgallery_uninstall() {
+  // Remove variables.
+  variable_del('flickrgallery_title');
+  variable_del('flickrgallery_description');
+  variable_del('flickrgallery_lightbox_type');
+  variable_del('flickrgallery_albums');
+  variable_del('flickrgallery_thumb');
+  variable_del('flickrgallery_large');
+  variable_del('flickrgallery_displaysets_bool');
+  variable_del('flickrgallery_displaysets_values');
+  variable_del('flickrgallery_override');
+  variable_del('flickrgallery_path');
+  variable_del('flickrgallery_userID');
+  variable_del('flickrgallery_albums_imagestyle');
+  variable_del('flickrgallery_display_type');
+  variable_del('flickrgallery_large_imagestyle');
+  variable_del('flickrgallery_private_pictures');
+  variable_del('flickrgallery_thumb_imagestyle');
+  variable_del('flickrgallery_token');
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function flickrgallery_requirements($phase) {
+  $requirements = array();
+
+  // Ensure translations don't break at install time.
+  $t = get_t();
+
+  // Check if FlickAPI is available.
+  if ($phase == 'runtime') {
+
+    if (!module_exists('flickrapi')) {
+      $requirements['flickrgallery'] = array(
+        'title' => $t('Flick Gallery'),
+        'description' => $t('You need to install the !FlickrAPI module.', array('!FlickrAPI' => l($t('FlickrAPI'), 'http://drupal.org/project/flickrapi'))),
+        'severity' => REQUIREMENT_ERROR,
+        'value' => $t('Not installed'),
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Transfer the API credentials to the FlickrAPI module.
+ */
+function flickrgallery_update_7100() {
+  if (variable_get('flickrapi_api_key', '') == '') {
+    variable_set('flickrapi_api_key', variable_get('flickrgallery_apikey', ''));
+    variable_del('flickrgallery_apikey');
+  }
+  if (variable_get('flickrapi_api_secret', '') == '') {
+    variable_set('flickrapi_api_secret', variable_get('flickrgallery_secretkey', ''));
+    variable_del('flickrgallery_secretkey');
+  }
+
+  variable_del('flickrgallery_private_pictures');
+  variable_del('flickrgallery_token');
+  variable_del('flickrgallery_caching');
+  variable_del('flickrgallery_cach_dir');
+  variable_del('flickrgallery_override');
+
+  drupal_set_message(t('Go to the !flickr-settings page and authorize your website using OAuth.', array('!flickr-settings' => l('Flickr API settings', 'admin/config/media/flickrapi'))), 'status');
+}

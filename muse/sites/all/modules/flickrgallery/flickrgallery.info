@@ -1,0 +1,13 @@
+name = "Flickr Gallery"
+description = "Show your photo sets from Flickr"
+core = 7.x
+package = Media
+dependencies[] = flickrapi
+configure = admin/config/media/flickrapi/gallery
+
+; Information added by drupal.org packaging script on 2013-05-02
+version = "7.x-2.2"
+core = "7.x"
+project = "flickrgallery"
+datestamp = "1367474111"
+

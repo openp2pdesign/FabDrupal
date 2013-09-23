@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Scald Twitter Installation
+ */
+
+/**
+ * Implements hook_install().
+ */
+function scald_twitter_install() {
+  scald_add_type('twitter', 'Twitter', 'Tweet');
+}

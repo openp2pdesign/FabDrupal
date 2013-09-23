@@ -1,0 +1,38 @@
+<?php
+require_once (dirname(__FILE__) . '/includes/pdf.field.inc');
+
+function pdf_menu() {
+  $items = array();
+  $items['pdf/worker_loader.js'] = array(
+    'page callback' => 'pdf_worker_loader_js',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+function pdf_theme() {
+  $theme = array(
+    'pdf_formatter_default' => array(
+      'variables' => array(
+        'file' => NULL, 
+        'keep_pdfjs' => NULL,
+      ),
+      'file' => 'includes/pdf.field.inc',
+    ),
+    'pdf_formatter_thumbnail' => array(
+      'variables' => array('file' => NULL),
+      'file' => 'includes/pdf.field.inc',
+    ),
+  );
+  return $theme;
+}
+
+function pdf_worker_loader_js() {
+  global $base_url;
+//  $output = "'use strict';";
+  $output = "importScripts('$base_url/sites/all/libraries/pdf.js/build/pdf.js');";
+  print $output;
+  exit();
+}
+

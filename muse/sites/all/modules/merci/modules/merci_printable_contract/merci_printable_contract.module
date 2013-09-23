@@ -1,0 +1,175 @@
+<?php
+
+/**
+ * @file
+ * merci_printable_contract functions
+ */
+
+/* Windows does not have the money_format function in php.*/
+if (!function_exists('money_format')) {
+  module_load_include('inc', 'merci_printable_contract', 'money_format');
+}
+/**
+ * Implements hook_menu().
+ */
+function merci_printable_contract_menu() {
+
+  $admin = array('administer MERCI');
+
+  $items['node/%node/contract'] = array(
+    'title' => 'Printable contract',
+    'description' => 'Takes a node object and returns a printable contract',
+    'page arguments' => array(1),
+    'page callback' => 'merci_printable_contract',
+    'access callback' => 'merci_printable_contract_content_access',
+    'access arguments' => array(1, 'manage reservations'),
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  // Standard Administration settings.
+  $items['admin/config/system/merci/contract'] = array(
+    'title' => 'Printable Contract',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('merci_printable_contract_admin_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => $admin,
+    'description' => t('Configure settings for MERCI\'s Printable Contract.'),
+    'type' => MENU_LOCAL_TASK,
+  );
+
+
+  return $items;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function merci_printable_contract_content_access($node, $perm) {
+  return (user_access($perm) and $node->type == 'merci_reservation');
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function merci_printable_contract_theme() {
+
+  return array(
+    'merci_printable_contract' => array(
+      'template' => 'merci-printable-contract',
+      'variables' => array('node' => NULL),
+    ),
+  );
+}
+
+/**
+ * Builds the admininstration settings form.
+ */
+function merci_printable_contract_admin_settings($form, &$form_state) {
+
+  $form['merci_contract_header'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Contract header'),
+    '#rows' => 10,
+    // TODO: this doesn't seem to work...
+    '#cols' => 5,
+    '#default_value' => variable_get('merci_contract_header', ''),
+    '#description' => t('Header portion of printable contract.  Allows HTML.'),
+  );
+
+  $form['merci_contract_boilerplate'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Contract boilerplate'),
+    '#rows' => 10,
+    // TODO: this doesn't seem to work...
+    '#cols' => 5,
+    '#default_value' => variable_get('merci_contract_boilerplate', ''),
+    '#description' => t('Legalese that makes the contract legally binding.'),
+  );
+
+  $form['merci_contract_footer'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Contract footer'),
+    '#rows' => 10,
+    // TODO: this doesn't seem to work...
+    '#cols' => 5,
+    '#default_value' => variable_get('merci_contract_footer', ''),
+    '#description' => t('Footer portion of printable contract. Normally includes signature lines. HTML allowed.'),
+  );
+
+  if (module_exists('token')) {
+    $form['token_help'] = array(
+      '#title' => t('Replacement patterns'),
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+
+    // TODO Please change this theme call to use an associative array for the $variables parameter.
+    $form['token_help']['help'] = array(
+      '#value' => theme('token_help', 'node'),
+    );
+  }
+
+  return system_settings_form($form);
+}
+
+function merci_printable_contract($node) {
+
+  print theme('merci_printable_contract', array('node' => $node));
+
+}
+// merci_printable_contract
+
+function merci_preprocess_merci_printable_contract(&$variables) {
+
+  $node = $variables['node'];
+  setlocale(LC_MONETARY, 'en_US');
+
+  $user     = user_load($node->uid);
+  $username = $user->name;
+  $email    = $user->mail;
+  if (module_exists('civicrm')) {
+
+    civicrm_initialize(TRUE);
+    global $civicrm_root;
+    //include_once($civicrm_root .'/api/UFGroup.php');
+    //$userID = crm_uf_get_match_id($user->uid);
+
+    require_once $civicrm_root . '/CRM/Core/BAO/UFMatch.php';
+    $userID = CRM_Core_BAO_UFMatch::getContactId( $user->uid );
+
+    $cg = array('contact_id' => $userID);
+    include_once $civicrm_root . '/api/v2/Contact.php';
+    $ob = civicrm_contact_get($cg);
+    //print '<pre>';
+    //print_r($ob);
+    //print '</pre>';
+    $username = $ob[$userID]['display_name'];
+    //print $username;
+    $phone = $ob[$userID]['phone'];
+  }
+
+  $items = $node->merci_reservation_items;
+
+  $langcode = $node->language;
+  // Convert to site timezone.
+  $start_date       = merci_create_local_date_object($node->field_merci_date[LANGUAGE_NONE][0]['value']);
+  $end_date         = merci_create_local_date_object($node->field_merci_date[LANGUAGE_NONE][0]['value2']);
+
+  $hours = round((intval(date_format($end_date, "U")) - intval(date_format($start_date, "U"))) / 3600, 2);
+
+  $variables['start_date'] = format_date($start_date->format('U'));
+  $variables['end_date'] = format_date($end_date->format('U'));
+  $variables['hours'] = $hours;
+  $variables['username'] = $username;
+  $variables['email'] = $email;
+  if (isset($phone)) {
+    $variables['phone'] = $phone;
+  }
+  $variables['items'] = $items;
+
+}
+// merci_printable_contract
+

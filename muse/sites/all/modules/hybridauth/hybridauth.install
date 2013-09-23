@@ -1,0 +1,195 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the HybridAuth module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function hybridauth_uninstall() {
+  module_load_include('module', 'hybridauth');
+  foreach (hybridauth_providers_list() as $provider_id => $provider_name) {
+    variable_del('hybridauth_provider_' . $provider_id . '_enabled');
+    variable_del('hybridauth_provider_' . $provider_id . '_weight');
+    variable_del('hybridauth_provider_' . $provider_id . '_keys_id');
+    variable_del('hybridauth_provider_' . $provider_id . '_keys_key');
+    variable_del('hybridauth_provider_' . $provider_id . '_keys_secret');
+    variable_del('hybridauth_provider_' . $provider_id . '_scope');
+  }
+
+  variable_del('hybridauth_library_path');
+  variable_del('hybridauth_required_fields');
+  variable_del('hybridauth_window_type');
+  variable_del('hybridauth_widget_title');
+  variable_del('hybridauth_widget_type');
+  variable_del('hybridauth_widget_use_overlay');
+  variable_del('hybridauth_widget_link_text');
+  variable_del('hybridauth_widget_link_title');
+  variable_del('hybridauth_widget_icon_pack');
+  variable_del('hybridauth_widget_weight');
+  variable_del('hybridauth_disable_username_change');
+  variable_del('hybridauth_remove_password_fields');
+  variable_del('hybridauth_pictures');
+  variable_del('hybridauth_register');
+  variable_del('hybridauth_email_verification');
+  variable_del('hybridauth_username');
+  variable_del('hybridauth_registration_username_change');
+  variable_del('hybridauth_display_name');
+  variable_del('hybridauth_override_realname');
+  variable_del('hybridauth_destination');
+  variable_del('hybridauth_forms');
+  variable_del('hybridauth_duplicate_emails');
+  variable_del('hybridauth_debug');
+
+  // Some old variables not present in the code now.
+  variable_del('hybridauth_registration_role_choice');
+  variable_del('hybridauth_registration_roles');
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function hybridauth_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break at install time.
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    if ($lib_path = _hybridauth_library_path()) {
+      try {
+        require_once $lib_path . '/Hybrid/Auth.php';
+        $requirements['hybridauth'] = array(
+          'title' => $t('HybridAuth library'),
+          'value' => Hybrid_Auth::$version,
+          'severity' => REQUIREMENT_OK,
+        );
+      }
+      catch(Exception $e) {
+        $requirements['hybridauth'] = array(
+          'title' => $t('HybridAuth library'),
+          'value' => $e->getMessage(),
+          'severity' => REQUIREMENT_ERROR,
+        );
+      }
+    }
+    else {
+      $requirements['hybridauth'] = array(
+        'title' => $t('HybridAuth library'),
+        'value' => $t('HybridAuth library is missing'),
+        'severity' => REQUIREMENT_ERROR,
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_schema().
+ */
+function hybridauth_schema() {
+  $schema = array();
+
+  $schema['hybridauth_identity'] = array(
+    'description' => 'Holds identities from HybridAuth library.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Unique ID of HybridAuth identity.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'The {users}.uid that owns this HybridAuth identity.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'provider' => array(
+        'description' => 'The authentication provider for this HybridAuth identity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'provider_identifier' => array(
+        'description' => 'The authentication provider UID for this HybridAuth identity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'data' => array(
+        'description' => 'A serialized array containing information from HybridAuth library.',
+        'type' => 'blob',
+        'not null' => TRUE,
+        'size' => 'normal',
+      ),
+    ),
+    'indexes' => array(
+      'uid' => array('uid'),
+    ),
+    'unique keys' => array(
+      'provider_provider_identifier' => array('provider', 'provider_identifier'),
+    ),
+    'foreign keys' => array(
+      'hybridauth_identity_user' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  $schema['hybridauth_session'] = array(
+    'description' => 'Holds sessions data from HybridAuth library.',
+    'fields' => array(
+      'uid' => array(
+        'description' => 'The {users}.uid that owns this HybridAuth session data.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'data' => array(
+        'description' => 'A serialized array containing session data from HybridAuth library.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'medium',
+      ),
+      'updated' => array(
+        'description' => 'The Unix timestamp when the session was saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'foreign keys' => array(
+      'hybridauth_session_user' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+    ),
+    'primary key' => array('uid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Add hybridauth_session DB table.
+ */
+function hybridauth_update_7001(&$sandbox) {
+  if (!db_table_exists('hybridauth_session')) {
+    $schema = hybridauth_schema();
+    db_create_table('hybridauth_session', $schema['hybridauth_session']);
+  }
+}
+
+/**
+ * Set us at schema rev 7000 as a base version.
+ */
+function hybridauth_update_7000(&$sandbox) {
+}

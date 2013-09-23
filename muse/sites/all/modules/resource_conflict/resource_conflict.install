@@ -1,0 +1,26 @@
+<?php
+// $Id
+
+/**
+ * Implementation of hook_uninstall
+ */
+function resource_conflict_uninstall() {
+  _resource_conflict_variable_delete_like('rc_type_%');
+  _resource_conflict_variable_delete_like('rc_date_field_%');
+  _resource_conflict_variable_delete_like('rc_reference_fields_%');
+
+  variable_del('rc_types');
+}
+
+/**
+ * Delete all variables matching a pattern using SQL 'LIKE' syntax.
+ * @param $pattern
+ *   The pattern of variables to delete.
+ */
+function _resource_conflict_variable_delete_like($pattern) {
+  $q = "SELECT name FROM {variable} WHERE name LIKE :pattern";
+  $result = db_query($q, array(':pattern' => $pattern));
+  foreach ($result as $row) {
+    variable_del($row->name);
+  }
+}

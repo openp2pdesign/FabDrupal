@@ -1,0 +1,3 @@
+<?php
+
+include_once('merci_import_example.features.inc');

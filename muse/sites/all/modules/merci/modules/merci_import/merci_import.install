@@ -1,0 +1,6 @@
+<?php
+
+function merci_import_enable() {
+  //clear the cache to display in Feeds as available plugin.
+  cache_clear_all('plugins:feeds:plugins', 'cache');
+}

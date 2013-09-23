@@ -1,0 +1,175 @@
+/* Superfish */
+.sf-menu.sf-style-hadelis a {
+  border-radius : 3px;
+  text-shadow: 0 1px 0 #987040;
+}
+
+.sf-menu.sf-style-hadelis li:hover > a ,
+.sf-menu.sf-style-hadelis li.sfHover > a,
+.sf-menu.sf-style-hadelis a:hover,
+.sf-menu.sf-style-hadelis a:focus,
+.sf-menu.sf-style-hadelis a:active, 
+.sf-menu.sf-style-hadelis a.active, 
+.sf-menu.sf-style-hadelis .active-trail .sf-depth-1 {
+  text-shadow: 0 1px 0 #000;
+}
+
+.sf-menu.sf-style-hadelis li:hover > a.sf-with-ul ,
+.sf-menu.sf-style-hadelis li.sfHover > a.sf-with-ul {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.sf-menu.sf-style-hadelis ul {
+  border-radius : 3px;
+  border-top-left-radius: 0;
+}
+
+.sf-menu.sf-style-hadelis ul li a {
+  border-radius : 3px;
+}
+
+.sf-menu.sf-style-hadelis ul li a {
+  text-shadow: none;
+}
+
+.sf-menu.sf-style-hadelis ul ul {
+   border-radius: 3px;
+}
+
+/* navbar */
+.sf-menu.sf-style-hadelis.sf-navbar li:hover > a.sf-with-ul ,
+.sf-menu.sf-style-hadelis.sf-navbar li.sfHover > a.sf-with-ul {
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+
+/* main menu */
+.block-menu, 
+.block ul.menu li a {
+  border-radius : 3px;
+}
+/* --- Fourth Blocks --- */
+.jcarousel-skin-default .jcarousel-item {
+  border-radius : 3px;
+}
+
+/* --- Block Styles--- */
+.dark-gray-color,
+.yellow-color,
+.white-color {
+  border-radius : 3px;
+}
+
+/* --- First Panels Blocks --- */
+#panel-first-wrapper .block-inner, {
+  text-shadow: 0 1px 0 #000;
+}
+
+/* --- Third Panels Blocks --- */
+#panel-third-wrapper .block-inner,
+#panel-third-wrapper .block-content a.btn-start {
+  border-radius : 3px;
+}
+
+#panel-third-wrapper .block-content a.btn-start {
+  text-shadow: 0 1px 0 #666;
+}
+
+#panel-third-wrapper .block-content a.btn-start:hover, 
+#panel-third-wrapper .block-content a.btn-start:focus, 
+#panel-third-wrapper .block-content a.btn-start:active {
+  text-shadow: 0 1px 0 #b54405;
+}
+
+/* --- article content --- */
+.article .field-type-image img {
+  border-radius : 3px;
+}
+
+.field-type-taxonomy-term-reference ul li a {
+  border-radius : 3px;
+}
+
+.article ul.links li.node-readmore a {
+  border-radius : 0;
+}
+
+/* --- Form --- */
+#search-block-form,
+#search-block-form .form-text,
+#search-form .form-submit {
+  border-radius : 3px;
+}
+
+/* --- Sidebar First --- */
+.sidebar .img-about {
+  border-radius : 3px;
+}
+
+/* Mass bottom */
+#mass-bottom-wrapper .views-field-field-image img {
+   border-radius : 3px;
+}
+
+/* Back To Top */
+a.btn-top {
+  border-radius : 3px;
+}
+
+#panel-fifth-wrapper .block-title {
+  text-shadow: 0 1px 0 #000;
+}
+
+/* --- Pager --- */
+ul.pager li a,
+ul.pager li span {
+  border-radius : 3px;
+}
+
+/* --- Forums  --- */
+.page-forum ul.action-links li a {
+  border-radius : 3px;
+}
+
+/* --- blog  --- */
+.page-blog ul.action-links li a {
+  border-radius : 3px;
+}
+
+/* datetime */
+.submitted-date {
+  border-radius : 3px;
+}
+
+.submitted-date span {
+  text-shadow: 0 1px 0 #000;
+}
+
+/* form */
+.form-text, 
+.comment-form textarea,
+span.button input.form-submit {
+  border-radius : 3px;
+}
+
+/* commments */
+.comment-by-node-author, 
+.comment ul.links li a {
+  border-radius : 3px;
+}
+
+ul.primary li a {
+  border-radius : 3px 3px 0 0;
+}
+
+/* Quicktabs */
+.quicktabs-style-hadelis .quicktabs_main div.view-tags .item-list ul li a,
+.quicktabs-ui-hadelis .ui-tabs-panel .block .view-tags .item-list ul li a,
+.quick-accordion-hadelis .ui-accordion-content .block .view-tags .item-list ul li a {
+  border-radius: 8px;
+}
+
+.quicktabs-ui-hadelis ul.ui-tabs-nav li {
+  border-radius: 3px 3px 0 0;
+}

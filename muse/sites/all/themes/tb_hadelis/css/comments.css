@@ -1,0 +1,257 @@
+/**
+ * 
+ * TODO: check classes still apply in D7 - in particular the unpublished classes and the extra classes.
+ */
+ 
+/* Comment wrapper */
+#comments {
+  border-top: 1px solid #eaeaea;
+  margin-top: 2em;
+  padding-top: 1.5em;
+}
+
+#comments > h2 {
+  border-top: 1px solid #CCC;
+  margin-bottom: .5em;
+  padding-top: 1em;
+}
+
+#comments > h2:first-child {
+  border-top: 0;
+  color: #aaa;
+  font-family: "bebasneueregular";
+  font-weight: normal;
+  margin: 0 0 1em;
+  padding-top: 0;
+  text-transform: uppercase;
+}
+
+/* Individual comment */
+.comment {
+  margin-bottom: 2em;
+}
+
+/* Indentation */
+#comments .indented {
+  margin-bottom: 1em;
+  margin-left: 0;
+  padding-left: 30px;
+}
+
+#comments .indented .comment {
+  background: #f5f5f5;
+}
+
+/* Comment Title */
+.comment > .header {
+}
+
+.comment-title {
+  margin: 0;
+  padding: 0;
+}
+
+.comment-title a {
+  color: #333;
+  text-decoration: none;
+}
+
+.comment-title a:hover,
+.comment-title a:active,
+.comment-title a:focus {
+  text-decoration: underline;
+}
+
+/* Skinr comment title alignment. */
+.ta-l .comment-title {
+  text-align: left;
+}
+
+.ta-r .comment-title {
+  text-align: right;
+}
+
+.ta-c .comment-title {
+  text-align: center;
+}
+
+/* Comment "new" title */
+.comment-title .new {
+  color: #F80;
+}
+
+/* User Picture */
+.comment .user-picture {
+}
+
+.comment .user-picture img {
+}
+
+/* Comment Content */
+.comment-content {
+}
+
+/* Submitted */
+.comment > .footer {
+  color: #aaa;
+  font-size: 0.92em;
+  margin: .5em 0 1em;
+  text-transform: uppercase;
+}
+
+.comment > .footer .username {
+  color: #e06767;
+}
+
+.comment > .footer .time {
+}
+
+.comment > .footer a {
+}
+
+.comment > .footer a:hover,
+.comment > .footer a:active,
+.comment > .footer a:focus {
+}
+
+.comment .field-items {
+  color: #7b7d80;
+}
+
+/* Links */
+.comment .comment-links {
+  margin-top: 0;
+}
+
+.comment ul.links {
+  display: block;
+  font-size: 0.912em;
+  margin: 0;
+  padding: 0;
+}
+
+.comment ul.links li {
+  margin-right: 0.417em;
+  padding: 0;
+}
+
+.comment ul.links li a {
+  background: url(../images/ico-plus.gif) 10px 50% no-repeat #1a1a1a;
+  display: inline-block;
+  color: #B5B5B5;
+  padding: 3px 15px 3px 20px;
+  text-transform: uppercase;
+}
+
+.comment ul.links li a:hover, 
+.comment ul.links li a:active, 
+.comment ul.links li a:focus {
+  background: url(../images/ico-plus.gif) 10px 50% no-repeat #D76C31;
+  color: #fff;
+  text-decoration:none;  
+}
+
+
+/* Core comment link classes. */
+ul.links li.comment_reply a {
+}
+
+ul.links li.comment_edit a {
+}
+
+ul.links li.comment_delete a {
+}
+
+.comment ul.links li.first {
+}
+
+.comment ul.links li.last {
+}
+
+/**
+ * Different status for comments
+ */
+ 
+/* Author */
+.comment-by-anonymous {
+}
+
+.comment-by-node-author {
+  border: 1px solid #e2e2e2;
+  padding: 15px 20px;
+}
+
+.comment-by-viewer {  
+}
+
+/* New */
+.comment-new {
+  position: relative;
+}
+
+.comment-new .comment-header em {
+  background: url(../images/badge.png) 0 -46px no-repeat;
+  height: 43px;
+  width: 45px;
+  display: block;
+  position: absolute;
+  overflow: hidden;
+  right: 0;
+  top: 0;
+  text-indent: -999em;
+}
+
+
+/* Unpublished */
+.comment-unpublished {
+}
+.comment-unpublished .unpublished {
+}
+
+/**
+ * Comment Form
+ */
+ 
+.comment-form-wrapper h2 {
+  color: #aaa;
+  font-family: "bebasneueregular";
+  font-weight: normal;
+  margin-top: 0;
+  text-transform: uppercase;
+}
+ 
+.comment-form-wrapper form#comment-form {
+}
+
+.comment-form label {
+  margin-bottom: 5px;
+}
+
+.comment-form .form-text, 
+.comment-form .form-textarea {
+  background: #f5f5f5;
+}
+
+.comment-form .form-text:focus, 
+.comment-form .form-textarea:focus {
+  background: #fff;
+  border: 1px solid #d15151;
+}
+
+.comment-form .username {
+  font-size: 0.912em;
+}
+
+.comment-form input.form-submit {
+  background: url(../images/ico-plus.gif) 10px 50% no-repeat #1a1a1a !important;  
+  padding-left: 20px !important;
+}
+
+.comment-form input.form-submit:hover,
+.comment-form input.form-submit:focus {
+  background: url(../images/ico-plus.gif) 10px 50% no-repeat #D76C31  !important;
+}
+
+.comment-form ul.tips {
+  margin-left: 0;
+}

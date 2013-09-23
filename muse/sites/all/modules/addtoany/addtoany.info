@@ -1,0 +1,16 @@
+name = AddToAny
+description = "Helps readers share, bookmark, and email your articles and pages using any service, such as Facebook, Twitter, Google+, StumbleUpon, and over 100 more using the <a href='http://share.lockerz.com/' target='_blank'>Lockerz Share / AddToAny</a> widget."
+core = 7.x
+
+files[] = addtoany.module
+files[] = addtoany.css
+files[] = addtoany.admin.inc
+files[] = views/addtoany_handler_field_addtoany_link.inc
+files[] = views/addtoany.views.inc
+configure = admin/config/system/addtoany
+; Information added by drupal.org packaging script on 2012-03-15
+version = "7.x-4.0"
+core = "7.x"
+project = "addtoany"
+datestamp = "1331790037"
+

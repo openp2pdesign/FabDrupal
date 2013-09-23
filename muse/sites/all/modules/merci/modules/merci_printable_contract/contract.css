@@ -1,0 +1,53 @@
+body {
+	background: #fff;
+	color: #000;
+	text-align: center;
+	}
+	
+	.merci_signatureline {
+		border-bottom: solid;
+	}
+	
+	#page {
+		width: 8in;
+		margin: 0.5em auto;
+		text-align: left;
+		}
+		
+		#header {
+			margin-bottom: 1em;
+			}
+		
+		#cost {	
+			border-collapse: collapse;
+			width: 100%;
+			}
+			
+			#cost td ,
+			#cost th {
+				padding: 5px;
+				vertical-align: top;
+				}
+			
+			#cost .even td ,
+			#cost .even th {	
+				background: #ddd;
+				}
+		
+			#cost th {
+				text-align: left;
+				}
+				
+			#cost ul.accessories {
+				font-size: 0.8em;
+				margin-bottom: 0;
+				margin-top: 0;
+				}
+			
+		#boilerplate ,
+		#footer {
+			margin-top: 1em;
+			}
+			
+			
+	

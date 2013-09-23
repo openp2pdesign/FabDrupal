@@ -1,0 +1,121 @@
+/** 
+ * 
+ * TODO: check all D7 field class names, these are mostly from D6 CCK...
+ */
+ 
+/* Wrapper for all fields. */
+.field {
+}
+
+/* Field labels */
+.field-label {
+  margin: 0 0 5px;
+}
+
+.field-lable-above .field-label {
+}
+
+.field-lable-inline .field-label {
+  display: inline;
+}
+
+/* Imagefields */
+.field-type-image {
+}
+
+.field-type-image img {
+}
+
+/* Use "datetime" when creating new CCK date fields. */
+.field-type-datetime {
+}
+
+/* Filefield field. */
+.field-type-filefield {
+}
+
+/* Node reference field. */
+.field-type-nodereference {
+}
+
+/* User reference field. */
+.field-type-userreference {
+}
+
+/* Number fields. */
+.field-type-number-decimal {
+}
+
+.field-type-number-float {
+}
+
+.field-type-number-integer {
+}
+
+/* Text fields. */
+.field-type-text {
+}
+
+.field-type-text-long {
+  width: 80%;
+}
+
+/* Term reference fields. */
+.field-type-taxonomy-term-reference {
+  margin-bottom: 1em;
+  overflow: hidden;
+}
+
+.field-type-taxonomy-term-reference .field-label {
+  font-size: 1em;
+  float: left;
+  margin-bottom: .5em; 
+  margin-right: .5em;  
+}
+
+.field-type-taxonomy-term-reference ul {
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+.field-type-taxonomy-term-reference ul li {
+  display: inline-block;
+  font-size: 0.92em;
+  list-style: none;
+  margin: 0 5px 5px 0 !important;
+  padding: 0;
+}
+
+.field-type-taxonomy-term-reference ul li a {
+  background: #1a1a1a;
+  color: #B5B5B5;
+  display: inline-block;
+  padding: 1px 10px;
+}
+
+.field-type-taxonomy-term-reference ul li a:hover,
+.field-type-taxonomy-term-reference ul li a:active,
+.field-type-taxonomy-term-reference ul li a:focus {
+  background: #D76C31;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Imagefield skinr settings */
+.ai-l .field-type-image {
+  margin: 4px 20px 10px 0;
+}
+
+.ai-r .field-type-image {
+  margin: 4px 0 10px 20px;
+}
+
+.ai-b,
+.ai-b .block-inner,
+.ai-b .block-content {
+}
+
+.ai-b .block-content p,
+.ai-b .block-content div.field-type-image {
+}

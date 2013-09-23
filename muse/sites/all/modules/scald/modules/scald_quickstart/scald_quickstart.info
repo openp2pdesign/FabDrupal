@@ -1,0 +1,14 @@
+name=Scald Quickstart
+description=Help quickstarting a project using Scald
+core=7.x
+
+dependencies[] = scald
+dependencies[] = scald_image
+dependencis[]  = scald_dnd_library
+
+; Information added by drupal.org packaging script on 2013-04-12
+version = "7.x-1.0"
+core = "7.x"
+project = "scald"
+datestamp = "1365783028"
+

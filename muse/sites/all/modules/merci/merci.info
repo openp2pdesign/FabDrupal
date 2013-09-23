@@ -1,0 +1,55 @@
+name = MERCI
+package = MERCI
+description = "Managed Equipment Reservation Checkout and Inventory"
+
+core = 7.x
+
+configure = admin/config/system/merci
+
+dependencies[] = list 
+dependencies[] = number 
+dependencies[] = date
+dependencies[] = date_api
+dependencies[] = date_popup
+; dependencies[] = date_timezone
+dependencies[] = views
+dependencies[] = taxonomy
+; dependencies[] = fieldgroup
+; dependencies[] = optionwidgets 
+
+
+
+files[] = merci.install
+files[] = merci.module
+files[] = merci.views.inc
+files[] = merci.views_default.inc
+files[] = views_plugin_argument_validate_merci_node.inc
+files[] = handlers/merci_handler_field.inc
+files[] = handlers/merci_handler_filter_in_operator.inc
+files[] = handlers/merci_views_handler_filter_reserved_item_nid.inc
+files[] = handlers/merci_handler_filter_merci_node_type.inc
+files[] = handlers/views_handler_field_date.inc
+files[] = handlers/views_handler_field_item_node_nid.inc
+files[] = handlers/views_handler_filter_boolean_operator.inc
+files[] = handlers/views_handler_filter_date.inc
+files[] = import/merci_import.php
+files[] = includes/api.inc
+files[] = includes/database.inc
+files[] = includes/menu.inc
+files[] = includes/merci.admin.inc
+files[] = tests/merci_admin.test
+files[] = tests/merci_issues.test
+files[] = tests/merci_bucket.test
+files[] = tests/merci_resource.test
+files[] = tests/merci_testcase.php
+files[] = tests/merci_user.test
+files[] = theme/merci_conflict_grid.tpl.php
+files[] = theme/merci_reservation_table.tpl.php
+files[] = theme/theme.inc
+
+; Information added by drupal.org packaging script on 2013-05-16
+version = "7.x-2.0"
+core = "7.x"
+project = "merci"
+datestamp = "1368726615"
+

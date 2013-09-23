@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Unit Tests for flickrapi module
+ * http://drupal.org/node/265762
+ */
+
+class FlickrApiTestCase extends DrupalUnitTestCase {
+
+  /**
+   * getInfo() returns properties that are displayed in the test selection form.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Flickr API',
+      'description' => 'Tests calls to Flickr.com',
+      'group' => 'Flickr API',
+    );
+  }
+
+  /**
+   * setUp() performs any pre-requisite tasks that need to happen.
+   */
+  public function setUp() {
+    parent::setUp('flickrapi');
+    // Create and log in our privileged user.
+  }
+
+  function testPhpFlickrClass() {
+    $flickr = flickrapi_phpFlickr();
+    $this->assertTrue($flickr);
+
+    $pandas = $flickr->panda_getList();
+    $this->assertTrue(is_array($pandas));
+
+    foreach ($pandas['panda'] as $name) {
+      $photos = $flickr->panda_getPhotos($name);
+      $this->assertTrue(is_array($photos['photo']));
+    }
+  }
+
+  function testflickrapi_is_nsid() {
+    $this->assertTrue(flickrapi_is_nsid('36251685@N00'));
+    $this->assertFalse(flickrapi_is_nsid(''));
+    $this->assertFalse(flickrapi_is_nsid('sdfjlskafjlksa'));
+    $this->assertEqual('36251685@N00', flickrapi_get_user_nsid('brenda@wallace.net.nz'));
+  }
+}

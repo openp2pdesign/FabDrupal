@@ -1,0 +1,68 @@
+/* Table title for existing items table. */
+div.existing-items-table-header {
+	font-size: 1.5em;
+	padding-top: 20px;
+}
+
+span.edit-details span.complete {
+	color: #c90;
+	font-size: 1.5em;
+	}
+
+span.edit-details span.admin {	
+	color: #0c0;
+	}
+
+table.merci-availability-schedule {
+	border-collapse: collapse;
+	}
+	
+	table.merci-availability-schedule thead th {
+		border: 0;
+		}
+
+	table.merci-availability-schedule tbody th {
+		border: #fff solid 1px;
+		}
+	
+	table.merci-availability-schedule td {
+		border: #fff solid 1px;
+		}
+
+	table.merci-availability-schedule tbody th {
+		background: #fff;
+		}
+	
+	table.merci-availability-schedule td.available {
+		background: #cfc;
+		color: #cfc;
+		padding: 0;
+		}
+	
+	table.merci-availability-schedule td.unavailable {
+		background: #c99;
+    padding: 0;
+		}
+		
+  a.unavailable:link, a.unavailable:visited, a.unavailable:hover, a.unavailable:active {
+    color: #c99;
+  }
+		
+	div.merci-availability-key .unavailable {
+		background: #c99;
+		display: inline-block;
+		height: 1.2em;
+		width: 1.2em;
+		padding: 0;
+		}
+		
+	div.merci-availability-key .available {
+		background: #cfc;
+		display: inline-block;
+		height: 1.2em;
+		width: 1.2em;
+		}
+		
+ table.merci-availability-schedule td.hourborder {
+		border-right: #000 solid 1px;
+		}

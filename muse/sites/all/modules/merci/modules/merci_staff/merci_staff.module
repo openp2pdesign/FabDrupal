@@ -1,0 +1,326 @@
+<?php
+
+/**
+ * @file
+ * merci_staff functions
+ */
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function merci_staff_menu() {
+  $items = array();
+
+  if (module_exists('civicrm')) {
+    $items['user/autocompletecivi'] = array(
+      'title' => 'User autocomplete',
+      'page callback' => 'merci_staff_autocomplete',
+      'access callback' => 'user_access',
+      'access arguments' => array('access user profiles'),
+      'type' => MENU_CALLBACK,
+    );
+  }
+
+  return $items;
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function merci_staff_load_user($post = NULL) {
+  static $admin_user;
+  global $user;
+  if (empty($admin_user)) {
+    $admin_user = $user;
+  }
+  if ($post and empty($post['override']) and ($newuser = array_shift(user_load_multiple(array(), array('name' => $post['name']))))) {
+    $user = $newuser;
+  }
+  else {
+    $user = $admin_user;
+  }
+}
+
+//function merci_staff_after_build($form, &$form_state) {
+function merci_staff_form_alter(&$form, $form_state, $form_id) {
+
+  if($form_id != 'merci_reservation_node_form') {
+    return;
+  }
+
+  if (!user_access('manage reservations')) {
+    return;
+  }
+
+  if (isset($form_state['values'])) {
+    $node = (array)$form_state['values'] + (array)$form['#node'];
+  } else {
+    $node = $form['#node'];
+  }
+  $node = (object) $node;
+  // Override the validation function so we can validate as the submitted user.
+  $form['#merci_staff_validated'][] = 'merci_reservation_node_validate';
+  $form['#validate'][] = 'merci_staff_reservation_node_validate';
+
+  foreach ($form['#merci_staff_validated'] as $function) {
+    $key = array_search($function, $form['#validate']);
+    if (is_numeric($key)) {
+      unset($form['#validate'][$key]);
+    }
+  }
+
+  // Recreate the groups and choices based on the submitted name.
+  merci_staff_load_user((array) $node);
+
+  // Add the current choices to the form.
+  $reset = true;
+  foreach (element_children($form['choice_wrapper']['merci_reservation_items']) as $delta) {
+    if (is_numeric($delta)) {
+      continue;
+    }
+    $delta = substr($delta, 7);
+    $default = isset($node->merci_reservation_items["choice_" . $delta]['merci_item_nid']) ? $node->merci_reservation_items["choice_" . $delta]['merci_item_nid'] : '';
+    $form['choice_wrapper']['merci_reservation_items']["choice_" . $delta]['merci_item_nid'] =
+      _merci_choice_form($node, $form_state, $delta, $default, $reset);
+    $reset = false;
+  }
+  merci_staff_load_user();
+  array_push($form['field_merci_date']['field_merci_date_button']['#limit_validation_errors'], array('name'), array('override'));
+  array_push($form['choice_wrapper']['merci_more']['#limit_validation_errors'], array('name'), array('override'));
+  return $form;
+}
+/**
+ * Implementation of hook_form_alter
+ **/
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function merci_staff_form_merci_reservation_node_form_alter(&$form, &$form_state) {
+  if (user_access('manage reservations')) {
+
+    if (isset($form_state['node'])) {
+      $node = (array) $form_state['node'] + (array) $form['#node'];
+    }
+    else {
+      $node = $form['#node'];
+    }
+    $node = (object) $node;
+    // Move the author field and set autocomplete and ahah handlers.
+    // We do this here and not in after_build because the ahah hash is handled before after_build is called.
+    $form['name'] = $form['author']['name'];
+    $form['name']['#title'] = 'Reserve for';
+    $form['name']['#weight'] = -99;
+    if (module_exists('civicrm')) {
+      $form['name']['#autocomplete_path'] = 'user/autocompletecivi';
+    }
+    $form['name']['#ajax'] = array(
+      //'path' => 'mercistaff/updatename',
+      //'wrapper' => 'edit-og-groups-wrapper',
+      'callback' => 'merci_staff_update_name',
+      'wrapper' => 'merci-staff-edit-form-wrapper',
+      'method' => 'replace',
+      'effect' => 'fade',
+    );
+
+    unset($form['author']['name']);
+
+    //create override checkbox
+    $form['override'] = array(
+      //'#type' => 'optionwidgets_onoff',
+      '#type' => 'checkbox',
+      '#title' => 'Override Validation',
+      '#default_value' => isset($node->override) ? $node->override : FALSE,
+      '#weight' => -97,
+      '#columns' => 0,
+    );
+    $form['#prefix'] = '<div id="merci-staff-edit-form-wrapper">';
+    $form['#suffix'] = '</div>';
+  }
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function merci_staff_reservation_node_validate($form, &$form_state) {
+  merci_staff_load_user($form_state['values']);
+  foreach ($form['#merci_staff_validated'] as $function) {
+    $function($form, $form_state);
+  }
+  merci_staff_load_user();
+}
+/**
+ ** Menu callback; Retrieve a JSON object containing autocomplete suggestions for existing users.
+ **/
+function merci_staff_autocomplete($string = '') {
+  $matches = array();
+  if ($string) {
+
+    if ( ! civicrm_initialize( ) ) {
+      return;
+    }
+    $fields = field_info_fields();
+    $field = $fields[$field_name];
+
+    $references = _merci_staff_potential_references($field, $string);
+    foreach ($references as $id => $row) {
+      // Add a class wrapper for a few required CSS overrides.
+      $matches["{$row['title']}"] = '<div class="reference-autocomplete">' . $row['rendered'] . '</div>';
+    }
+  }
+  drupal_json_output($matches);
+}
+
+/**
+ * Menu callback for AHAH additions.
+ */
+function merci_staff_update_name($form, $form_state) {
+  return $form;
+}
+
+function _merci_staff_potential_references($field, $string = '', $exact_string = FALSE) {
+  static $results = array();
+
+  $references = _merci_staff_potential_references_standard($field, $string, $exact_string);
+
+  // Store the results.
+  $results[$field['field_name']][$string][$exact_string] = $references;
+
+  return $results[$field['field_name']][$string][$exact_string];
+}
+
+/**
+ * Helper function for _civicrm_cck_potential_references():
+ * referenceable nodes defined by content types.
+ */
+function _merci_staff_potential_references_standard( $field, $string = '', $exact_string = FALSE, $limit = '10' ) {
+  
+  $args = $whereClause = $contactTypes = $contactSubTypes = array();
+
+  if ( ! civicrm_initialize( ) ) {
+    return;
+  }
+  global $civicrm_root;
+  
+  require_once $civicrm_root . '/CRM/Contact/BAO/ContactType.php';
+  require_once $civicrm_root . '/CRM/Core/BAO/UFMatch.php';
+  $basicTypes = CRM_Contact_BAO_ContactType::basicTypePairs( );
+
+  foreach ( $basicTypes as $name => $label ) {
+    if ( is_array( $field[$name] ) ) {
+      $contactNames = array_filter( $field[$name] );
+      if ( !empty( $contactNames ) ) {
+        if ( in_array( $name, $contactNames ) ) {
+          $contactTypes[] = $name;
+        }
+        else {
+          $contactSubTypes = array_merge( $contactSubTypes, array_keys( $contactNames ) );
+        }
+      }
+    }
+  }
+
+  if ( !empty( $contactTypes ) ) {
+    $contactTypes  = implode( "','", $contactTypes );
+    $whereClause[] = "contact_type IN ( '{$contactTypes}' )";
+  }
+
+  if ( !empty( $contactSubTypes ) ) {
+    $contactSubTypes = implode( "','", $contactSubTypes );
+    $whereClause[]   = "contact_sub_type IN ( '{$contactSubTypes}' )";
+  }
+
+  $whereClause = empty( $whereClause ) ? '' : '(' . implode( ' OR ', $whereClause ) . ') AND';
+  $related_clause = "";
+
+  if (isset($string)) {
+    if ($exact_string) {
+      $string_clause = " AND display_name = %1";
+      $args[] = $string;
+    }
+    else {
+      $string_clause = " AND display_name LIKE %1";
+      $args[] = "%%" . $string . "%";
+    }
+  }
+
+  $q = "
+    SELECT civicrm_contact.id, display_name
+    FROM civicrm_contact
+    JOIN civicrm_uf_match ON civicrm_contact.id = civicrm_uf_match.contact_id
+    WHERE $whereClause
+    display_name IS NOT NULL
+    AND display_name NOT LIKE ''
+    AND display_name NOT LIKE '<Last>%%'
+    AND display_name NOT LIKE '%@%%'
+    AND display_name NOT LIKE '--%%'
+    AND display_name NOT LIKE '- -%%'
+    AND display_name NOT LIKE ',%%'
+    AND display_name NOT LIKE '..%%'
+    " . $string_clause . " LIMIT $limit";
+  $params = array(1 => array($args[0], "String"));
+  $dao = CRM_Core_DAO::executeQuery( $q, $params );
+
+  $references = array();
+  while ($dao->fetch()) {
+    $uid = CRM_Core_BAO_UFMatch::getUFId($dao->id);
+    $username = db_query("SELECT name FROM {users} WHERE uid = :uid", array(':uid' => $uid))->fetchField();
+    $references[$dao->id] = array(
+      'title' => $username,
+      'rendered' => $dao->display_name,
+    );
+  }
+
+  return $references;
+}
+
+function merci_staff_field_widget_form_alter(&$element, &$form_state, $context) {
+  if ($context['instance']['bundle'] == 'merci_reservation' and $context['instance']['field_name'] == 'group_audience') {
+    $form = $context['form'];
+    $field = $context['field'];
+    $instance = $context['instance'];
+    $langcode = $context['langcode'];
+    $items = $context['items'];
+    $delta = $context['delta'];
+    if (!user_access('manage reservations')) {
+      return;
+    }
+
+    if (isset($form_state['values'])) {
+      $node = (array)$form_state['values'] + (array)$form['#node'];
+    } else {
+      $node = $form['#node'];
+    }
+    $node = (object) $node;
+    drupal_static_reset('og_field_audience_options');
+    unset($element['#input']);
+    unset($element['#type']); 
+    unset($element['#options']); 
+    unset($element['#default_value']);
+    unset($element['#attributes']);
+    unset($element['#disabled']);
+    // Re-use options widget element validation, to correctly transform
+    // submitted values from field => delta to delta => field.
+    // @see options_field_widget().
+    unset($element['#value_key']);
+    unset($element['#element_validate']);
+    unset($element['#properties']);
+    // Add OG specific context.
+    unset($element['#opt_group']);
+    unset($element['#audience']);
+    unset($element['#hidden_selected_gids']);
+
+    $base = $element;
+    // Recreate the groups and choices based on the submitted name.
+    merci_staff_load_user((array) $node);
+    global $user;
+
+    $return = og_field_widget_form($form, $form_state, $field, $instance, $langcode, $items, $delta, $base);
+    merci_staff_load_user();
+    $element = $return;
+  }
+}

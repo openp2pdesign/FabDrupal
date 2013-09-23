@@ -1,0 +1,212 @@
+ ; Theme info
+name = 'Tb Hadelis'
+description = Hadelis is designed to display your beautiful artworks. Show your creative workspace and get attention from your potential customers. Requires <a href="http://drupal.org/project/nucleus">Nucleus</a> base theme.
+core = '7.x'
+engine = 'phptemplate'
+base theme = 'nucleus'
+screenshot = 'screenshot.png'
+
+; Stylesheets
+stylesheets[all][] = 'css/html-elements.css'
+stylesheets[all][] = 'css/forms.css'
+stylesheets[all][] = 'css/page.css'
+stylesheets[all][] = 'css/articles.css'
+stylesheets[all][] = 'css/comments.css'
+stylesheets[all][] = 'css/forum.css'
+stylesheets[all][] = 'css/fields.css'
+stylesheets[all][] = 'css/blocks.css'
+stylesheets[all][] = 'css/panel-panes.css'
+stylesheets[all][] = 'css/navigation.css'
+stylesheets[all][] = 'css/fonts.css'
+
+; Seperate CSS3 to css3.css
+stylesheets[all][] = 'css/css3.css'
+
+; Stylesheets for Print Media
+stylesheets[print][] = 'css/print.css'
+
+; Conditional Stylesheets for IE
+stylesheets-conditional[IE][all][] = css/ie.css
+stylesheets-conditional[IE 9][all][] = css/ie7.css
+stylesheets-conditional[IE 7][all][] = css/ie7.css
+
+; Scripts in this theme
+scripts[] = 'js/jquery.matchHeights.min.js'
+scripts[] = 'js/tb_hadelis.js'
+
+; Core regions
+regions[content] = 'Main content'
+regions[header] = 'Header'
+regions[menu_bar] = 'Menu bar'
+regions[slideshow] = 'Slideshow'
+regions[highlighted] = 'Highlighted'
+regions[footer] = 'Footer'
+regions[help] = 'Help'
+regions[page_top] = 'Page top'
+regions[page_bottom] = 'Page bottom'
+regions[mass_bottom] = 'Mass bottom'
+
+; Sidebar regions
+regions[sidebar_first] = 'Sidebar first'
+
+; panel regions
+regions[panel_first_1] = 'Panel first column 1'
+
+regions[panel_second_1] = 'Panel second column 1'
+regions[panel_second_2] = 'Panel second column 2'
+regions[panel_second_3] = 'Panel second column 3'
+
+regions[panel_third_1] = 'Panel third column 1'
+
+regions[panel_fourth_1] = 'Panel fourth column 1'
+
+regions[panel_fifth_1] = 'Panel fifth column 1'
+regions[panel_fifth_2] = 'Panel fifth column 2'
+regions[panel_fifth_3] = 'Panel fifth column 3'
+regions[panel_fifth_4] = 'Panel fifth column 4'
+
+; Features (core settings)
+features[] = 'logo'
+features[] = 'name'
+features[] = 'slogan'
+features[] = 'node_user_picture'
+features[] = 'comment_user_picture'
+features[] = 'comment_user_verification'
+features[] = 'favicon'
+features[] = 'go_to_top_button'
+features[] = 'secondary_menu'
+
+; Breadcrumb
+settings[breadcrumb_display] = 'yes'
+settings[breadcrumb_separator] = ' &#187; '
+settings[breadcrumb_home] = 1
+settings[back_to_top_display] = 'yes'
+
+; Layouts
+pages[default] = 'Normal page'
+
+; Default settings
+settings[grid] = 'fluid-grid-12'
+settings[layout_width] = '900px'
+
+settings[page_layout] = 'default'
+
+;Sidebar width settings
+settings[sidebar_first_width] = 4
+
+;Panel width settings
+settings[panel_first_1_width] = 12
+
+settings[panel_second_1_width] = 4
+settings[panel_second_2_width] = 4
+settings[panel_second_3_width] = 4
+
+settings[panel_third_1_width] = 12
+
+settings[panel_fourth_1_width] = 12
+
+settings[panel_fifth_1_width] = 3
+settings[panel_fifth_2_width] = 3
+settings[panel_fifth_3_width] = 3
+settings[panel_fifth_4_width] = 3
+
+; Fonts
+settings[base_font] = 'bf-a'
+settings[site_name_font_custom] = 'TeXGyreAdventorBold'
+settings[site_name_font_type] = 'custom'
+settings[site_slogan_font] = ''
+settings[page_title_font] = ''
+settings[node_title_font] = ''
+settings[comment_title_font] = ''
+settings[block_title_font] = ''
+settings[font_size] = 'fs-medium'
+
+; Extra Typo
+settings[load_extra_typo_styles] = 0
+
+; Default fonts family
+default_fonts[sss] = 'Calibri, Candara, Helvetica Neue, Trebuchet MS, Arial, Helvetica, sans-serif'
+default_fonts[ssl] = 'Verdana, Geneva, Arial, Helvetica, sans-serif'
+default_fonts[a] = 'Arial, Helvetica, sans-serif'
+default_fonts[ss] = 'Garamond, Perpetua, Times New Roman, serif'
+default_fonts[sl] = 'Georgia, Baskerville, Palatino, Palatino Linotype, Book Antiqua, Times New Roman, serif'
+default_fonts[m] = 'Segoe UI, Myriad Pro, Myriad, Arial, Helvetica, sans-serif;'
+default_fonts[l] = 'Lucida Sans Unicode, Lucida Sans, Lucida Grande, Verdana, Geneva, sans-serif'
+default_fonts[ms] = 'Consolas, Monaco, Courier New, Courier, monospace'
+
+; Block Styles default settings
+block_styles[raw] = 'Raw'
+block_styles[icon] = 'Icon'
+block_styles[quote] = 'Quote'
+
+block_extend_classes[white-color] = 'White Color'
+block_extend_classes[gray-color] = 'Gray Color'
+block_extend_classes[yellow-color] = 'Yellow Color'
+block_extend_classes[dark-gray-color] = 'Dark Gray Color'
+block_extend_classes[no-padding] = 'No Padding'
+block_extend_classes[block-icon-1] = 'Block Icon 1'
+block_extend_classes[block-icon-2] = 'Block Icon 2'
+block_extend_classes[block-icon-3] = 'Block Icon 3'
+block_extend_classes[double-quote] = 'Double Quote'
+
+block_extended_class_groups[group_1][group_title] = 'All Block Colors Styles'
+block_extended_class_groups[group_1][classes] = 'white-color, gray-color, dark-gray-color, yellow-color'
+
+block_extended_class_groups[group_2][group_title] = 'Icon Block Styles'
+block_extended_class_groups[group_2][supported_styles] = 'icon'
+block_extended_class_groups[group_2][classes] = 'block-icon-1, block-icon-2, block-icon-3'
+
+block_extended_class_groups[group_3][group_title] = 'Quote Block Styles'
+block_extended_class_groups[group_3][supported_styles] = 'quote'
+block_extended_class_groups[group_3][classes] = 'double-quote'
+
+settings[page_block_style] = 'default'
+settings[default_region_footer_style] = 'raw'
+settings[default_region_header_style] = 'raw'
+settings[default_region_slideshow_style] = 'raw'
+
+settings[default_region_panel_second_1_style] = 'icon'
+settings[default_region_panel_second_1_extend_class] = 'group_2 block-icon-1'
+settings[default_region_panel_second_2_style] = 'icon'
+settings[default_region_panel_second_2_extend_class] = 'group_2 block-icon-2'
+settings[default_region_panel_second_3_style] = 'icon'
+settings[default_region_panel_second_3_extend_class] = 'group_3 block-icon-3'
+
+settings[default_block_block_11_extend_class] = 'group_1 dark-gray-color'
+settings[default_block_user_login_extend_class] = 'group_1 white-color'
+
+settings[default_block_block_13_style] = 'quote'
+settings[default_block_block_13_extend_class] = 'group_3 yellow-color group_3 double-quote'
+
+; Superfish Styles
+superfish_styles[hadelis] = 'Hadelis Style for Superfish'
+settings[superfish_extend_style_1] = 'hadelis'
+settings[superfish_extend_style_2] = 'hadelis'
+
+; Quicktabs Styles
+quicktabs_styles[hadelis] = 'Hadelis Style for Quicktabs'
+settings[quicktabs_extend_style_quicktabs] = 'hadelis'
+
+
+settings[toggle_logo] = 1
+settings[toggle_name] = 1
+settings[toggle_slogan] = 1
+settings[toggle_node_user_picture] = 1
+settings[toggle_comment_user_picture] = 1
+settings[toggle_comment_user_verification] = 1
+settings[toggle_favicon] = 1
+settings[toggle_secondary_menu] = 0
+settings[default_logo] = 1
+settings[default_favicon] = 1
+
+settings[default_logo] = 1
+settings[logo_path] = ''
+settings[default_favicon] = 1
+settings[favicon_path] = ''
+
+; Information added by drupal.org packaging script on 2012-11-22
+version = "7.x-1.0-beta1"
+core = "7.x"
+project = "tb_hadelis"
+datestamp = "1353586723"
+

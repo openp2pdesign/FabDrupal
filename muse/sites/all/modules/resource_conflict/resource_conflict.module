@@ -1,0 +1,297 @@
+<?php
+
+/**
+ * Check a node for conflicts
+ */
+function resource_conflict_check_node($node) {
+  // Check the content type to make sure conflict handling is enabled.
+  $type = $node->type;
+  if (!variable_get('rc_type_' . $type, FALSE)) {
+    // Conflict handling is not enabled for this node.
+    return;
+  }
+
+  // Find the date field to use for time overlapping_node_ids detection.
+  $date_field = variable_get('rc_date_field_' . $type, FALSE);
+
+  $overlapping_node_ids = array();
+  if (strpos($date_field, 'field_', 0) === 0) {
+    // Get the start and end Date of the current node, accounting for repeat dates
+    $time_spans_raw = array();
+    foreach ($node->{$date_field}['und'] as $single_repetition_date) {
+      $time_spans_raw[] = array(
+        'start' => $single_repetition_date['value'],
+        'end' => $single_repetition_date['value2'],
+      );
+    }
+
+    // Get all conflicting Date nodes
+    if (isset($time_spans_raw)) {
+      $overlapping_node_ids = _resource_conflict_overlaps_from_date($time_spans_raw);
+    }
+    else {
+      // If we got here, someone broke the requirements, so log the problem and move on
+      watchdog('resource_conflict', 'Conflict checking is enabled for Content type %type, but no date field has been selected for conflict checking.', array('%type' => $type), 'WATCHDOG_ERROR');
+    }
+  }
+
+  // Load conflicting nodes
+  $conflicting_nodes = array();
+  foreach ($overlapping_node_ids as $nid) {
+    // Don't have the node conflict with itself
+    if ($nid != $node->nid) {
+      $conflicting_nodes[] = node_load($nid);
+    }
+  }
+  // Fire Rules action for each conflict detected
+  foreach ($conflicting_nodes as $conflicting_node) {
+    rules_invoke_event('resource_conflict_conflict_detected', $node, $conflicting_node);
+  }
+  if (!$conflicting_nodes) {
+    return FALSE;
+  }
+  return $conflicting_nodes;
+}
+
+/**
+ * Sneak a form error into validation with the Session variable.
+ * It's a dirty hack, but it will work for now.
+ */
+function resource_conflict_form_error($message) {
+  $_SESSION['resource_conflict_message']['items'][] = $message;
+}
+
+/**
+ * Implements hook_node_validate().
+ * Throws a validation error for any errors set in SESSION
+ * TODO: a better way to throw form errors with Rules.
+*/
+function resource_conflict_node_validate($node, $form) {
+  $type = $node->type;
+  if (!variable_get('rc_type_' . $type, FALSE)) {
+    // Conflict handling is not enabled for this content type
+    return;
+  }
+  rules_invoke_event('resource_conflict_node_validation', $node, $form);
+  if (isset($_SESSION['resource_conflict_message'])) {
+    // Find the date field that handles conflicts
+    $date_field = variable_get('rc_date_field_' . $type, FALSE);
+    $form_error = theme('item_list', $_SESSION['resource_conflict_message']);
+    form_set_error($date_field, $form_error);
+    unset($_SESSION['resource_conflict_message']);
+  }
+}
+
+
+/**
+ * Rules Condition: check a node object for conflicts.
+ */
+function resource_conflict_contains_conflict($node) {
+  $conflicting_nodes = resource_conflict_check_node($node);
+  if (!$conflicting_nodes) {
+    return FALSE;
+  }
+  return TRUE;
+}
+
+/**
+ * Rules Action: load list of conflicting nodes, if any
+ */
+function resource_conflict_load_conflict_list($node) {
+  $conflict_list = resource_conflict_check_node($node);
+  if (!$conflict_list) {
+    return FALSE;
+  }
+  return array('conflict_list' => $conflict_list);
+}
+
+/**
+ * Determine if any nodes conflict between the specified dates using Date API.
+ *
+ * @param $time_spans_input
+ *   An array of 'time span' arrays. Each array has the following keys:
+ *   - start: An ISO timestamp representing the start of the time span.
+ *   - end:  An ISO timestamp representing the end of the time span.
+ * @return
+ *   An array of node IDs.
+ */
+function _resource_conflict_overlaps_from_date($time_spans_input) {
+  $time_spans = array();
+  foreach ($time_spans_input as $single_time_span_input) {
+    $date_startobj = New DateObject($single_time_span_input['start'], 'GMT');
+    $date_endobj   = New DateObject($single_time_span_input['end'], 'GMT');
+    $time_spans[] = array('start' => $date_startobj, 'end' => $date_endobj);
+  }
+  return _resource_conflict_get_overlaps($time_spans);
+}
+
+/**
+ * Determine if any conflict enabled nodes overlap the specified times
+ *
+ * 1. $start is within the event time
+ * 2. $end end is within the event time
+ * 3. The event encompasses $start and $end
+ * 4. Allow the end of one event to occur at the start of the next
+ *
+ * @param $time_spans
+ *   An array of 'time span' arrays with the following keys:
+ *   - start: A Date API object representing the start of the time span.
+ *   - end:  A Date API object representing the end of the time span.
+ *   Each 'time span' array has a 'start' and an 'end' key and dateAPI objects as values.
+ * @return
+ *   An array of node IDs.
+ */
+function _resource_conflict_get_overlaps($time_spans) {
+  $rows = array();
+  foreach ($time_spans as $time_span) {
+    $date_start = $time_span['start']->format(DATE_FORMAT_DATETIME);
+    $date_end = $time_span['end']->format(DATE_FORMAT_DATETIME);
+    $conflict_types = _resource_conflict_get_conflict_enabled_types();
+    foreach ($conflict_types as $type) {
+      $date_field = variable_get('rc_date_field_' . $type, FALSE);
+      if (strpos($date_field, 'field_', 0) === 0) {
+        $date_table = '{' . 'field_data_' . $date_field . '}';
+        $start_field_name = $date_field . '_value';
+        $end_field_name = $date_field . '_value2';
+        $query = "SELECT DISTINCT {node}.nid FROM {node} INNER JOIN $date_table date_table ON {node}.vid = date_table.revision_id
+         WHERE(BINARY :date_start >= BINARY date_table.$start_field_name AND BINARY :date_start < BINARY date_table.$end_field_name)
+         OR(BINARY :date_end > BINARY date_table.$start_field_name AND BINARY :date_end <= BINARY date_table.$end_field_name)
+         OR(BINARY :date_start <= BINARY date_table.$start_field_name AND BINARY :date_end >= BINARY date_table.$end_field_name)";
+        $result = db_query($query, array(':date_start' => $date_start, ':date_end' => $date_end));
+
+        // Create an array of all of the results
+        while ($row = $result->fetchAssoc()) {
+          $rows[] = $row['nid'];
+        }
+      }
+    }
+  }
+  return array_unique($rows);
+}
+
+/**
+ * Get the conflict enabled content types
+ *
+ * @return
+ *   An array of type names
+ */
+function _resource_conflict_get_conflict_enabled_types() {
+  $conflict_types = variable_get("rc_types", array());
+  return $conflict_types;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function resource_conflict_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id == 'node_type_form') {
+    $requirements = array();
+
+    $type = (isset($form['old_type']) && isset($form['old_type']['#value'])) ? $form['old_type']['#value'] : NULL;
+
+    $form['resource_conflict_set'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Resource Conflict'),
+      '#collapsible' => TRUE,
+      '#group' => 'additional_settings',
+    );
+
+    // The user is adding a new content type
+    if ($type == NULL) {
+      $form['resource_conflict_set']['rc_info'] = array(
+        '#prefix' => '<p>',
+        '#suffix' => '</p>',
+        '#value' => t('To set up this content type for conflict checking, first add a Date field with required start and end dates. When the conditions have been met, this section will be enabled for configuration.'),
+      );
+      return;
+    }
+    $date_fields = array();
+    if ($type != NULL) {
+      $fields = field_info_instances('node', $type);
+      foreach ($fields as $fieldname => $field) {
+          $fieldinfo = field_info_field($fieldname);
+        if (isset($field['display']['default']['module'])&&($field['display']['default']['module'] == 'date')&&($field['required'] == 1)) {
+          if ($fieldinfo['settings']['todate'] == 'required' ) {
+            $date_fields[$fieldname] = $field['label'];
+          }
+        }
+      }
+    }
+
+    if (empty($date_fields)) {
+      $form['resource_conflict_set']['requirements'] = array(
+        '#type' => 'markup',
+        '#prefix' => '<p>', 
+        '#suffix' => '</p>',
+        '#weight' => -10,
+        '#markup' => t('This content type does not contain any suitable Date fields. Please add at least one Date field with required start and end dates.'),
+      );
+    }
+    else {
+      $form['resource_conflict_set']['rc_type'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Enable resource conflict checking for this content type'),
+        '#default_value' => variable_get('rc_type_' . $type, 0),
+        '#weight' => -8,
+      );
+
+      $form['resource_conflict_set']['rc_date_field'] = array(
+        '#type' => 'select',
+        '#title' => t('Field to use as the date for conflict checks'),
+        '#options' => $date_fields,
+        '#multiple' => FALSE,
+        '#default_value' => variable_get('rc_date_field_' . $type, FALSE),
+        '#description' => t("Select the date field to use to check for resource conflicts."),
+      );
+
+    }
+
+    //set custom validation and submit callbacks
+    $form['#submit'][] = 'resource_conflict_form_submit';
+  }
+}
+
+/**
+ * Submit the node_type_form
+ */
+function resource_conflict_form_submit($form, &$form_state) {
+  $type = $form_state['values']['type'];
+  $conflict_types = variable_get("rc_types", array());
+
+  //make new entry if this type is conflict handled
+  if (isset($form_state['values']['rc_type'])&&($form_state['values']['rc_type'])) {
+    $conflict_types[] = $type;
+  }
+
+  variable_set("rc_types", $conflict_types);
+}
+
+/**
+ * Implements hook_field_delete_instance()
+ * Notice when an RC-enabled field is deleted and remove it from the RC Registry
+ */
+function resource_conflict_field_delete_instance($instance) {
+  if (variable_get('rc_type_' . $instance['bundle'], FALSE) && (variable_get('rc_date_field_' . $instance['bundle'], FALSE) == $instance['field_name'])) {
+    variable_del('rc_type_'. $instance['bundle']);
+    variable_del('rc_date_field_' . $instance['bundle']);
+    $msg = t('Resource Conflict has been disabled for the %type content type as the date field has been deleted.', array('%type' => $instance['bundle']));
+    drupal_set_message($msg, 'warning');
+    watchdog('resource conflict', $msg, WATCHDOG_WARNING);
+  }
+}
+
+/**
+ * Implements hook_field_update_instance()
+ * Notice when an RC-enabled field is modified, and make sure it still meets requirements.
+ */
+function resource_conflict_field_update_instance($instance, $prior_instance) {
+  if (variable_get('rc_type_' . $instance['bundle'], FALSE) && (variable_get('rc_date_field_' . $instance['bundle'], FALSE) == $instance['field_name'])) {
+    $field = field_info_field($instance['field_name']);
+    if ($instance['required'] != 1 || $field['settings']['todate'] != 'required' ) {
+      variable_del('rc_type_'. $instance['bundle']);
+      $msg = t('Resource Conflict has been disabled for the %type content type as the date field no longer meets requirements', array('%type' => $instance['bundle']));
+      drupal_set_message($msg, 'warning');
+      watchdog('resource conflict', $msg, WATCHDOG_WARNING);
+    }
+  }
+}
