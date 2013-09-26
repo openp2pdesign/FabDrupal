@@ -1,8 +1,7 @@
-name = Event Registration
+name = FabDrupal Event Registration
 description = Event registration (workshop, conference) functionality for the FabDrupal distribution
 core = 7.x
 package = FabDrupal
-php = 5.2.4
 version = 7.x-0.1
 project = event_registration
 dependencies[] = date

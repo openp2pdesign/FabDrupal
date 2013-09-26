@@ -1,8 +1,7 @@
-name = Open API
+name = FabDrupal Open API
 description = Open API (Services) for the FabDrupal distribution
 core = 7.x
 package = FabDrupal
-php = 5.2.4
 version = 7.x-0.1
 project = open_api
 dependencies[] = features

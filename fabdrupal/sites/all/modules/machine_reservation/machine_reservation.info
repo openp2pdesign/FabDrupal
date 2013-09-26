@@ -1,8 +1,7 @@
-name = Machine Reservation
+name = FabDrupal Machine Reservation
 description = Machine reservation functionality for the FabDrupal distribution
 core = 7.x
 package = FabDrupal
-php = 5.2.4
 version = 7.x-0.1
 project = machine_reservation
 dependencies[] = calendar

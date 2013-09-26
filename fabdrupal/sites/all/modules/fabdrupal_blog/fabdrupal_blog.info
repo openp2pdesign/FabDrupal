@@ -1,4 +1,4 @@
-name = Blog
+name = FabDrupal Blog
 description = A blog for the FabDrupal Distribution
 core = 7.x
 package = FabDrupal

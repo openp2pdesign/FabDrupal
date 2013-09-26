@@ -10,7 +10,7 @@
 function machine_reservation_user_default_permissions() {
   $permissions = array();
 
-  // Exported permission: administer MERCI.
+  // Exported permission: 'administer MERCI'.
   $permissions['administer MERCI'] = array(
     'name' => 'administer MERCI',
     'roles' => array(
@@ -19,7 +19,7 @@ function machine_reservation_user_default_permissions() {
     'module' => 'merci',
   );
 
-  // Exported permission: create confirmed reservations.
+  // Exported permission: 'create confirmed reservations'.
   $permissions['create confirmed reservations'] = array(
     'name' => 'create confirmed reservations',
     'roles' => array(
@@ -28,7 +28,7 @@ function machine_reservation_user_default_permissions() {
     'module' => 'merci',
   );
 
-  // Exported permission: create reservations.
+  // Exported permission: 'create reservations'.
   $permissions['create reservations'] = array(
     'name' => 'create reservations',
     'roles' => array(
@@ -37,7 +37,7 @@ function machine_reservation_user_default_permissions() {
     'module' => 'merci',
   );
 
-  // Exported permission: create reservations outside hours of operation.
+  // Exported permission: 'create reservations outside hours of operation'.
   $permissions['create reservations outside hours of operation'] = array(
     'name' => 'create reservations outside hours of operation',
     'roles' => array(
@@ -46,7 +46,7 @@ function machine_reservation_user_default_permissions() {
     'module' => 'merci',
   );
 
-  // Exported permission: manage reservations.
+  // Exported permission: 'manage reservations'.
   $permissions['manage reservations'] = array(
     'name' => 'manage reservations',
     'roles' => array(
@@ -55,7 +55,7 @@ function machine_reservation_user_default_permissions() {
     'module' => 'merci',
   );
 
-  // Exported permission: override max hours over closed days.
+  // Exported permission: 'override max hours over closed days'.
   $permissions['override max hours over closed days'] = array(
     'name' => 'override max hours over closed days',
     'roles' => array(
@@ -64,7 +64,7 @@ function machine_reservation_user_default_permissions() {
     'module' => 'merci',
   );
 
-  // Exported permission: suspend MERCI access.
+  // Exported permission: 'suspend MERCI access'.
   $permissions['suspend MERCI access'] = array(
     'name' => 'suspend MERCI access',
     'roles' => array(
@@ -73,7 +73,7 @@ function machine_reservation_user_default_permissions() {
     'module' => 'merci',
   );
 
-  // Exported permission: view all reservations.
+  // Exported permission: 'view all reservations'.
   $permissions['view all reservations'] = array(
     'name' => 'view all reservations',
     'roles' => array(

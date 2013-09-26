@@ -1,8 +1,7 @@
-name = Content Types
+name = FabDrupal Content Types
 description = Content Types for the FabDrupal distribution
 core = 7.x
 package = FabDrupal
-php = 5.2.4
 version = 7.x-0.1
 project = content_types
 dependencies[] = addressfield
