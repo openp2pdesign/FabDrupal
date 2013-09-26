@@ -57,57 +57,57 @@ projects[tao][version] = "3.0-beta4"
 ; Libraries
 ; Please fill the following out. Type may be one of get, git, bzr or svn,
 ; and url is the url of the download.
-libraries[ckeditor][download][type] = ""
-libraries[ckeditor][download][url] = ""
+libraries[ckeditor][download][type] = "get"
+libraries[ckeditor][download][url] = "http://download.cksource.com/CKEditor/CKEditor/CKEditor%204.2.1/ckeditor_4.2.1_full.zip"
 libraries[ckeditor][directory_name] = "ckeditor"
 libraries[ckeditor][type] = "library"
 
 ; Please fill the following out. Type may be one of get, git, bzr or svn,
 ; and url is the url of the download.
-libraries[colorbox][download][type] = ""
-libraries[colorbox][download][url] = ""
+libraries[colorbox][download][type] = "get"
+libraries[colorbox][download][url] = "https://github.com/jackmoore/colorbox/archive/1.x.zip"
 libraries[colorbox][directory_name] = "colorbox"
 libraries[colorbox][type] = "library"
 
 ; Please fill the following out. Type may be one of get, git, bzr or svn,
 ; and url is the url of the download.
-libraries[fullcalendar][download][type] = ""
-libraries[fullcalendar][download][url] = ""
+libraries[fullcalendar][download][type] = "get"
+libraries[fullcalendar][download][url] = "https://github.com/arshaw/fullcalendar/releases/download/v1.6.4/fullcalendar-1.6.4.zip"
 libraries[fullcalendar][directory_name] = "fullcalendar"
 libraries[fullcalendar][type] = "library"
 
 ; Please fill the following out. Type may be one of get, git, bzr or svn,
 ; and url is the url of the download.
-libraries[hybridauth][download][type] = ""
-libraries[hybridauth][download][url] = ""
+libraries[hybridauth][download][type] = "get"
+libraries[hybridauth][download][url] = "http://downloads.sourceforge.net/project/hybridauth/hybridauth-2.1.2.zip?r=&ts=1380232726&use_mirror=heanet"
 libraries[hybridauth][directory_name] = "hybridauth"
 libraries[hybridauth][type] = "library"
 
 ; Please fill the following out. Type may be one of get, git, bzr or svn,
 ; and url is the url of the download.
-libraries[hybridauth-additional-providers-1.8][download][type] = ""
-libraries[hybridauth-additional-providers-1.8][download][url] = ""
+libraries[hybridauth-additional-providers-1.8][download][type] = "get"
+libraries[hybridauth-additional-providers-1.8][download][url] = "http://downloads.sourceforge.net/project/hybridauth/hybridauth-additional-providers-1.8.zip?r=http%3A%2F%2Fhybridauth.sourceforge.net%2Fdownload.html&ts=1380232759&use_mirror=switch"
 libraries[hybridauth-additional-providers-1.8][directory_name] = "hybridauth-additional-providers-1.8"
 libraries[hybridauth-additional-providers-1.8][type] = "library"
 
 ; Please fill the following out. Type may be one of get, git, bzr or svn,
 ; and url is the url of the download.
-libraries[leaflet][download][type] = ""
-libraries[leaflet][download][url] = ""
+libraries[leaflet][download][type] = "get"
+libraries[leaflet][download][url] = "http://leaflet-cdn.s3.amazonaws.com/build/leaflet-0.6.4.zip"
 libraries[leaflet][directory_name] = "leaflet"
 libraries[leaflet][type] = "library"
 
 ; Please fill the following out. Type may be one of get, git, bzr or svn,
 ; and url is the url of the download.
-libraries[leaflet_markercluster][download][type] = ""
-libraries[leaflet_markercluster][download][url] = ""
+libraries[leaflet_markercluster][download][type] = "get"
+libraries[leaflet_markercluster][download][url] = "https://github.com/Leaflet/Leaflet.markercluster/archive/master.zip"
 libraries[leaflet_markercluster][directory_name] = "leaflet_markercluster"
 libraries[leaflet_markercluster][type] = "library"
 
 ; Please fill the following out. Type may be one of get, git, bzr or svn,
 ; and url is the url of the download.
-libraries[superfish][download][type] = ""
-libraries[superfish][download][url] = ""
+libraries[superfish][download][type] = "get"
+libraries[superfish][download][url] = "https://github.com/mehrpadin/Superfish-for-Drupal/archive/1.x.zip"
 libraries[superfish][directory_name] = "superfish"
 libraries[superfish][type] = "library"
 
