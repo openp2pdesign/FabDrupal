@@ -49,6 +49,38 @@ projects[tagclouds][version] = "1.9"
 projects[token][version] = "1.5"
 projects[views][version] = "3.7"
 
+; Features
+projects[content_types][subdir] = "contrib"
+projects[content_types][download][type] = "get"
+projects[content_types][download][url] = "https://github.com/OpenP2PDesignOrg/FabDrupalDevelopment/raw/master/features/content_types-7.x-0.1.tar"
+projects[content_types][version] = "7.x-0.1"
+
+projects[event_registration][subdir] = "contrib"
+projects[event_registration][download][type] = "get"
+projects[event_registration][download][url] = "https://github.com/OpenP2PDesignOrg/FabDrupalDevelopment/raw/master/features/event_registration-7.x-0.1.tar"
+projects[event_registration][version] = "7.x-0.1"
+
+projects[fabdrupal_blog][subdir] = "contrib"
+projects[fabdrupal_blog][download][type] = "get"
+projects[fabdrupal_blog][download][url] = "https://github.com/OpenP2PDesignOrg/FabDrupalDevelopment/raw/master/features/fabdrupal_blog-7.x-0.1.tar"
+projects[fabdrupal_blog][version] = "7.x-0.1"
+
+projects[machine_reservation][subdir] = "contrib"
+projects[machine_reservation][download][type] = "get"
+projects[machine_reservation][download][url] = "https://github.com/OpenP2PDesignOrg/FabDrupalDevelopment/raw/master/features/machine_reservation-7.x-0.1.tar"
+projects[machine_reservation][version] = "7.x-0.1"
+
+projects[open_api][subdir] = "contrib"
+projects[open_api][download][type] = "get"
+projects[open_api][download][url] = "https://github.com/OpenP2PDesignOrg/FabDrupalDevelopment/raw/master/features/open_api-7.x-0.1.tar"
+projects[open_api][version] = "7.x-0.1"
+
+projects[various_settings][subdir] = "contrib"
+projects[various_settings][download][type] = "get"
+projects[various_settings][download][url] = "https://github.com/OpenP2PDesignOrg/FabDrupalDevelopment/raw/master/features/various_settings-7.x-0.1.tar"
+projects[various_settings][version] = "7.x-0.1"
+
+
 ; Themes
 projects[rubik][version] = "4.0-beta8"
 projects[skeletontheme][version] = "1.2"
