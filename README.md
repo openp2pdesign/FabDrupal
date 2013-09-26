@@ -3,17 +3,12 @@ FabDrupalDevelopment
 
 A repository for the development environment of the FabDrupal distribution
 
-Admin user: 
-
+*Admin user:* 
 username = admin
-
 password = admin
 
 
-Database:
-
+*Database:*
 name = fabdrupal
-
 user = root
-
 password = 
