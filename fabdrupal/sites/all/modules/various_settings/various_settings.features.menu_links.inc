@@ -26,7 +26,7 @@ function various_settings_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -43,
+    'weight' => -36,
   );
   // Exported menu link: main-menu:flickr
   $menu_links['main-menu:flickr'] = array(
@@ -44,7 +44,7 @@ function various_settings_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -46,
+    'weight' => -39,
   );
   // Exported menu link: main-menu:users-map
   $menu_links['main-menu:users-map'] = array(
@@ -62,7 +62,7 @@ function various_settings_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -44,
+    'weight' => -37,
   );
   // Translatables
   // Included for use with string extractors like potx.
