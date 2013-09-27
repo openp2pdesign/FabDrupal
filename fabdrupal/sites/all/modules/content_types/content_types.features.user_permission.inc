@@ -10,22 +10,6 @@
 function content_types_user_default_permissions() {
   $permissions = array();
 
-  // Exported permission: 'create article content'.
-  $permissions['create article content'] = array(
-    'name' => 'create article content',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'node',
-  );
-
-  // Exported permission: 'create blog content'.
-  $permissions['create blog content'] = array(
-    'name' => 'create blog content',
-    'roles' => array(),
-    'module' => 'node',
-  );
-
   // Exported permission: 'create event content'.
   $permissions['create event content'] = array(
     'name' => 'create event content',
@@ -78,13 +62,6 @@ function content_types_user_default_permissions() {
   // Exported permission: 'create supplier content'.
   $permissions['create supplier content'] = array(
     'name' => 'create supplier content',
-    'roles' => array(),
-    'module' => 'node',
-  );
-
-  // Exported permission: 'delete any blog content'.
-  $permissions['delete any blog content'] = array(
-    'name' => 'delete any blog content',
     'roles' => array(),
     'module' => 'node',
   );
@@ -145,13 +122,6 @@ function content_types_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: 'delete own blog content'.
-  $permissions['delete own blog content'] = array(
-    'name' => 'delete own blog content',
-    'roles' => array(),
-    'module' => 'node',
-  );
-
   // Exported permission: 'delete own event content'.
   $permissions['delete own event content'] = array(
     'name' => 'delete own event content',
@@ -208,13 +178,6 @@ function content_types_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: 'edit any blog content'.
-  $permissions['edit any blog content'] = array(
-    'name' => 'edit any blog content',
-    'roles' => array(),
-    'module' => 'node',
-  );
-
   // Exported permission: 'edit any event content'.
   $permissions['edit any event content'] = array(
     'name' => 'edit any event content',
@@ -267,13 +230,6 @@ function content_types_user_default_permissions() {
   // Exported permission: 'edit any supplier content'.
   $permissions['edit any supplier content'] = array(
     'name' => 'edit any supplier content',
-    'roles' => array(),
-    'module' => 'node',
-  );
-
-  // Exported permission: 'edit own blog content'.
-  $permissions['edit own blog content'] = array(
-    'name' => 'edit own blog content',
     'roles' => array(),
     'module' => 'node',
   );
