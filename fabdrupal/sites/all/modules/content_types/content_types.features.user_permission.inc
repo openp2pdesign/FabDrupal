@@ -108,15 +108,6 @@ function content_types_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: 'create page content'.
-  $permissions['create page content'] = array(
-    'name' => 'create page content',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'node',
-  );
-
   // Exported permission: 'create partner content'.
   $permissions['create partner content'] = array(
     'name' => 'create partner content',
@@ -135,15 +126,6 @@ function content_types_user_default_permissions() {
   $permissions['create supplier content'] = array(
     'name' => 'create supplier content',
     'roles' => array(),
-    'module' => 'node',
-  );
-
-  // Exported permission: 'delete any article content'.
-  $permissions['delete any article content'] = array(
-    'name' => 'delete any article content',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
     'module' => 'node',
   );
 
@@ -189,15 +171,6 @@ function content_types_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: 'delete any page content'.
-  $permissions['delete any page content'] = array(
-    'name' => 'delete any page content',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'node',
-  );
-
   // Exported permission: 'delete any partner content'.
   $permissions['delete any partner content'] = array(
     'name' => 'delete any partner content',
@@ -216,15 +189,6 @@ function content_types_user_default_permissions() {
   $permissions['delete any supplier content'] = array(
     'name' => 'delete any supplier content',
     'roles' => array(),
-    'module' => 'node',
-  );
-
-  // Exported permission: 'delete own article content'.
-  $permissions['delete own article content'] = array(
-    'name' => 'delete own article content',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
     'module' => 'node',
   );
 
@@ -270,15 +234,6 @@ function content_types_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: 'delete own page content'.
-  $permissions['delete own page content'] = array(
-    'name' => 'delete own page content',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'node',
-  );
-
   // Exported permission: 'delete own partner content'.
   $permissions['delete own partner content'] = array(
     'name' => 'delete own partner content',
@@ -303,15 +258,6 @@ function content_types_user_default_permissions() {
   // Exported permission: 'delete revisions'.
   $permissions['delete revisions'] = array(
     'name' => 'delete revisions',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'node',
-  );
-
-  // Exported permission: 'edit any article content'.
-  $permissions['edit any article content'] = array(
-    'name' => 'edit any article content',
     'roles' => array(
       'administrator' => 'administrator',
     ),
@@ -360,15 +306,6 @@ function content_types_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: 'edit any page content'.
-  $permissions['edit any page content'] = array(
-    'name' => 'edit any page content',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
-    'module' => 'node',
-  );
-
   // Exported permission: 'edit any partner content'.
   $permissions['edit any partner content'] = array(
     'name' => 'edit any partner content',
@@ -387,15 +324,6 @@ function content_types_user_default_permissions() {
   $permissions['edit any supplier content'] = array(
     'name' => 'edit any supplier content',
     'roles' => array(),
-    'module' => 'node',
-  );
-
-  // Exported permission: 'edit own article content'.
-  $permissions['edit own article content'] = array(
-    'name' => 'edit own article content',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
     'module' => 'node',
   );
 
@@ -438,15 +366,6 @@ function content_types_user_default_permissions() {
   $permissions['edit own merci_reservation content'] = array(
     'name' => 'edit own merci_reservation content',
     'roles' => array(),
-    'module' => 'node',
-  );
-
-  // Exported permission: 'edit own page content'.
-  $permissions['edit own page content'] = array(
-    'name' => 'edit own page content',
-    'roles' => array(
-      'administrator' => 'administrator',
-    ),
     'module' => 'node',
   );
 
