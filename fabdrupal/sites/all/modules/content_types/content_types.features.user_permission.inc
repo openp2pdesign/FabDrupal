@@ -1,0 +1,601 @@
+<?php
+/**
+ * @file
+ * content_types.features.user_permission.inc
+ */
+
+/**
+ * Implements hook_user_default_permissions().
+ */
+function content_types_user_default_permissions() {
+  $permissions = array();
+
+  // Exported permission: 'access content'.
+  $permissions['access content'] = array(
+    'name' => 'access content',
+    'roles' => array(
+      'administrator' => 'administrator',
+      'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'access content overview'.
+  $permissions['access content overview'] = array(
+    'name' => 'access content overview',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'administer content types'.
+  $permissions['administer content types'] = array(
+    'name' => 'administer content types',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'administer nodes'.
+  $permissions['administer nodes'] = array(
+    'name' => 'administer nodes',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'bypass node access'.
+  $permissions['bypass node access'] = array(
+    'name' => 'bypass node access',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create article content'.
+  $permissions['create article content'] = array(
+    'name' => 'create article content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create blog content'.
+  $permissions['create blog content'] = array(
+    'name' => 'create blog content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create event content'.
+  $permissions['create event content'] = array(
+    'name' => 'create event content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create faq content'.
+  $permissions['create faq content'] = array(
+    'name' => 'create faq content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create machine content'.
+  $permissions['create machine content'] = array(
+    'name' => 'create machine content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create material content'.
+  $permissions['create material content'] = array(
+    'name' => 'create material content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create merci_reservation content'.
+  $permissions['create merci_reservation content'] = array(
+    'name' => 'create merci_reservation content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create page content'.
+  $permissions['create page content'] = array(
+    'name' => 'create page content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create partner content'.
+  $permissions['create partner content'] = array(
+    'name' => 'create partner content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create project content'.
+  $permissions['create project content'] = array(
+    'name' => 'create project content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'create supplier content'.
+  $permissions['create supplier content'] = array(
+    'name' => 'create supplier content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any article content'.
+  $permissions['delete any article content'] = array(
+    'name' => 'delete any article content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any blog content'.
+  $permissions['delete any blog content'] = array(
+    'name' => 'delete any blog content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any event content'.
+  $permissions['delete any event content'] = array(
+    'name' => 'delete any event content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any faq content'.
+  $permissions['delete any faq content'] = array(
+    'name' => 'delete any faq content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any machine content'.
+  $permissions['delete any machine content'] = array(
+    'name' => 'delete any machine content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any material content'.
+  $permissions['delete any material content'] = array(
+    'name' => 'delete any material content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any merci_reservation content'.
+  $permissions['delete any merci_reservation content'] = array(
+    'name' => 'delete any merci_reservation content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any page content'.
+  $permissions['delete any page content'] = array(
+    'name' => 'delete any page content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any partner content'.
+  $permissions['delete any partner content'] = array(
+    'name' => 'delete any partner content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any project content'.
+  $permissions['delete any project content'] = array(
+    'name' => 'delete any project content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete any supplier content'.
+  $permissions['delete any supplier content'] = array(
+    'name' => 'delete any supplier content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own article content'.
+  $permissions['delete own article content'] = array(
+    'name' => 'delete own article content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own blog content'.
+  $permissions['delete own blog content'] = array(
+    'name' => 'delete own blog content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own event content'.
+  $permissions['delete own event content'] = array(
+    'name' => 'delete own event content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own faq content'.
+  $permissions['delete own faq content'] = array(
+    'name' => 'delete own faq content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own machine content'.
+  $permissions['delete own machine content'] = array(
+    'name' => 'delete own machine content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own material content'.
+  $permissions['delete own material content'] = array(
+    'name' => 'delete own material content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own merci_reservation content'.
+  $permissions['delete own merci_reservation content'] = array(
+    'name' => 'delete own merci_reservation content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own page content'.
+  $permissions['delete own page content'] = array(
+    'name' => 'delete own page content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own partner content'.
+  $permissions['delete own partner content'] = array(
+    'name' => 'delete own partner content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own project content'.
+  $permissions['delete own project content'] = array(
+    'name' => 'delete own project content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete own supplier content'.
+  $permissions['delete own supplier content'] = array(
+    'name' => 'delete own supplier content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'delete revisions'.
+  $permissions['delete revisions'] = array(
+    'name' => 'delete revisions',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any article content'.
+  $permissions['edit any article content'] = array(
+    'name' => 'edit any article content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any blog content'.
+  $permissions['edit any blog content'] = array(
+    'name' => 'edit any blog content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any event content'.
+  $permissions['edit any event content'] = array(
+    'name' => 'edit any event content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any faq content'.
+  $permissions['edit any faq content'] = array(
+    'name' => 'edit any faq content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any machine content'.
+  $permissions['edit any machine content'] = array(
+    'name' => 'edit any machine content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any material content'.
+  $permissions['edit any material content'] = array(
+    'name' => 'edit any material content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any merci_reservation content'.
+  $permissions['edit any merci_reservation content'] = array(
+    'name' => 'edit any merci_reservation content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any page content'.
+  $permissions['edit any page content'] = array(
+    'name' => 'edit any page content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any partner content'.
+  $permissions['edit any partner content'] = array(
+    'name' => 'edit any partner content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any project content'.
+  $permissions['edit any project content'] = array(
+    'name' => 'edit any project content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit any supplier content'.
+  $permissions['edit any supplier content'] = array(
+    'name' => 'edit any supplier content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own article content'.
+  $permissions['edit own article content'] = array(
+    'name' => 'edit own article content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own blog content'.
+  $permissions['edit own blog content'] = array(
+    'name' => 'edit own blog content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own event content'.
+  $permissions['edit own event content'] = array(
+    'name' => 'edit own event content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own faq content'.
+  $permissions['edit own faq content'] = array(
+    'name' => 'edit own faq content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own machine content'.
+  $permissions['edit own machine content'] = array(
+    'name' => 'edit own machine content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own material content'.
+  $permissions['edit own material content'] = array(
+    'name' => 'edit own material content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own merci_reservation content'.
+  $permissions['edit own merci_reservation content'] = array(
+    'name' => 'edit own merci_reservation content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own page content'.
+  $permissions['edit own page content'] = array(
+    'name' => 'edit own page content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own partner content'.
+  $permissions['edit own partner content'] = array(
+    'name' => 'edit own partner content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own project content'.
+  $permissions['edit own project content'] = array(
+    'name' => 'edit own project content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'edit own supplier content'.
+  $permissions['edit own supplier content'] = array(
+    'name' => 'edit own supplier content',
+    'roles' => array(),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'geocoder_service_all_handlers'.
+  $permissions['geocoder_service_all_handlers'] = array(
+    'name' => 'geocoder_service_all_handlers',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'geocoder_service_handler_exif'.
+  $permissions['geocoder_service_handler_exif'] = array(
+    'name' => 'geocoder_service_handler_exif',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'geocoder_service_handler_google'.
+  $permissions['geocoder_service_handler_google'] = array(
+    'name' => 'geocoder_service_handler_google',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'geocoder_service_handler_gpx'.
+  $permissions['geocoder_service_handler_gpx'] = array(
+    'name' => 'geocoder_service_handler_gpx',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'geocoder_service_handler_json'.
+  $permissions['geocoder_service_handler_json'] = array(
+    'name' => 'geocoder_service_handler_json',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'geocoder_service_handler_kml'.
+  $permissions['geocoder_service_handler_kml'] = array(
+    'name' => 'geocoder_service_handler_kml',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'geocoder_service_handler_latlon'.
+  $permissions['geocoder_service_handler_latlon'] = array(
+    'name' => 'geocoder_service_handler_latlon',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'geocoder_service_handler_mapquest_nominatim'.
+  $permissions['geocoder_service_handler_mapquest_nominatim'] = array(
+    'name' => 'geocoder_service_handler_mapquest_nominatim',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'geocoder_service_handler_wkt'.
+  $permissions['geocoder_service_handler_wkt'] = array(
+    'name' => 'geocoder_service_handler_wkt',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'geocoder_service_handler_yahoo'.
+  $permissions['geocoder_service_handler_yahoo'] = array(
+    'name' => 'geocoder_service_handler_yahoo',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'geocoder_service_handler_yandex'.
+  $permissions['geocoder_service_handler_yandex'] = array(
+    'name' => 'geocoder_service_handler_yandex',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'geocoder',
+  );
+
+  // Exported permission: 'revert revisions'.
+  $permissions['revert revisions'] = array(
+    'name' => 'revert revisions',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'view own unpublished content'.
+  $permissions['view own unpublished content'] = array(
+    'name' => 'view own unpublished content',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: 'view revisions'.
+  $permissions['view revisions'] = array(
+    'name' => 'view revisions',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'node',
+  );
+
+  return $permissions;
+}

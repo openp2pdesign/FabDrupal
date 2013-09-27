@@ -10,6 +10,15 @@
 function machine_reservation_user_default_permissions() {
   $permissions = array();
 
+  // Exported permission: 'access rules debug'.
+  $permissions['access rules debug'] = array(
+    'name' => 'access rules debug',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'rules',
+  );
+
   // Exported permission: 'administer MERCI'.
   $permissions['administer MERCI'] = array(
     'name' => 'administer MERCI',
@@ -17,6 +26,42 @@ function machine_reservation_user_default_permissions() {
       'administrator' => 'administrator',
     ),
     'module' => 'merci',
+  );
+
+  // Exported permission: 'administer rules'.
+  $permissions['administer rules'] = array(
+    'name' => 'administer rules',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'rules',
+  );
+
+  // Exported permission: 'administer rules forms'.
+  $permissions['administer rules forms'] = array(
+    'name' => 'administer rules forms',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'rules_forms',
+  );
+
+  // Exported permission: 'administer rules forms rules'.
+  $permissions['administer rules forms rules'] = array(
+    'name' => 'administer rules forms rules',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'rules_forms',
+  );
+
+  // Exported permission: 'bypass rules access'.
+  $permissions['bypass rules access'] = array(
+    'name' => 'bypass rules access',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'rules',
   );
 
   // Exported permission: 'create confirmed reservations'.
