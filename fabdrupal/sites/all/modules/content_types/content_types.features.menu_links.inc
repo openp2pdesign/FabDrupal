@@ -40,7 +40,27 @@ function content_types_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -47,
+    'weight' => -48,
+    'parent_path' => '<front>',
+  );
+  // Exported menu link: main-menu:http://fab.cba.mit.edu/about/charter/
+  $menu_links['main-menu:http://fab.cba.mit.edu/about/charter/'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'http://fab.cba.mit.edu/about/charter/',
+    'router_path' => '',
+    'link_title' => 'The Fab Charter',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 1,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -50,
+    'parent_path' => '<front>',
   );
   // Exported menu link: main-menu:machines
   $menu_links['main-menu:machines'] = array(
@@ -58,7 +78,8 @@ function content_types_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 1,
     'expanded' => 0,
-    'weight' => -44,
+    'weight' => -46,
+    'parent_path' => '<front>',
   );
   // Exported menu link: main-menu:materials
   $menu_links['main-menu:materials'] = array(
@@ -76,23 +97,8 @@ function content_types_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -43,
-  );
-  // Exported menu link: main-menu:node/25
-  $menu_links['main-menu:node/25'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'node/25',
-    'router_path' => 'node/%',
-    'link_title' => 'The Fab Charter',
-    'options' => array(
-      'attributes' => array(),
-    ),
-    'module' => 'menu',
-    'hidden' => 0,
-    'external' => 0,
-    'has_children' => 0,
-    'expanded' => 0,
-    'weight' => -46,
+    'weight' => -45,
+    'parent_path' => '<front>',
   );
   // Exported menu link: main-menu:partners
   $menu_links['main-menu:partners'] = array(
@@ -110,7 +116,8 @@ function content_types_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -45,
+    'weight' => -47,
+    'parent_path' => '<front>',
   );
   // Exported menu link: main-menu:projects
   $menu_links['main-menu:projects'] = array(
@@ -146,7 +153,8 @@ function content_types_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -48,
+    'weight' => -49,
+    'parent_path' => '<front>',
   );
   // Exported menu link: main-menu:suppliers
   $menu_links['main-menu:suppliers'] = array(
@@ -164,7 +172,8 @@ function content_types_menu_default_menu_links() {
     'external' => 0,
     'has_children' => 0,
     'expanded' => 0,
-    'weight' => -42,
+    'weight' => -44,
+    'parent_path' => '<front>',
   );
   // Translatables
   // Included for use with string extractors like potx.
