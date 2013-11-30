@@ -131,12 +131,12 @@ libraries[leaflet][directory_name] = "leaflet"
 libraries[leaflet][type] = "library"
 
 libraries[leaflet_markercluster][download][type] = "get"
-libraries[leaflet_markercluster][download][url] = "https://github.com/Leaflet/Leaflet.markercluster/archive/master.zip"
+libraries[leaflet_markercluster][download][url] = "https://github.com/Leaflet/Leaflet.markercluster/archive/0.2.tar.gz"
 libraries[leaflet_markercluster][directory_name] = "leaflet_markercluster"
 libraries[leaflet_markercluster][type] = "library"
 
 libraries[superfish][download][type] = "get"
-libraries[superfish][download][url] = "https://github.com/mehrpadin/Superfish-for-Drupal/archive/1.x.zip"
+libraries[superfish][download][url] = "https://github.com/mehrpadin/Superfish-for-Drupal/archive/1.0.tar.gz"
 libraries[superfish][directory_name] = "superfish"
 libraries[superfish][type] = "library"
 

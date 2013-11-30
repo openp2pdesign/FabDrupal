@@ -8,23 +8,7 @@ function fabdrupal_install() {
   // Enable some fabdrupal blocks.
   $default_theme = 'skeletontheme';
   $admin_theme = 'rubik';
-  $enable = array(
-    'theme_default' => 'skeletontheme',
-    'admin_theme' => 'rubik',
-    //'zen'
-  );
-  theme_enable($enable);
-
-  foreach ($enable as $var => $theme) {
-    if (!is_numeric($var)) {
-      variable_set($var, $theme);
-    }
-  }
-
-  // Disable the default Bartik theme
-  theme_disable(array('bartik'));
-  
-  
+  // disable all themes
   db_update('system')
     ->fields(array('status' => 0))
     ->condition('type', 'theme')
@@ -116,7 +100,19 @@ function fabdrupal_install() {
       'weight' => -17,
     ),
   );
-  shortcut_set_save($shortcut_set);
+  shortcut_set_save($shortcut_set);// Create a default role for site administrators, with all available permissions assigned.
+  $admin_role = new stdClass();
+  $admin_role->name = 'administrator';
+  $admin_role->weight = 10;
+  user_role_save($admin_role);
+  user_role_grant_permissions($admin_role->rid, array_keys(module_invoke_all('permission')));
+  // Set this as the administrator role.
+  variable_set('user_admin_role', $admin_role->rid);
+
+  // Assign user 1 the "administrator" role.
+  db_insert('users_roles')
+    ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
+    ->execute();
   // Update the menu router information.
   menu_rebuild();
   // revert features to ensure they are all installed
