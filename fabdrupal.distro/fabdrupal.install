@@ -117,7 +117,13 @@ function fabdrupal_install() {
   menu_rebuild();
   // revert features to ensure they are all installed
   $features = array(
-    ''
+    'content_types',
+    'event_registration',
+    'fabdrupal_blog',
+    'fabdrupal_community',
+    'machine_reservation',
+    'open_api',
+    'various_settings'
   );
   features_revert($features);
   // ignore any rebuild messages
