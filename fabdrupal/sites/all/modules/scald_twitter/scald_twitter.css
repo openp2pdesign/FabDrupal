@@ -1,9 +1,0 @@
-.dnd-library-wrapper .editor-item .meta.type-twitter {
-  background-image: url('icons/twitter.png');
-}
-.scald-menu .add-buttons .add-twitter {
-  background: url('icons/twitter-large-inverted.png') 50% 50% no-repeat;
-}
-.scald-menu .add-buttons .add-twitter:hover {
-  background-image: url('icons/twitter-large-color.png');
-}
