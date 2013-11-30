@@ -87,6 +87,7 @@
 .dnd-library-wrapper .editor-item .image img {
   width: 48px;
   height: auto;
+  cursor: move;
 }
 .dnd-library-wrapper .editor-item:hover img,
 .dnd-library-wrapper .editor-item.bt-active img {
@@ -269,10 +270,6 @@
 }
 .dnd-library-wrapper.library-on {
   right: 0px;
-}
-
-body {
-  margin-right: 20px !important;
 }
 
 /**
@@ -546,3 +543,13 @@ body {
   background-color: #fff;
   border-color: #6bf;
 }
+
+/* Override CTools' modal */
+
+
+/* Override CTools' modal */
+div.ctools-modal-content .field-type-atom-reference .form-item.form-type-textfield:first-child label {
+  /* Don't use a fixed width label for the dropbox */
+  width: auto;
+}
+

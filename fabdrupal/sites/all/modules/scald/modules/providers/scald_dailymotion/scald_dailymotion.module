@@ -67,14 +67,16 @@ function scald_dailymotion_scald_add_form_fill(&$atom, $form, $form_state) {
   $atom->title = $infos->title;
 
   // Prefill the author
-  $atom->scald_authors[LANGUAGE_NONE][0] = array(
+  $langcode = field_language('scald_atom', $atom, 'scald_authors');
+  $atom->scald_authors[$langcode][0] = array(
     'tid' => 0,
     'taxonomy_term' => (object)(array('name' => $infos->author))
   );
 
   // Prefill tags
+  $langcode = field_language('scald_atom', $atom, 'scald_tags');
   foreach ($infos->tags as $index => $tag) {
-    $atom->scald_tags[LANGUAGE_NONE][$index] = array(
+    $atom->scald_tags[$langcode][$index] = array(
       'tid' => $index,  // Beware, this is not a real tid, it's just an index
       'taxonomy_term' => (object)(array('name' => $tag))
     );
@@ -90,9 +92,8 @@ function scald_dailymotion_scald_add_form_fill(&$atom, $form, $form_state) {
   // Download a copy of the video thumbnail. This makes it possible
   // to do interesting manipulation with image styles presets.
   $thumb = drupal_http_request($infos->thumbnail['src']);
-  $dir = 'public://dailymotion';
-  if ($thumb->code == 200 && file_prepare_directory($dir, FILE_CREATE_DIRECTORY)) {
-    $dest = $dir . '/' . $infos->id . '.jpg';
+  if ($thumb->code == 200 && $directory = scald_atom_thumbnail_path('video')) {
+    $dest = $directory . '/dailymotion-' . $infos->id . '.jpg';
     $file = file_save_data($thumb->data, $dest);
 
     // Set the file status to temporary
@@ -100,8 +101,8 @@ function scald_dailymotion_scald_add_form_fill(&$atom, $form, $form_state) {
       ->condition('fid', $file->fid)
       ->fields(array('status' => 0))
       ->execute();
-
-    $atom->scald_thumbnail[LANGUAGE_NONE][0] = (array)$file;
+    $langcode = field_language('scald_atom', $atom, 'scald_thumbnail');
+    $atom->scald_thumbnail[$langcode][0] = (array)$file;
   }
 }
 
@@ -109,9 +110,9 @@ function scald_dailymotion_scald_add_form_fill(&$atom, $form, $form_state) {
  * Implements hook_scald_fetch().
  */
 function scald_dailymotion_scald_fetch($atom, $type) {
-  $file = $atom->scald_thumbnail[LANGUAGE_NONE][0]['uri'];
-  if (file_exists($file)) {
-    $atom->file_source = $atom->thumbnail_source = $file;
+  $items = field_get_items('scald_atom', $atom, 'scald_thumbnail');
+  if ($items && file_exists($items[0]['uri'])) {
+    $atom->file_source = $atom->thumbnail_source = $items[0]['uri'];
   }
 }
 
@@ -128,6 +129,7 @@ function scald_dailymotion_scald_prerender($atom, $context, $options, $mode) {
           'video_height'  => ($atom->data['video_height'] ? $atom->data['video_height'] : 365),
           'thumbnail'     => $atom->rendered->thumbnail_source_url,
         ),
+        'atom' => $atom,
       )
     );
   }
@@ -139,7 +141,7 @@ function scald_dailymotion_scald_prerender($atom, $context, $options, $mode) {
 function scald_dailymotion_theme() {
   return array(
     'scald_dailymotion_player' => array(
-      'variables' => array('vars' => NULL),
+      'variables' => array('vars' => NULL, 'atom' => NULL),
       'template' => 'scald_dailymotion_player'
     ),
     'scald_dailymotion_imports_table' => array(
@@ -253,15 +255,17 @@ function scald_dailymotion_direct_import($video) {
 
   // Create and link author term
   if ($term = scald_dailymotion_taxonomy_get_create($infos->author, variable_get('scald_author_vocabulary', 0))) {
-    $atom->scald_authors[LANGUAGE_NONE][0] = array(
+    $langcode = field_language('scald_atom', $atom, 'scald_authors');
+    $atom->scald_authors[$langcode][0] = array(
       'tid' => $term->tid,
     );
   }
 
   // Create and link tags terms
+  $langcode = field_language('scald_atom', $atom, 'scald_tags');
   foreach ($infos->tags as $index => $tag) {
     if ($term = scald_dailymotion_taxonomy_get_create($tag, variable_get('scald_tags_vocabulary', 0))) {
-      $atom->scald_tags[LANGUAGE_NONE][$index] = array(
+      $atom->scald_tags[$langcode][$index] = array(
         'tid' => $term->tid,
       );
     }
@@ -285,8 +289,8 @@ function scald_dailymotion_direct_import($video) {
         ->condition('fid', $file->fid)
         ->fields(array('status' => 0))
         ->execute();
-
-      $atom->scald_thumbnail[LANGUAGE_NONE][0] = (array)$file;
+      $langcode = field_language('scald_atom', $atom, 'scald_thumbnail');
+      $atom->scald_thumbnail[$langcode][0] = (array) $file;
     }
   }
 

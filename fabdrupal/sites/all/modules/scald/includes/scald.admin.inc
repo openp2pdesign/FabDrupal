@@ -129,7 +129,18 @@ function scald_admin_type_form($form, $form_state, $type) {
     '#default_value'  => $default->description,
     '#size'           => 40,
     '#maxlength'      => 255,
-    '#required'       => TRUE,
+  );
+  $options = array(
+    'managed_file' => t('Managed file'),
+  );
+  if (module_exists('plupload')) {
+    $options['plupload'] = t('Plupload');
+  }
+  $form['defaults']['type_' . $type_name . '_utype'] = array(
+    '#type'           => 'select',
+    '#title'          => t('Upload type'),
+    '#default_value'  => $default->upload_type,
+    '#options' => $options
   );
   // Create checkboxes for the defined actions.
   $actions = scald_actions();
@@ -191,6 +202,10 @@ function scald_admin_type_form_submit($form, &$form_state) {
 
         case '_descr':
           $scald_atom_defaults[$type]->description = $value;
+          break;
+
+        case '_utype':
+          $scald_atom_defaults[$type]->upload_type = $value;
           break;
 
         case '_actin':
@@ -338,15 +353,10 @@ function scald_admin_context_form_submit($form, &$form_state) {
   cache_clear_all('*', 'cache_scald', TRUE);
 
   $form_state['redirect'] = 'admin/structure/scald';
-  return;
 }
 
 /**
  * Context delete confirm form.
- *
-*  @param array $form
-*  @param array $form_state
- * @param string $context_name
  */
 function scald_admin_context_confirm_delete_form($form, &$form_state, $context_name) {
   // Delete a Scald custom context.
@@ -483,10 +493,12 @@ function scald_admin_contexts_form($form, $form_state, $type) {
   return $form;
 }
 
+/**
+ * Re-generates the player settings form.
+ */
 function scald_admin_contexts_player_ajax($form, $form_state) {
-  $context_name = substr($form_state['triggering_element']['#name'], -6);
-  $type_name = $form_state['build_info']['args'][0]->type;
-  return $form[$type_name][$type_name . '_player_settings'];
+  $context_name = substr($form_state['triggering_element']['#name'], 0, -6);
+  return $form[$context_name][$context_name . '_player_settings'];
 }
 
 /**
@@ -498,32 +510,27 @@ function scald_admin_contexts_player_ajax($form, $form_state) {
 function scald_admin_contexts_form_submit($form, &$form_state) {
   drupal_set_message(t('Context transcoders settings saved'));
   $typename = $form_state['build_info']['args'][0]->type;
+  $players = scald_players();
   foreach ($form_state['values'] as $key => $value) {
     switch (drupal_substr($key, -6)) {
-      // Transcoders
+      // Handle transcoders submission.
       case '_trans':
         $context = drupal_substr($key, 0, -6);
         $transcoder = $value;
-        if ($value == '@none') {
-          // @todo can it really happen?
-          $context_config = scald_context_config_load($context);
-          if (isset($context_config->transcoder[$typename]['*'])) {
-            $context_config->transcoder[$typename]['*'] = NULL;
-            scald_context_config_save($context_config);
-          }
-        }
-        else {
-          $context_config = scald_context_config_load($context);
-          $context_config->transcoder[$typename]['*'] = $transcoder;
-          scald_context_config_save($context_config);
-        }
+        $context_config = scald_context_config_load($context);
+        $context_config->transcoder[$typename]['*'] = $transcoder;
+        scald_context_config_save($context_config);
         break;
 
-      // Players
+      // Handler players submission.
       case '_playe':
         $context = drupal_substr($key, 0, -6);
         $context_config = scald_context_config_load($context);
         $context_config->player[$typename]['*'] = $value;
+        // Load and save default settings for the player.
+        if (!isset($context_config->player[$typename]['settings']) && isset($players[$value]['settings'])) {
+          $context_config->player[$typename]['settings'] = $players[$value]['settings'];
+        }
         scald_context_config_save($context_config);
         break;
     }
@@ -599,9 +606,11 @@ function scald_player_settings_form($form, $form_state, $type, $context, $player
   $contexts = scald_contexts();
   $players = scald_players();
 
-  // Sanity check
+  // If either the context or the player is missing (for example
+  // because the module providing it was disabled), return an
+  // empty form.
   if (!isset($contexts[$context]) || !isset($players[$player])) {
-    return;
+    return array();
   }
 
   // If the current player is not the same as the configure player, display a
@@ -613,13 +622,13 @@ function scald_player_settings_form($form, $form_state, $type, $context, $player
   $settings_form = array();
   $function = $players[$player]['provider'] . '_scald_player_settings_form';
   if (function_exists($function)) {
-    // Default settings
+    // Handle the default settings.
     $player_settings = isset($contexts[$context]['player'][$type->type]['settings']) ? $contexts[$context]['player'][$type->type]['settings'] : array();
     if (isset($players[$player]['settings'])) {
       $player_settings += $players[$player]['settings'];
     }
 
-    $form['#scald'] =array(
+    $form['#scald'] = array(
       'type' => $type,
       'context' => $context,
       'player' => $player,
@@ -666,4 +675,3 @@ function scald_player_settings_form_submit($form, &$form_state) {
     drupal_set_message(t('Your player settings has been updated.'));
   }
 }
-

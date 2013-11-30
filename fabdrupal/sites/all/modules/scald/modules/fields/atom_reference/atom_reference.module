@@ -180,20 +180,17 @@ function atom_reference_field_widget_form(&$form, &$form_state, $field, $instanc
     array('%types' => implode(', ', $options))
   );
 
-  $return['sid'] = $element;
-  $return['sid']['#description'] .= ' ' . $help;
-
-  $return['sid']['#type'] = 'textfield';
-  $return['sid']['#attributes'] = array('data-types' => implode(',', array_keys($options)));
-  $return['sid']['#default_value'] = isset($items[$delta]) ? $items[$delta]['sid'] : '';
-
-  $return['sid']['#process'][] = 'atom_reference_field_widget_form_process';
+  $element['#description'] .= ' ' . $help;
+  $element['#type'] = 'textfield';
+  $element['#attributes'] = array('data-types' => implode(',', array_keys($options)));
+  $element['#default_value'] = isset($items[$delta]) ? $items[$delta]['sid'] : '';
+  $element['#process'][] = 'atom_reference_field_widget_form_process';
 
   // Attach our JS and CSS to the element
   $path = drupal_get_path('module', 'atom_reference');
-  $return['sid']['#attached'] = array('library' => array(array('atom_reference', 'library')));
+  $element['#attached'] = array('library' => array(array('atom_reference', 'library')));
 
-  return $return;
+  return array('sid' => $element);
 }
 
 /**
@@ -221,7 +218,7 @@ function atom_reference_field_widget_form_process(&$element) {
   // Get the default value, and format the placeholder accordingly.
   $default = $element['#value'];
   if ($default) {
-    $prefix = '<div class="atom_reference_drop_zone">' . scald_render($default, 'sdl_editor_representation') .'</div>';
+    $prefix = '<div class="atom_reference_drop_zone">' . scald_render($default, variable_get('dnd_context_default', 'sdl_editor_representation')) .'</div>';
   }
   else {
     $placeholder = t('Drop a resource here');

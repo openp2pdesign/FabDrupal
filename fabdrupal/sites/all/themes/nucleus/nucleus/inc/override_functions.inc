@@ -27,7 +27,7 @@ function nucleus_preprocess_html(&$vars) {
       'type' => 'file',
     ));
     if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Opera') !== FALSE) {
-      drupal_add_css("public://nucleus/grid-fluid-" . $grid_int . "-opera.css", array(
+      drupal_add_css("public://nucleus/grid-fluid-" . $grid_int . "-" . $layout_width_int . "-opera.css", array(
         'group' => CSS_THEME,
         'type' => 'file',
       ));

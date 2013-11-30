@@ -18,11 +18,9 @@ function scald_atom_add() {
 
   $content = array();
 
-  // Check if the user is allowed to create atoms of any type.
-  $any = user_access('administer scald atoms') || user_access('create atom of any type');
   foreach ($types as $name => $type) {
     // Skip atom type the user isn't allowed to create.
-    if (!$any && !user_access('create atom of ' . $type->type . ' type')) {
+    if (!scald_action_permitted(new ScaldAtom($name), 'create')) {
       continue;
     }
     $content[] = array(
@@ -46,6 +44,14 @@ function scald_atom_add_page($js, $type, $step = NULL, $atom_id = NULL) {
 
   ctools_include('object-cache');
   ctools_include('wizard');
+
+  // If we are not currently edit an atom and there is a temporary saved atom,
+  // reopen it.
+  $cache = ctools_object_cache_get('scald_atom', 'edit:-1');
+  if (!$atom_id && $cache && $cache['atoms'][0]->type === $type->type) {
+    $atom_id = -1;
+    $step = 'options';
+  }
 
   $cache_id = isset($atom_id) ? 'edit:' . $atom_id : 'add';
 
@@ -71,6 +77,8 @@ function scald_atom_add_page($js, $type, $step = NULL, $atom_id = NULL) {
     'ajax' => $js,
     'scald' => ctools_object_cache_get('scald_atom', $cache_id),
   );
+
+  $form_state['atom'] = $form_state['scald']['atoms'][0];
 
   if (empty($form_state['scald'])) {
     $form_state['scald'] = array(
@@ -134,8 +142,8 @@ function scald_atom_add_page($js, $type, $step = NULL, $atom_id = NULL) {
   }
   else {
     if ($output === FALSE || !empty($form_state['complete'])) {
-      $atom = $form_state['scald']['atom'];
-      drupal_goto('atom/' . $atom->sid . '/view');
+      $atom = $form_state['scald']['atoms'][0];
+      drupal_goto('atom/' . $atom->sid);
     }
     elseif (!empty($form_state['cancel'])) {
       drupal_goto('atom/add');
@@ -200,48 +208,85 @@ function scald_atom_add_form_add($form, &$form_state) {
  */
 function scald_atom_add_form_add_submit(&$form, &$form_state) {
   $scald = $form_state['scald'];
-  $atom = new ScaldAtom($scald['type']->type, $scald['source']);
 
-  // Allow the source provider to alter it, filling in defaults value.
-  $function = $atom->provider . '_scald_add_form_fill';
+  $count = 1;
+  $atom_count_implemented = FALSE;
+  // Allow the source provider to define how many atoms to create
+  // and handle differences between upload modules
+  $function = $scald['source'] . '_scald_add_atom_count';
   if (function_exists($function)) {
-    $function($atom, $form, $form_state);
+    $count = $function($form, $form_state);
+    $atom_count_implemented = TRUE;
   }
 
+  for ($delta = 0; $delta < $count; $delta++) {
+    $atoms[$delta] = new ScaldAtom($scald['type']->type, $scald['source']);
+  }
+
+  // Allow the source provider to alter it, filling in defaults value.
+  $function = $scald['source'] . '_scald_add_form_fill';
+  if (function_exists($function)) {
+    if ($atom_count_implemented) {
+      $function($atoms, $form, $form_state);
+    }
+    else {
+      $function($atoms[0], $form, $form_state);
+    }
+  }
   // And put it in the form_state
-  $form_state['scald']['atom'] = $atom;
+  $form_state['scald']['atoms'] = $atoms;
 }
 
 /**
  * Options form.
  */
 function scald_atom_add_form_options($form, &$form_state) {
-  $atom = $form_state['scald']['atom'];
-
-  $form['title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Title'),
-    '#required' => TRUE,
-    '#default_value' => $atom->title,
-  );
+  $atoms = $form_state['scald']['atoms'];
 
   $actions = scald_actions();
-  $options = array();
-  $options_default = array();
-  foreach ($actions as $name => $action) {
-    $options[$name] = $action['title'];
-    $options_default[$name] = $atom->actions & $action['bitmask'] ? $name : '';
-  }
-  $form['scald_actions'] = array(
-    '#type' => 'checkboxes',
-    '#title' => 'Openly available actions',
-    '#group' => 'additional_settings',
-    '#options' => $options,
-    '#default_value' => $options_default,
-    '#access' => user_access('administer scald atoms'),
-  );
 
-  field_attach_form('scald_atom', $atom, $form, $form_state);
+  $form['#entity_type'] = 'scald_atom';
+
+  foreach ($atoms as $delta => $atom) {
+    $form['atom' . $delta] = array(
+      '#prefix' => '<div class="atom-wrapper">',
+      '#suffix' => '</div>',
+      '#parents' => array('atom' . $delta),
+    );
+    $form['atom' . $delta]['title'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Title'),
+      '#required' => TRUE,
+      '#default_value' => $atom->title,
+      '#parents' => array('atom' . $delta, 'title'),
+      '#weight' => -10,
+    );
+    $form['language'] = array(
+      '#type' => 'value',
+      '#value' => $atom->language,
+    );
+    field_attach_form('scald_atom', $atom, $form['atom' . $delta], $form_state);
+    $instances = field_info_instances('scald_atom', $atom->type);
+    foreach ($instances as $instance) {
+      $field_name = $instance['field_name'];
+      $form['atom' . $delta][$field_name]['#parents'] = array('atom' . $delta, $field_name);
+    }
+    $options = array();
+    $options_default = array();
+    foreach ($actions as $name => $action) {
+      $options[$name] = $action['title'];
+      $options_default[$name] = $atom->actions & $action['bitmask'] ? $name : '';
+    }
+    $form['atom' . $delta]['scald_actions'] = array(
+      '#type' => 'checkboxes',
+      '#title' => 'Openly available actions',
+      '#group' => 'additional_settings',
+      '#options' => $options,
+      '#default_value' => $options_default,
+      '#parents' => array('atom' . $delta, 'scald_actions'),
+      '#access' => user_access('restrict atom access'),
+    );
+  }
 
   $form['actions']['submit']['#value'] = t('Save');
 
@@ -252,40 +297,54 @@ function scald_atom_add_form_options($form, &$form_state) {
  * Handles the final atom creation step form submission.
  */
 function scald_atom_add_form_options_submit(&$form, &$form_state) {
-  $atom = $form_state['scald']['atom'];
-
-  if (is_array($form_state['values']['scald_actions'])) {
-    $bitstream = 0;
-    $actions = scald_actions();
-    foreach ($actions as $name => $action) {
-      if (!empty($form_state['values']['scald_actions'][$name])) {
-        $bitstream |= $action['bitmask'];
-      }
-    }
-    $form_state['values']['actions'] = $bitstream;
+  if (!$atoms = $form_state['scald']['atoms']) {
+    return;
   }
 
-  $op = empty($atom->sid) ? t('created') : t('updated');
+  foreach ($atoms as $delta => $atom) {
+    if (is_array($form_state['values']['atom' . $delta]['scald_actions'])) {
+      $bitstream = 0;
+      $actions = scald_actions();
+      foreach ($actions as $name => $action) {
+        if (!empty($form_state['values']['atom' . $delta]['scald_actions'][$name])) {
+          $bitstream |= $action['bitmask'];
+        }
+      }
+      $form_state['values']['atom' . $delta]['actions'] = $bitstream;
+    }
 
-  // Let entity add its properties to the atom.
-  entity_form_submit_build_entity('scald_atom', $atom, $form, $form_state);
+    $op = empty($atom->sid) ? t('created') : t('updated');
 
-  // Then save it...
-  scald_atom_save($atom);
+    // Let entity add its properties to the atom.
+    entity_form_submit_build_entity('scald_atom', $atom, $form['atom' . $delta], $form_state);
+    $atom->title = $form_state['values']['atom' . $delta]['title'];
+    $atom->actions = $form_state['values']['atom' . $delta]['actions'];
+    // Then save it...
+    scald_atom_save($atom);
+  }
 
   // Add a message confirming the creation.
-  drupal_set_message(t('Atom %title, of type %type has been %op', array(
-    '%title' => $atom->title,
-    '%type' => $atom->type,
-    '%op' => $op,
-  )));
+  if (count($atoms) == 1) {
+    drupal_set_message(t('Atom %title, of type %type has been @op.', array(
+      '%title' => $atoms[0]->title,
+      '%type' => $atoms[0]->type,
+      '@op' => $op,
+    )));
+  }
+  else {
+    drupal_set_message(t('%count atoms of type %type have been @op.', array(
+      '%count' => count($atoms),
+      '%type' => $atoms[0]->type,
+      '@op' => $op,
+    )));
+  }
 }
 
 /**
  * Handle the 'next' click on the add/edit pane form wizard.
  */
 function scald_atom_add_wizard_next(&$form_state) {
-  $cache_id = isset($form_state['scald']['atom']->sid) ? 'edit:' . $form_state['scald']['atom']->sid : 'add';
+  $cache_id = isset($form_state['scald']['atoms'][0]->sid) ? 'edit:' . $form_state['scald']['atoms'][0]->sid : 'add';
   ctools_object_cache_set('scald_atom', $cache_id, $form_state['scald']);
 }
 
@@ -318,7 +377,7 @@ function scald_atom_edit_page($js, $atom) {
   // We prepare data for this step then send back to the add page. The only
   // useful information at this step is the atom itself.
   $scald = array(
-    'atom' => $atom,
+    'atoms' => array($atom),
   );
   $types = scald_types();
   ctools_include('object-cache');
@@ -358,16 +417,30 @@ function scald_atom_delete_confirm_submit($form, &$form_state) {
 /**
  * Fetch atoms and return in JSON format.
  *
- * @param string $context
- *   The context the atoms should be rendered in.
  * @param string $sids
  *   Comma separated list of atom ids.
+ *
+ * Other parameters, such as context, could also be passed via the querystring.
  */
-function scald_atom_fetch_atoms($context, $sids) {
+function scald_atom_fetch_atoms($sids) {
   $output = array();
   $atoms = scald_atom_load_multiple(explode(',', $sids));
+
+  // Context can be passed via the querystring.
+  $context = isset($_GET['context']) && array_key_exists($_GET['context'], scald_contexts()) ? $_GET['context'] : '';
+
   foreach ($atoms as $sid => $atom) {
-    $output[$sid][$context] = scald_render($atom, $context);
+    $output[$sid] = array(
+      'sid' => $sid,
+      'contexts' => $context ? array($context => scald_render($atom, $context)) : array(),
+      'meta' => array(
+        'title' => $atom->title,
+        'type' => $atom->type,
+        'legend' => '',
+      ),
+      'actions' => array_keys(scald_atom_actions_available($atom)),
+    );
   }
   drupal_json_output($output);
 }
+

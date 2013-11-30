@@ -86,6 +86,10 @@ div.status {
     padding-bottom:5px;
     }
 
+  .item-list ul.ui-tabs-nav li:last-child {
+    padding-bottom:0;
+    }
+
 .admin-panel h3 span.icon,
 .admin-list li a span.icon {
   position:absolute;
@@ -114,6 +118,13 @@ div.status {
 
   .node-type-list li:last-child,
   .admin-list li:last-child { border:0px; }
+
+/* Fix default spacing between the links displayed in "Operations" column. */
+td ul.links.inline.operations li:not(:last-child) {
+  padding: 0 10px 0 0;
+  margin: 0 8px 0 0;
+  border-right: 1px solid #DDD;
+  }
 
 /**
  * Tables =============================================================
@@ -182,12 +193,40 @@ table tr.region td { background:#f8f8f8; }
 
 /* Hide tabledrag markers */
 table tr.draggable span.tabledrag-changed { display:none; }
- 
+
+table.field-multiple-table td { padding: 10px; }
+
 /* Stripe administrative tables */
-.page-admin table tr.even, .page-admin table tr.even td {
-  background: #f9f9f9;
+.page-admin table tr.even,
+.page-admin table tr.even td {
+  background-color: #f9f9f9;
 }
-               
+
+/* Use Drupal's default colors for Available Updates page statuses */
+.page-admin table tr.warning,
+.page-admin table tr.warning td {
+  background-color: #ffd;
+  color: #020;
+}
+.page-admin table tr.ok,
+.page-admin table tr.ok td {
+  background-color: #dfd;
+  color: #020;
+}
+.page-admin table tr.error,
+.page-admin table tr.error td {
+  background-color: #fcc;
+  color: #020;
+}
+
+/* Overrides the striping with core classes for errors and warnings */
+.page-admin table tr.error, .page-admin table tr.error td {
+  background: #FCC;
+}
+.page-admin table tr.warning, .page-admin table tr.warning td {
+  background: #FFD;
+}
+
 /**
  * Forms ==============================================================
  */
@@ -211,6 +250,17 @@ table tr.draggable span.tabledrag-changed { display:none; }
     position:relative;
     padding:9px;
     }
+.form-wrapper {
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  }
+
+.media-widget.form-wrapper{
+  padding-bottom:10px;
+  }
+.form-wrapper .form-wrapper a.button{
+  margin-left:10px;
+  }
 
   .admin-list { margin:0px; }
 
@@ -306,6 +356,10 @@ table .item-list,
   padding:9px 10px 20px;
   display:none;
   }
+  
+  .page-content .form-item.form-type-checkbox .description {
+    bottom: 150%;
+    }
 
   .page-content .form-item:hover {
     z-index:1;
@@ -314,14 +368,27 @@ table .item-list,
 
   .page-content .form-item:hover > .description { display:block; }
 
+  .rubik-inline-field-descriptions .page-content .form-item .description {
+    display:block;
+    position:relative;
+    background:none;
+    margin:0;
+    padding:0.25em 0 0.75em;
+    border:none;
+    right:0;
+    width:100%;
+    z-index:0;
+    }
+
+input.form-submit, a.button { display: inline-block;}
+
 input.teaser-button,
-input.form-submit {
+input.form-submit, a.button {
   cursor:pointer;
   padding:2px 10px;
   color:#333;
-
+  font-size:13px;
   text-align:center;
-
   font-weight:normal;
   border-width:1px;
   border-style:solid;
@@ -329,31 +396,65 @@ input.form-submit {
   background:#fff url(images/buttons.png) -1px 50% no-repeat;
   }
 
-  input.form-submit:hover {
+  input.form-submit:hover, a.button:hover {
     border-color:#ace;
     -webkit-box-shadow:#ace 0px 0px 5px;
     }
 
-  input.form-submit:active {
+  input.form-submit:active, a.button:active {
     border-color:#666 #666 #555;
     background:#666 url(images/buttons.png) -401px 50% no-repeat;
     color:#222;
     text-shadow:#999 0px 1px 0px;
     }
 
-  input.button-yes {
+  input.button-yes, a.button-yes {
     background-position:-2401px 50%;
     padding-left:25px;
     }
 
-  input.button-yes:active { background-position:-2801px 50%; }
+  input.button-yes:active, a.button-yes:active { background-position:-2801px 50%; }
 
-  input.button-no {
+  input.button-no, a.button-no{
     background-position:-3201px 50%;
     padding-left:25px;
     }
 
-  input.button-no:active { background-position:-3601px 50%; }
+  input.button-no:active , a.button-no:active{ background-position:-3601px 50%; }
+
+  input.button.launcher , a.button.launcher {
+    background-position:-4800px 50%;
+    padding-left: 25px;
+  }
+
+  input.button.launcher:active , a.button.launcher:active {
+    background-position:-1200px 50%;
+  }
+
+  input.button.edit , a.button.edit {
+    background-position:-2400px 50%;
+    padding-left: 25px;
+  }
+
+  input.button.edit:active , a.button.edit:active {
+    background-position:-2800px 50%;
+  }
+
+  input.button.remove , a.button.remove {
+    background-position:-3200px 50%;
+    padding-left: 25px;
+  }
+
+  input.button.remove:active , a.button.remove:active {
+    background-position:-3600px 50%;
+  }
+  .media-widget a.button.remove {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  .media-widget .preview {
+    min-height:35px;
+  }
 
 input.form-autocomplete,
 input.form-text,
@@ -362,7 +463,7 @@ select.form-select {
   padding:3px;
   border-width:1px;
   border-style:solid;
-  border-color:#ccc;
+  border-color:#ddd;
   background:#fff;
   color:#666;
   max-width:100%;
@@ -384,13 +485,19 @@ select.form-select {
   input.fluid {
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
+    box-sizing: border-box;
     width:100%;
     }
 
-    table input.fluid { width:auto; }
-
   html.js input.form-autocomplete { background-position:100% 7px; }
-  html.js input.throbbing { background-position:100% -13px; }
+  html.js input.throbbing { background-position:100% -2px; }
+
+#search-block-form .form-wrapper.form-actions {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 0;
+}
 
 /* Fieldsets */
 .fieldset,
@@ -440,22 +547,23 @@ body.page-admin div.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane field
   .collapsible .fieldset-legend a { padding-bottom:4px; }
 
   /* Explicit height for IE */
-  .collapsible .fieldset-legend a { height:20px; }
+  .collapsible .fieldset-legend a {
+    height:20px;
+    padding-left:28px;
+  }
 
   .collapsible .fieldset-legend span.icon {
     position:absolute;
-    left:-20px;
-    top:4px;
-    background:url(images/bleeds.png) -20px -180px no-repeat;
-    width:20px;
-    height:20px;
+    left:6px;
+    top:6px;
+    background:url(images/bleeds.png) -80px -120px no-repeat;
+    width: 15px;
+    height: 15px;
     display:block;
     cursor:pointer;
     }
 
-    html.js .collapsed .fieldset-legend span.icon { background-position:0px -180px; }
-
-    .fieldset .collapsible .fieldset-legend span.icon { display:none; }
+    html.js .collapsed .fieldset-legend span.icon { background-position:-60px -120px; }
 
   .collapsed .fieldset-legend a {
     background:#eee;
@@ -487,7 +595,11 @@ body.page-admin div.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane field
 .filter-wrapper {
   font-size:11px;
   margin-top:-10px;
-  border-top:none; 
+  border-top:none;
+  }
+.text-format-wrapper .filter-wrapper{
+  border-top:1px solid #CCC;
+  margin-top: 0;
   }
 
 .filter-wrapper .fieldset-content,
@@ -515,6 +627,18 @@ body.page-admin div.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane field
   padding:0px;
   }
 
+.form-type-date-popup label {
+  padding: 10px 10px 0 10px;
+}
+
+.form-type-date-popup .date-padding label {
+  padding: 0;
+}
+
+.form-type-date-popup .date-padding {
+  padding-top: 0;
+}
+
 /**
  * Form layout: Default ===============================================
  */
@@ -536,10 +660,11 @@ body.page-admin div.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane field
 
 .column-footer { clear:both; }
 
-form .form-actions {
+.form-wrapper.form-actions {
   background:#eee;
   border:1px solid #ddd;
   padding:9px;
+  margin-top: 20px;
   }
 
   form .form-actions.container-inline {
@@ -548,11 +673,14 @@ form .form-actions {
     padding:0px;
     }
 
-  form .form-actions input.form-submit { margin-right:5px; }
+  .form-wrapper.form-actions input.form-submit, .form-wrapper.form-actions a.button { margin-right:5px; }
 
   .form-layout-default .column-main .form-actions { display:none; }
   .form-layout-default .column-side .form-actions { margin:0px 0px 10px; }
-  .form-layout-default .column-side .form-actions input.form-submit { margin:1px 5px 1px 0px; }
+  .form-layout-default .column-side .form-actions input.form-submit,
+  .form-layout-deafult .column-side .form-actions a.button {
+    margin:1px 5px 1px 0px;
+    }
 
 /**
  * "Boxes" aka generic wrappers =======================================
@@ -593,19 +721,20 @@ form .form-actions {
 /* admin/appearance */
 .theme-selector {
   position:relative;
-  padding:9px 9px 9px 139px;
+  padding:9px 9px 9px 314px;
   border:1px solid #ddd;
   margin:10px 0px;
-  min-height:80px;
+  min-height:224px;
   text-shadow:#fff 0px 1px 0px;
   }
 
 .theme-selector img {
-  left:10px;
-  top:10px;
-  position:absolute;
-  clip:rect(0px 120px 80px 0px); /* IE6, IE7 */
-  clip:rect(0px,120px,80px,0px);
+  clip: rect(0px, 294px, 219px, 0px);
+  height: auto;
+  left: 10px;
+  position: absolute;
+  top: 10px;
+  width: 294px;
   }
 
 .theme-selector .operations a { margin-right:20px; }
@@ -613,7 +742,13 @@ form .form-actions {
 .system-themes-list-disabled .theme-selector {
   background:#eee;
   color:#676767;
+  padding:9px 9px 9px 162px;
+  min-height:110px;
   }
+
+.system-themes-list-disabled .theme-selector img {
+  width: 142px;
+}
 
 /* admin/content/node & admin/user/user */
 .exposed-filters .form-item label {
@@ -773,6 +908,16 @@ body.tao #admin-toolbar a.menu-hover span.menu-description span.icon {
 
 .vertical-tabs-list .summary { font-size:11px; }
 
+.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane .fieldset legend {
+  display: block;
+}
+
+.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane fieldset.collapsible {
+  border: 1px solid #CCCCCC;
+  margin: 1em 0;
+  position: relative;
+}
+
 /**
  * Action links =======================================================
  */
@@ -794,6 +939,31 @@ body.tao #admin-toolbar a.menu-hover span.menu-description span.icon {
     background-position:-1200px 50%;
     text-shadow:#999 0px 1px 0px;
     }
+
+/* color module fix */
+#palette .form-item {
+  width: 20em !important;
+  height: 2em;
+  line-height: 2em;
+  margin: 0.5em 0;
+  padding: 0.2em;
+}
+
+#palette .lock {
+  z-index: 2;
+}
+.page-content .color-form .form-item:hover {
+  height: 2em;
+}
+/* panels stylizer color fix */
+div.ctools-modal-content #palette .form-item label {
+  clear: none;
+  float: left;
+  width: 14em;
+}
+div.ctools-modal-content .color-form .form-item input {
+  margin-top: 0;
+}
 
 /**
  * ORPHANED MARKUP ====================================================

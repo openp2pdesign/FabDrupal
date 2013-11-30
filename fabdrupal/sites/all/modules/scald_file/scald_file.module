@@ -124,7 +124,13 @@ function scald_file_scald_register_atom($atom, $mode) {
  */
 function scald_file_scald_prerender($atom, $context, $options, $mode) {
   if ($mode == 'atom') {
-    if ($context != 'sdl_library_item') {
+    if ($context === 'sdl_library_item') {
+      $scald_thumbnail = field_get_items('scald_atom', $atom, 'scald_thumbnail');
+      if (empty($scald_thumbnail)) {
+        $atom->rendered->thumbnail_transcoded_url = file_create_url($atom->thumbnail_source);
+      }
+    }
+    else {
       $atom->rendered->player = theme('scald_file_render',
         array('vars' => array(
           'file_id'      => $atom->base_id,

@@ -303,7 +303,9 @@ function mee_field_widget_form_alter(&$element, &$form_state, $context) {
     if (!is_object($atom)) {
       continue;
     }
-    $title = $atom->title;
+
+    // Render the atom to get sanitized values.
+    $title = scald_render($atom, 'title');
 
     $element['mee']['resource_manager'][$sid] = array(
       'title' => array(

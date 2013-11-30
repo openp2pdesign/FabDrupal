@@ -70,7 +70,7 @@ Drupal.mee = {
    * into class="image" etc.).
    */
   atom_exists: function(text, atom_id) {
-     return (text.indexOf('<!-- scald=' + atom_id + ':sdl_editor_representation -->') > -1) || (Drupal.settings.mee.sas && text.indexOf('[scald=' + atom_id + ':sdl_editor_representation]') > -1);
+     return (text.indexOf('<!-- scald=' + atom_id) > -1) || (Drupal.settings.mee.sas && text.indexOf('[scald=' + atom_id) > -1);
   },
 
   /**

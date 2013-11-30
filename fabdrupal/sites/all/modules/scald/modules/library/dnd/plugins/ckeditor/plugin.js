@@ -32,6 +32,7 @@ CKEDITOR.plugins.add('dnd', {
       var editor = evt.editor;
       if (editor.mode == 'wysiwyg') {
         editor.document.appendStyleSheet(path + '../../css/editor.css');
+        editor.document.appendStyleSheet(path + '../../css/editor-global.css');
         // Prevents atom from being edited inside the editor.
         $(editor.document.$).find('div.dnd-atom-wrapper').attr('contentEditable', false);
       }
@@ -40,7 +41,7 @@ CKEDITOR.plugins.add('dnd', {
     CKEDITOR.dialog.add('atomProperties', this.path + 'dialogs/dnd.js' );
 
     var command = editor.addCommand('atomProperties', new CKEDITOR.dialogCommand('atomProperties', {
-      allowedContent: 'div[*](*);iframe[*]'
+      allowedContent: 'div[*](*);iframe[*];img(*)'
     }));
 
     editor.addCommand('atomDelete', {
@@ -78,6 +79,17 @@ CKEDITOR.plugins.add('dnd', {
 
     editor.on('contentDom', function (evt) {
       editor.document.on('drop', function (evt) {
+        try {
+          evt.data.$.dataTransfer.getData('text/html');
+        }
+        catch(e) {
+          var atom = Drupal.dnd.sas2array(evt.data.$.dataTransfer.getData('Text'));
+          if (atom && Drupal.dnd.Atoms[atom.sid]) {
+            var markup = Drupal.theme('scaldEmbed', Drupal.dnd.Atoms[atom.sid], atom.context, atom.options);
+            editor.insertHtml(markup);
+            evt.data.preventDefault();
+          }
+        }
         // Prevents atom from being edited inside the editor.
         $(editor.document.$).find('div.dnd-atom-wrapper').attr('contentEditable', false);
       });

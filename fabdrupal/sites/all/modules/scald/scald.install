@@ -24,21 +24,6 @@ function scald_schema() {
 
   $schema['cache_scald'] = drupal_get_schema_unprocessed('system', 'cache');
 
-  // This is a temporary fix for PostgreSQL, as it cannot have sub parted unique
-  // keys. The meta issue to fix it in core is http://drupal.org/node/1571842
-  $connection_info = Database::getConnectionInfo();
-  $driver = $connection_info['default']['driver'];
-  if ($driver == 'pgsql') {
-    $unique_keys = array('provider', 'type', 'base_id');
-  }
-  else {
-    $unique_keys = array(
-      array('provider', 64),
-      array('type', 64),
-      array('base_id', 64),
-    );
-  }
-
   $schema['scald_atoms'] = array(
     'description' => 'The Scald Atom registry.',
     'fields'      => array(
@@ -68,6 +53,13 @@ function scald_schema() {
         'length'      => 255,
         'not null'    => FALSE,
         'default'     => NULL,
+      ),
+      'language' => array(
+        'description' => 'The {languages}.language of this atom.',
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
       ),
       'publisher' => array(
         'description' => 'The Drupal User ID of the user who *registered* this Atom.  Makes no implications about the Authorship.  FK {users}.uid',
@@ -101,9 +93,6 @@ function scald_schema() {
       ),
     ),
     'primary key' => array('sid'),
-    'unique keys' => array(
-      'u_provider_type_base_id' => $unique_keys,
-    ),
     'indexes'     => array(
       'i_sid_provider_base_id'  => array(
         'sid',
@@ -114,6 +103,11 @@ function scald_schema() {
       'i_type_sid'              => array('type', 'sid'),
       'i_publisher_sid'         => array('publisher', 'sid'),
       'i_base_id'               => array(array('base_id', 64)),
+      'i_provider_type_base_id' => array(
+        array('provider', 64),
+        array('type', 64),
+        array('base_id', 64),
+      ),
     ),
   );
 
@@ -248,12 +242,16 @@ function scald_install() {
  * Uninstall the DB schema and clean up as much as is feasible.
  */
 function scald_uninstall() {
+  variable_del('scald_always_rebuild');
   variable_del('scald_config');
   variable_del('scald_providers');
   variable_del('scald_atom_defaults');
   variable_del('scald_context_fallbacks');
+  variable_del('scald_actions_powers');
   variable_del('scald_actions_publisher');
   variable_del('scald_custom_contexts');
+  variable_del('scald_author_vocabulary');
+  variable_del('scald_tags_vocabulary');
 }
 
 /**
@@ -559,3 +557,36 @@ function scald_update_7007() {
     'initial' => serialize(array()),
   ));
 }
+
+/**
+ * Change (provider, type, base_id) from unique to normal key.
+ *
+ * @see https://drupal.org/node/1971710
+ */
+function scald_update_7008() {
+  db_drop_unique_key('scald_atoms', 'u_provider_type_base_id');
+  db_add_index('scald_atoms', 'i_provider_type_base_id', array(
+    array('provider', 64),
+    array('type', 64),
+    array('base_id', 64),
+  ));
+  return array();
+}
+
+/**
+ * Add language property for atoms.
+ */
+function scald_update_7009() {
+  db_add_field('scald_atoms', 'language', array(
+    'description' => 'The {languages}.language of this atom.',
+    'type' => 'varchar',
+    'length' => 12,
+    'not null' => TRUE,
+    'default' => '',
+  ));
+  db_update('scald_atoms')
+    ->fields(array('language' => LANGUAGE_NONE))
+    ->execute();
+  return array();
+}
+

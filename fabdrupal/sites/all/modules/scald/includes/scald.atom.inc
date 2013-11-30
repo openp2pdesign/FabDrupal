@@ -69,9 +69,7 @@ function scald_atom_build_content($atom, $view_mode = 'full', $langcode = NULL) 
   // If the transcoder provider prepared a 'player', use it. Otherwise, build
   // a default representation of the atom.
   if (!empty($atom->rendered->player)) {
-    $atom->content['atom'] = array(
-      '#markup' => $atom->rendered->player,
-    );
+    $atom->content['atom'] = is_array($atom->rendered->player) ? $atom->rendered->player : array('#markup' => $atom->rendered->player);
   }
   else {
     $atom->content['atom'] = array(

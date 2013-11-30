@@ -4,7 +4,8 @@ INSTALLATION
 Before you enable the Leaflet More Maps module, you need to download and enable
 the Leaflet module and the Libraries module.
 
-Then download the Leaflet javascript library from http://leaflet.cloudmade.com/download.html.
+Then download the Leaflet javascript library from
+http://leaflet.cloudmade.com/download.html.
 
 This zip file contains a directory named 'dist'. Drop this directory in
 sites/all/libraries/leaflet, so that the path to the essential javascript file
@@ -17,6 +18,10 @@ mapping experience with lots of attractive map options.
 You select your favorite map when you format a single field (eg Geofield) as a
 map or when you format a View (of multiple nodes or users) as a map. The module
 "IP Geolocation Views and Maps" module is particularly good for this.
+
+You can assemble your own map from the available layers at the Leaflet More Maps
+configuration page: admin/config/system/leaflet_more_maps. A layer switcher will
+automatically appear in the upper right-hand corner.
 
 The included submodule Leaflet Demo introduces a block that you can enable on a
 page to showcase all maps available, centered on your current location, or any
@@ -52,3 +57,4 @@ o http://www.esri.com
 o http://mapquest.com
 o http://www.google.com/intl/en_au/help/terms_maps.html
 o http://legal.yandex.ru/maps_termsofuse
+o http://www.microsoft.com/maps/product/terms.html

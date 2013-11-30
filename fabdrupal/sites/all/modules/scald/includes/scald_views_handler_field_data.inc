@@ -46,7 +46,7 @@ class scald_views_handler_field_data extends views_handler_field {
     if (!empty($data[$this->options['data_key']])) {
       $output = (string) $data[$this->options['data_key']];
       $content = array(
-        '#markup' => $this->options['plain'] ? check_plain($output) : $output
+        '#markup' => $this->options['plain'] ? check_plain($output) : $output,
       );
     }
     return $content;

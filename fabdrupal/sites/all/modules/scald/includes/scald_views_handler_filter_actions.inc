@@ -11,7 +11,7 @@ class scald_views_handler_filter_actions extends views_handler_filter {
    * Hardcode our bitwise AND, and tells Views that this filter doesn't
    * expose an operator.
    */
-  function operator_form(&$form, &$form_state) {
+  public function operator_form(&$form, &$form_state) {
     $this->no_operator = TRUE;
     $form['operator'] = array(
       '#type' => 'value',
@@ -24,7 +24,7 @@ class scald_views_handler_filter_actions extends views_handler_filter {
    *
    * Provides checkboxes for the defined actions.
    */
-  function value_form(&$form, &$form_state) {
+  public function value_form(&$form, &$form_state) {
     $old_default = !is_array($this->options['value']);
     $defaults = $old_default ? array() : $this->options['value'];
     foreach (scald_actions() as $slug => $action) {
@@ -48,7 +48,7 @@ class scald_views_handler_filter_actions extends views_handler_filter {
    *
    * Change the operator before querying.
    */
-  function query() {
+  public function query() {
     if (is_array($this->options['value'])) {
       $this->value = 0;
       $actions = scald_actions();
@@ -70,7 +70,7 @@ class scald_views_handler_filter_actions extends views_handler_filter {
    *
    * Display user friendly label.
    */
-  function admin_summary() {
+  public function admin_summary() {
     $actions = scald_actions();
     $names = array();
     foreach ($actions as $name => $action) {

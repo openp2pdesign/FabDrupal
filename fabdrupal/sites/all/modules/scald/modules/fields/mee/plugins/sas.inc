@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- *   MEE wysiwyg plugins definitions.
+ * MEE wysiwyg plugins definitions.
  */
 
 /**

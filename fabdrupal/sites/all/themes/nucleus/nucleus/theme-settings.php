@@ -111,6 +111,19 @@ function nucleus_settings_layout_tab(&$form) {
   $grid_info = nucleus_get_grid_setting();
   $grid = $grid_info['grid'];
   $grid_int = $grid_info['grid_int'];
+  $layout_width_int = 100;
+  nucleus_auto_generate_fluid_grids($grid_int, $layout_width_int);
+  drupal_add_css("public://nucleus/grid-fluid-" . $grid_int . "-" . $layout_width_int . ".css", array(
+    'group' => CSS_THEME,
+    'type' => 'file',
+  ));
+  if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Opera') !== FALSE) {
+    drupal_add_css("public://nucleus/grid-fluid-" . $grid_int . "-" . $layout_width_int . "-opera.css", array(
+      'group' => CSS_THEME,
+      'type' => 'file',
+    ));
+  }
+
   $pages_list = array('default' => t('Page preview & direct setting'));
   $skins = nucleus_get_predefined_param('skins', array('' => t("Default skin")));
   $regions_blocks_list = nucleus_get_regions_blocks_list();

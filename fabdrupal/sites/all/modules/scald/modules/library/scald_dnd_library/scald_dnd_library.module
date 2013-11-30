@@ -82,14 +82,15 @@ function scald_dnd_library_views_invalidate_cache() {
  */
 function scald_dnd_library_add_item(&$library, $sid) {
   $atom = scald_fetch($sid);
+  $context = variable_get('dnd_context_default', 'sdl_editor_representation');
   $library['atoms'][$sid] = array(
     'meta' => array(
       'title' => $atom->title,
       'type' => $atom->type,
       'legend' => '',
     ),
-    'sas' =>  '[scald=' . $atom->sid . ':sdl_editor_representation]',
-    'editor' => scald_render($atom, 'sdl_editor_representation'),
+    'sas' =>  '[scald=' . $atom->sid . ':' . $context .']',
+    'editor' => scald_render($atom, $context),
     'preview' => scald_render($atom, 'sdl_preview'),
   );
 
@@ -159,16 +160,14 @@ function scald_dnd_library_scald_contexts() {
 /**
  * Implements hook_scald_render().
  */
-function scald_dnd_library_scald_render($atom, $context, $options = array()) {
-  if (!empty($atom->rendered->file_transcoded_url)) {
-    $path = $atom->rendered->file_transcoded_url;
-  }
-  elseif (!empty($atom->rendered->thumbnail_transcoded_url)) {
+function scald_dnd_library_scald_render($atom, $context, $options) {
+  if (!empty($atom->rendered->thumbnail_transcoded_url)) {
     $path = $atom->rendered->thumbnail_transcoded_url;
   }
   else {
-    $path = $atom->rendered->thumbnail_source_url;
+    $path = image_style_url('Library', $atom->thumbnail_source);
   }
+
   $attributes = array();
   if ($context == 'sdl_library_item') {
     $attributes += array('class' => 'drop', 'draggable' => 'TRUE', 'data-atom-id' => $atom->sid);

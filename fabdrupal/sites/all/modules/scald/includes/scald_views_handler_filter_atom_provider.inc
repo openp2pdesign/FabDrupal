@@ -5,6 +5,9 @@
  */
 
 class scald_views_handler_filter_atom_provider extends views_handler_filter_in_operator {
+  /**
+   * Overrides views_handler_filter_in_operator::get_value_options().
+   */
   function get_value_options() {
     if (!isset($this->value_options)) {
       $this->value_title = t('Atom provider');

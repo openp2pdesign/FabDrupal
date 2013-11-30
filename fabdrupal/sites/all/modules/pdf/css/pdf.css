@@ -1,0 +1,16 @@
+.pdf {
+  width: 100%
+}
+
+.pdf canvas {
+  width: 100%;
+  border:1px solid black;
+}
+
+.pdf .page-container {
+  margin: 10px auto;
+}
+
+.pdf .page-view canvas {
+  box-shadow: black 0px 0px 10px;
+}

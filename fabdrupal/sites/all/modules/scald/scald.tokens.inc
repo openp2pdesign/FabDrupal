@@ -78,4 +78,3 @@ function scald_tokens($type, $tokens, array $data = array(), array $options = ar
 
   return $replacements;
 }
-

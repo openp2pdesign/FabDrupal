@@ -68,7 +68,7 @@ if (!Drupal.atom_reference) {
     if (Drupal.dnd.Atoms[ressource_id]) {
       var type = Drupal.dnd.Atoms[ressource_id].meta.type;
       var accept = $(field).closest('div.form-item').find('input:text').attr('data-types').split(',');
-      if (accept.indexOf(type) == -1) {
+      if (jQuery.inArray(type, accept) == -1) {
         retVal.keepgoing = false;
       }
       retVal.type = type;

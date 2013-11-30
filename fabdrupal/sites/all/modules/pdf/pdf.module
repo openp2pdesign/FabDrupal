@@ -1,15 +1,5 @@
 <?php
-require_once (dirname(__FILE__) . '/includes/pdf.field.inc');
-
-function pdf_menu() {
-  $items = array();
-  $items['pdf/worker_loader.js'] = array(
-    'page callback' => 'pdf_worker_loader_js',
-    'access callback' => TRUE,
-    'type' => MENU_CALLBACK,
-  );
-  return $items;
-}
+module_load_include('inc', 'pdf', '/includes/pdf.field');
 
 function pdf_theme() {
   $theme = array(
@@ -24,15 +14,14 @@ function pdf_theme() {
       'variables' => array('file' => NULL),
       'file' => 'includes/pdf.field.inc',
     ),
+    'pdf_formatter_pages' => array(
+      'variables' => array(
+        'file' => NULL,
+        'scale' => 1,
+      ),
+      'file' => 'includes/pdf.field.inc',
+    ),
   );
   return $theme;
-}
-
-function pdf_worker_loader_js() {
-  global $base_url;
-//  $output = "'use strict';";
-  $output = "importScripts('$base_url/sites/all/libraries/pdf.js/build/pdf.js');";
-  print $output;
-  exit();
 }
 

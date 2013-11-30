@@ -85,13 +85,22 @@ function dnd_process_textarea($element, $form_state) {
  */
 function dnd_library() {
   $path = drupal_get_path('module', 'dnd');
+  $types = scald_types();
   $contexts = array();
   foreach (scald_contexts() as $name => $definition) {
     if (!empty($definition['hidden']) || empty($definition['parseable'])) {
       continue;
     }
-    $contexts[$name] = $definition['title'];
+
+    // There "formats" is actually used nowhere in Scald. Every context is
+    // available to all atom types.
+    $definition['formats'] = $types;
+
+    foreach ($definition['formats'] as $type => $data) {
+      $contexts[$type][$name] = $definition['title'];
+    }
   }
+  drupal_alter('scald_wysiwyg_context_list', $contexts);
   $libraries['library'] = array(
     'title' => 'DnD Library',
     'website' => 'http://drupal.org/project/scald',
@@ -102,7 +111,8 @@ function dnd_library() {
     'js' => array(
       // Drag and drop
       $path . '/js/dnd-library.js' => array(),
-
+      // javascript workaround for the continue button
+      $path . '/js/dnd-modal.js' => array(),
       // Settings for the library url
       array(
         'type' => 'setting',
@@ -110,7 +120,7 @@ function dnd_library() {
           'dnd' => array(
             'url' => url(dnd_get_library()),
             'contexts' => $contexts,
-            'contextDefault' => 'sdl_editor_representation',
+            'contextDefault' => variable_get('dnd_context_default', 'sdl_editor_representation'),
           ),
         ),
       ),
@@ -173,13 +183,15 @@ function dnd_library_add_ctools_modal(&$libraries) {
     'type' => 'setting',
     'data' => $settings,
   );
+  $modal_width = (float) variable_get('dnd_modal_width', 500);
+  $modal_height = (float) variable_get('dnd_modal_height', 300);
   // Create our own javascript that will be used to theme a modal.
   $sample_style = array(
     'custom-style' => array(
       'modalSize' => array(
-        'type' => 'fixed',
-        'width' => 500,
-        'height' => 300,
+        'type' => ($modal_width <= 1 ? 'scale' : 'fixed'),
+        'width' => $modal_width,
+        'height' => $modal_height,
         'addWidth' => 20,
         'addHeight' => 15,
       ),

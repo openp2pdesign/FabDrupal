@@ -218,7 +218,7 @@ $databases = array (
       'database' => 'fabdrupal',
       'username' => 'root',
       'password' => '',
-      'host' => '127.0.0.1',
+      'host' => 'localhost',
       'port' => '',
       'driver' => 'mysql',
       'prefix' => '',
@@ -256,7 +256,7 @@ $update_free_access = FALSE;
  *   $drupal_hash_salt = file_get_contents('/home/example/salt.txt');
  *
  */
-$drupal_hash_salt = 'K9Sqxy_f99OiAIv-11fkKdvqPq7abl3mjqaTleAZwP0';
+$drupal_hash_salt = '4wTYMGOz0RTbzulDYxlIjPmQkND_ZHMRxl6RAkqB2hA';
 
 /**
  * Base URL (optional).
@@ -279,8 +279,6 @@ $drupal_hash_salt = 'K9Sqxy_f99OiAIv-11fkKdvqPq7abl3mjqaTleAZwP0';
  * for you.
  */
 # $base_url = 'http://www.example.com';  // NO trailing slash!
-
-$base_url = 'http://127.0.0.1/FabDrupalDevelopment/fabdrupal';
 
 /**
  * PHP settings:

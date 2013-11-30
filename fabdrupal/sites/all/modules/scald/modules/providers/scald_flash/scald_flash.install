@@ -12,10 +12,7 @@ function scald_flash_install() {
   scald_add_type('flash', 'Flash', 'Resource flash');
 
   // Defines the default thumbnail to use for flash atoms.
-  $actions = scald_actions();
-  $default = new stdClass();
-  $default->actions = $actions['view']['bitmask'] + $actions['fetch']['bitmask'];
-  $default->description = '';
+  $default = scald_atom_defaults('flash');
   $default->thumbnail_source = drupal_get_path('module', 'scald_flash') . '/icons/flash.png';
 
   $defaults = variable_get('scald_atom_defaults', array());
@@ -34,6 +31,7 @@ function scald_flash_uninstall() {
   unset($defaults['flash']);
   $defaults = variable_set('scald_atom_defaults', $defaults);
 
+  drupal_load('module', 'scald');
   scald_remove_type('flash');
 }
 

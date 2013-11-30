@@ -7,7 +7,7 @@
 function nucleus_auto_generate_fluid_grids($grid, $width = 100, $rebuild = FALSE) {
   $grid_uri = "public://nucleus/grid-fluid-" . $grid . "-" . $width . ".css";
   $folder_uri = "public://nucleus";
-  nucleus_auto_generate_fluid_grids_opera($grid);
+  nucleus_auto_generate_fluid_grids_opera($grid, $width);
   if (!$rebuild && file_exists($grid_uri)) {
     return;
   }
@@ -71,8 +71,8 @@ function nucleus_auto_generate_fixed_grids($grid, $width, $rebuild = FALSE) {
   file_put_contents($grid_uri, implode("\n", $lines));
 }
 
-function nucleus_auto_generate_fluid_grids_opera($grid) {
-  $grid_uri = "public://nucleus/grid-fluid-" . $grid . "-opera.css";
+function nucleus_auto_generate_fluid_grids_opera($grid, $width = 100) {
+  $grid_uri = "public://nucleus/grid-fluid-" . $grid . "-" . $width . "-opera.css";
   $folder_uri = "public://nucleus";
   if (file_exists($grid_uri)) {
     return;

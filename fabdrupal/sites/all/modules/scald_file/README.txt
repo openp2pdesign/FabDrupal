@@ -22,5 +22,5 @@ INSTALLATION
 
 Scald file depends on the following module:
 
-- Scald development version after 2013-May-28
+- Scald version 1.1
 

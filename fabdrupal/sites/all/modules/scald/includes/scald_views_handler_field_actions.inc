@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- *   Provides a field containing the actions allowed for the current user on an atom
+ * Provides a field containing the actions allowed for the current user on an atom
  */
 class scald_views_handler_field_actions extends views_handler_field {
   /**

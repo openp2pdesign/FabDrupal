@@ -16,6 +16,6 @@ function scald_vimeo_install() {
  * Implements hook_uninstall().
  */
 function scald_vimeo_uninstall() {
+  drupal_load('module', 'scald');
   scald_remove_type('video');
 }
-

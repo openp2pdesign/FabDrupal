@@ -5,9 +5,40 @@
  *
  */
 
-define('TWITTER_ID_REGEXP',        '/^[a-zA-Z0-9]+$/');
-define('TWITTER_WEB_REGEXP',       '#^https?://([-\w]+\.)?twitter\.com/.*/(status|statuses)/(\d+)#');
-define('TWITTER_WEB',              'http://twitter.com');
+define('SCALD_TWITTER_ID_REGEXP', '/^[a-zA-Z0-9]+$/');
+define('SCALD_TWITTER_WEB_REGEXP', '#^https?://([-\w]+\.)?twitter\.com/.*/(status|statuses)/(\d+)#');
+define('SCALD_TWITTER_WEB', 'http://twitter.com');
+define ('SCALD_TWITTER_API', 'https://api.twitter.com');
+define ('SCALD_TWITTER_STATUS_URL', 'http://api.twitter.com/1.1/statuses/show.json');
+define ('SCALD_TWITTER_EMBED_URL', 'http://api.twitter.com/1.1/statuses/oembed.json');
+define ('SCALD_TWITTER_SEARCH_URL', 'http://api.twitter.com/1.1/search/tweets.json');
+
+/**
+ * Implements hook_menu().
+ */
+function scald_twitter_menu() {
+  $items = array();
+  
+    $items['scald_twitter/oauth'] = array(
+        'title' => 'Scald twitter OAuth',
+        'access callback' => TRUE,
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('twitter_oauth_callback'),
+        'type' => MENU_CALLBACK,
+        'file' => 'includes/scald_twitter.admin.inc',
+      );
+
+  $items['admin/config/services/scald_twitter'] = array(
+    'title' => 'Scald Twitter Settings',
+    'description' => 'Scald Twitter settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('scald_twitter_admin_form'),
+    'access arguments' => array('administer scald'),
+    'file' => 'includes/scald_twitter.admin.inc',
+  );
+
+  return $items;
+}
 
 /**
  * Implements hook_scald_atom_providers().
@@ -26,18 +57,37 @@ function scald_twitter_scald_atom_providers() {
  * Implements hook_scald_add_form().
  */
 function scald_twitter_scald_add_form(&$form, &$form_state) {
+  $consumer_key = variable_get('scald_twitter_consumer_key');
+  $consumer_secret = variable_get('scald_twitter_consumer_secret');
+  $oauth_token = variable_get('scald_twitter_oauth_token');
+  $oauth_token_secret = variable_get('scald_twitter_oauth_token_secret');
+  $disabled = false;
+  if (!isset($oauth_token)
+      || !isset($oauth_token_secret)
+      || !isset($consumer_key)
+      || !isset($consumer_secret)) {
+      $form['item'] = array(
+        '#type' => 'item',
+        '#title' => t('No twitter API credential:'),
+        '#markup' => l('Please fill the form here','admin/config/services/scald_twitter') ,
+        );
+      $disabled = true;
+      }
   $form['identifier'] = array(
     '#type' => 'textfield',
     '#title' => t('twitter identifier or URL'),
     '#element_validate' => array('scald_twitter_validate_id'),
     '#default_value' => '',
+    '#disabled' => $disabled,
   );
 }
 
 /**
  * Implements hook_scald_add_form_fill().
  */
-function scald_twitter_scald_add_form_fill(&$atom, $form, $form_state) {
+function scald_twitter_scald_add_form_fill(&$atoms, $form, $form_state) {
+
+  $atom = is_array($atoms) ? reset($atoms) : $atoms;
 
   // Get the identifier
   $identifier = scald_twitter_parse_id($form_state['values']['identifier'], TRUE);
@@ -105,14 +155,24 @@ function scald_twitter_scald_fetch($atom, $type) {
 function scald_twitter_scald_prerender($atom, $context, $options, $mode) {
   if ($mode == 'atom') {
     if ($context != 'sdl_library_item') {
-      try {
-        $tweet_embed = json_decode( file_get_contents( "http://api.twitter.com/1/statuses/oembed.json?omit_script=1&id=" . $atom->base_id));
-      }
-      catch (Exception $e) {
-        watchdog('scald_twitter', $e->getMessage());
-        return FALSE;
-      }
-      $atom->rendered->player = $tweet_embed->html;
+      $consumer_key = variable_get('scald_twitter_consumer_key');
+      $consumer_secret = variable_get('scald_twitter_consumer_secret');
+      $oauth_token = variable_get('scald_twitter_oauth_token');
+      $oauth_token_secret = variable_get('scald_twitter_oauth_token_secret');
+      module_load_include('inc', 'scald_twitter', 'includes/scald_twitter_connector');  
+      $settings = array(
+          'oauth_access_token' => $oauth_token,
+          'oauth_access_token_secret' => $oauth_token_secret,
+          'consumer_key' => $consumer_key,
+          'consumer_secret' => $consumer_secret
+          );
+      $scald_twitter_oauth_request = new Scald_Twitter_oauth_request($settings)/* obj connection to Oauth */;
+      $scald_twitter_oauth_request->setGetfield("?id=" . $atom->base_id);
+      $json =  $scald_twitter_oauth_request->buildOauth(SCALD_TWITTER_EMBED_URL, 'GET')
+        ->performRequest() ;
+      $tweet = json_decode($json);
+
+      $atom->rendered->player = $tweet->html;
       $atom->rendered->title = '';
     }
   }
@@ -172,13 +232,22 @@ function scald_twitter_register($tweet) {
  */
 function scald_twitter_text($id) {
 
-  try {
-    $tweet = json_decode( file_get_contents( "http://api.twitter.com/1/statuses/show.json?id=" . $id));
-  }
-  catch (Exception $e) {
-    watchdog('scald_twitter', $e->getMessage());
-    return FALSE;
-  }
+  $consumer_key = variable_get('scald_twitter_consumer_key');
+  $consumer_secret = variable_get('scald_twitter_consumer_secret');
+  $oauth_token = variable_get('scald_twitter_oauth_token');
+  $oauth_token_secret = variable_get('scald_twitter_oauth_token_secret');
+  module_load_include('inc', 'scald_twitter', 'includes/scald_twitter_connector');  
+  $settings = array(
+      'oauth_access_token' => $oauth_token,
+      'oauth_access_token_secret' => $oauth_token_secret,
+      'consumer_key' => $consumer_key,
+      'consumer_secret' => $consumer_secret
+      );
+  $scald_twitter_oauth_request = new Scald_Twitter_oauth_request($settings)/* obj connection to Oauth */;
+  $scald_twitter_oauth_request->setGetfield("?id=$id");
+  $json =  $scald_twitter_oauth_request->buildOauth(SCALD_TWITTER_STATUS_URL, 'GET')
+    ->performRequest() ;
+  $tweet = json_decode($json);
 
   $info = new stdClass();
   // ID
@@ -192,10 +261,10 @@ function scald_twitter_text($id) {
   if ($tweet->user->profile_image_url) {
     // Artwork is always 100x100
     $info->thumbnail = array(
-      'src'    => $tweet->user->profile_image_url,
-      'width'  => 50,
-      'height' => 50,
-    );
+        'src'    => $tweet->user->profile_image_url,
+        'width'  => 50,
+        'height' => 50,
+        );
   }
 
   // Tags
@@ -209,7 +278,7 @@ function scald_twitter_text($id) {
     $info->tags = str_replace('#', '', $info->tags);
   }
   // License
-  $info->license = 'SC';
+  $info->license = 'TW';
   return $info;
 }
 
@@ -236,7 +305,7 @@ function scald_twitter_validate_id($element, &$form_state) {
     form_error($element, t('Invalid twitter ID or URL.'));
   }
   elseif (scald_twitter_already_imported($id)) {
-    form_error($element, t('twitter tweet already imported.'));
+    form_error($element, t('tweet has already been imported.'));
   }
 }
 
@@ -248,9 +317,9 @@ function scald_twitter_parse_id($string, $check) {
   $id = FALSE;
   $string = trim($string);
 
-  if (!preg_match(TWITTER_ID_REGEXP, $string)) {
+  if (!preg_match(SCALD_TWITTER_ID_REGEXP, $string)) {
     // The string ID is not easy to parse, let's try to analyze it
-    if (preg_match(TWITTER_WEB_REGEXP, $string, $m)) {
+    if (preg_match(SCALD_TWITTER_WEB_REGEXP, $string, $m)) {
       // This string is a full twitter URL
       $id = scald_twitter_resolve_url($string);
     }

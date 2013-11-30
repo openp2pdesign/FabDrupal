@@ -1,0 +1,20 @@
+/**
+ * @file
+ * Stylesheet used to provide align and wrap functionality for atoms
+ *
+ * It is automatically included when the DnD plugin is used.
+ */
+
+.atom-align-right {
+  float: right;
+}
+
+.atom-align-left {
+  float: left;
+}
+
+.atom-align-center {
+  margin: 0 auto;
+  display: table;
+}
+

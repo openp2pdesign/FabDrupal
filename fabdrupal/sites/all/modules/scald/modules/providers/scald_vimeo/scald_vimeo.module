@@ -49,14 +49,16 @@ function scald_vimeo_scald_add_form_fill(&$atom, $form, $form_state) {
   $atom->title = $infos->title;
 
   // Prefill the author
-  $atom->scald_authors[LANGUAGE_NONE][0] = array(
+  $langcode = field_language('scald_atom', $atom, 'scald_authors');
+  $atom->scald_authors[$langcode][0] = array(
     'tid' => 0,
     'taxonomy_term' => (object)(array('name' => $infos->author))
   );
 
   // Prefill tags
+  $langcode = field_language('scald_atom', $atom, 'scald_tags');
   foreach ($infos->tags as $index => $tag) {
-    $atom->scald_tags[LANGUAGE_NONE][$index] = array(
+    $atom->scald_tags[$langcode][$index] = array(
       'tid' => $index,  // Beware, this is not a real tid, it's just an index
       'taxonomy_term' => (object)(array('name' => $tag))
     );
@@ -68,28 +70,29 @@ function scald_vimeo_scald_add_form_fill(&$atom, $form, $form_state) {
   // Download a copy of the video thumbnail. This makes it possible
   // to do interesting manipulation with image styles presets.
   $thumb = drupal_http_request($infos->thumbnail['src']);
-  $dir = 'public://vimeo';
-  if ($thumb->code == 200 && file_prepare_directory($dir, FILE_CREATE_DIRECTORY)) {
-    $dest = $dir . '/' . $infos->id . '.jpg';
+  if ($thumb->code == 200 && $directory = scald_atom_thumbnail_path('video')) {
+    $dest = $directory . '/vimeo-' . $infos->id . '.jpg';
     $file = file_save_data($thumb->data, $dest);
+
+    if ($file) {
+      // Set the file status to temporary
+      $query = db_update('file_managed')
+        ->condition('fid', $file->fid)
+        ->fields(array('status' => 0))
+        ->execute();
+      $langcode = field_language('scald_atom', $atom, 'scald_thumbnail');
+      $atom->scald_thumbnail[$langcode][0] = (array) $file;
+    }
   }
-
-  // Set the file status to temporary
-  $query = db_update('file_managed')
-    ->condition('fid', $file->fid)
-    ->fields(array('status' => 0))
-    ->execute();
-
-  $atom->scald_thumbnail[LANGUAGE_NONE][0] = (array)$file;
 }
 
 /**
  * Implements hook_scald_fetch().
  */
 function scald_vimeo_scald_fetch($atom, $type) {
-  $file = $atom->scald_thumbnail[LANGUAGE_NONE][0]['uri'];
-  if (file_exists($file)) {
-    $atom->file_source = $atom->thumbnail_source = $file;
+  $items = field_get_items('scald_atom', $atom, 'scald_thumbnail');
+  if ($items && file_exists($items[0]['uri'])) {
+    $atom->file_source = $atom->thumbnail_source = $items[0]['uri'];
   }
 }
 
@@ -106,6 +109,7 @@ function scald_vimeo_scald_prerender($atom, $context, $options, $mode) {
           'video_height'  => ($atom->data['video_height'] ? $atom->data['video_height'] : 365),
           'thumbnail'     => $atom->thumbnail_source
         ),
+        'atom' => $atom,
       )
     );
   }
@@ -117,7 +121,7 @@ function scald_vimeo_scald_prerender($atom, $context, $options, $mode) {
 function scald_vimeo_theme() {
   return array(
     'scald_vimeo_player' => array(
-      'variables' => array('vars' => NULL),
+      'variables' => array('vars' => NULL, 'atom' => NULL),
       'template' => 'scald_vimeo_player'
     ),
   );

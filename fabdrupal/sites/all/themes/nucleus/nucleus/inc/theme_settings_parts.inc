@@ -157,15 +157,6 @@ function nucleus_page_render_simulation(&$vars, &$page_params) {
     }
   }
 
-  nucleus_auto_generate_fluid_grids($grid_int, 100);
-  drupal_add_css(file_create_url("public://nucleus/grid-fluid-" . $grid_int . "-100.css"), array(
-    'group' => CSS_THEME,
-  ));
-  if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Opera') !== FALSE) {
-    drupal_add_css(file_create_url("public://nucleus/grid-fluid-" . $grid_int . "-opera.css"), array(
-      'group' => CSS_THEME,
-    ));
-  }
   nucleus_panel_preview($vars, $page_key);
   nucleus_clean_unregion_data($vars);
 
