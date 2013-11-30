@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Open API feature.
+ */
+
+include_once 'open_api.features.inc';

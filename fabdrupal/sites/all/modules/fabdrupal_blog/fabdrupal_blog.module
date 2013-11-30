@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the Blog feature.
- */
-
-include_once 'fabdrupal_blog.features.inc';
