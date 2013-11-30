@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the FabDrupal Community feature.
+ */
+
+include_once 'fabdrupal_community.features.inc';
