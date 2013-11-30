@@ -1,0 +1,195 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for Eventbrite.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function eventbrite_schema() {
+  $schema['eventbrite_cache'] = array(
+    'fields' => array(
+      'op' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'id' => array(
+        'type' => 'int',
+        'size' => 'big',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'query_string' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+      'timestamp' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'result' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'big',
+      ),
+    ),
+    'primary key' => array('op', 'id', 'query_string'),
+  );
+
+  $schema['eventbrite_venue'] = array(
+    'fields' => array(
+      'venue_id' => array(
+        'description' => "The Eventbrite venue id.",
+        'type' => 'varchar',
+        'length' => 10,
+        'not null' => TRUE,
+      ),
+      'user_key' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'organizer_id' => array(
+        'description' => "The Eventbrite organizer id.",
+        'type' => 'varchar',
+        'length' => 10,
+        'not null' => FALSE,
+      ),
+      'status' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'address' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'address2' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'city' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'region' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'postal_code' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'country' => array(
+        'type' => 'varchar',
+        'length' => 2,
+        'not null' => FALSE,
+      ),
+      'longitude' => array(
+        'type' => 'float',
+        'not null' => FALSE,
+      ),
+      'latitude' => array(
+        'type' => 'float',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('venue_id'),
+  );
+
+  $schema['eventbrite_organizer'] = array(
+    'fields' => array(
+      'user_key' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'organizer_id' => array(
+        'description' => "The Eventbrite organizer id.",
+        'type' => 'varchar',
+        'length' => 10,
+        'not null' => TRUE,
+      ),
+      'status' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'url' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => FALSE,
+      ),
+      'description' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('organizer_id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function eventbrite_install() {
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_install_schema('eventbrite')
+}
+
+/**
+ * Remove variables on uninstall.
+ */
+function eventbrite_uninstall() {
+  variable_del('eventbrite_app_key');
+  variable_del('eventbrite_cache_minimum');
+  variable_del('eventbrite_debug');
+  variable_del('eventbrite_is_valid_auth');
+  variable_del('eventbrite_organizer_default');
+  variable_del('eventbrite_user_key');
+}
+
+/**
+ * Changes venue_id and organizer_id columns to varchar(10) and url to varchar(50).
+ */
+function eventbrite_update_7201() {
+  db_drop_primary_key('eventbrite_venue');
+  db_change_field('eventbrite_venue', 'venue_id', 'venue_id',
+    array('description' => "The Eventbrite venue id.", 'type' => 'varchar', 'length' => 10, 'not null' => TRUE),
+    array('primary key' => array('venue_id')));
+  db_change_field('eventbrite_venue', 'organizer_id', 'organizer_id',
+    array('description' => "The Eventbrite organizer id.", 'type' => 'varchar', 'length' => 10, 'not null' => FALSE));
+
+  db_drop_primary_key('eventbrite_organizer');
+  db_change_field('eventbrite_organizer', 'organizer_id', 'organizer_id',
+    array('description' => "The Eventbrite organizer id.", 'type' => 'varchar', 'length' => 10, 'not null' => TRUE),
+    array('primary key' => array('organizer_id')));
+  db_change_field('eventbrite_organizer', 'url', 'url',
+    array('type' => 'varchar', 'length' => 50, 'not null' => FALSE));
+}

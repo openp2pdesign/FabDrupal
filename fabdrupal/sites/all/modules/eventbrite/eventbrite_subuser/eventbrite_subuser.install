@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for Eventbrite User.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function eventbrite_subuser_schema() {
+  $schema = array();
+
+  $schema['eventbrite_subuser'] = array(
+    'fields' => array(
+      'user_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'email' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+      'user_key' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'status' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'enabled_organizers' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'enabled_venues' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('user_id'),
+    'unique keys' => array('email' => array('email')),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function eventbrite_subuser_install() {
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_install_schema('eventbrite_subuser')
+}
+
+/**
+ * Remove variables on uninstall.
+ */
+function eventbrite_subuser_uninstall() {
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_uninstall_schema('eventbrite_subuser')
+}
+

@@ -1,0 +1,98 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for Eventbrite User.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function eventbrite_og_schema() {
+  $schema = array();
+
+  $schema['eventbrite_og'] = array(
+    'fields' => array(
+      'nid' => array(
+        'description' => "The group's {node}.nid.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
+      ),
+      'eventbrite_og_enabled' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'eventbrite_og_user_key' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'default_payment_settings' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'enabled_organizers' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'enabled_venues' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'default_organizer' => array(
+        'description' => "The default Eventbrite organizer for this group.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('nid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function eventbrite_og_install() {
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_install_schema('eventbrite_og')
+}
+
+/**
+ * Remove variables on uninstall.
+ */
+function eventbrite_og_uninstall() {
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_uninstall_schema('eventbrite_og')
+}
+
+/**
+ * hook_update()
+ *
+ * Switched payment settings column to text
+ */
+function eventbrite_og_update_6000() {
+  $ret = array();
+
+  db_change_field('eventbrite_og', 'default_payment_settings', 'default_payment_settings',
+    array('type' => 'text', 'not null' => TRUE, 'default' => '')
+  );
+
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  return t('TODO Add a descriptive string here to show in the UI.') /* $ret */;
+}
+
+

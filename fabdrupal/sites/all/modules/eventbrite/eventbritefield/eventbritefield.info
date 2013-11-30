@@ -1,0 +1,21 @@
+name = Eventbrite field
+description = Defines an Eventbrite field type.
+dependencies[] = text
+dependencies[] = eventbrite
+
+core = 7.x
+files[] = eventbritefield.install
+files[] = eventbritefield.module
+
+files[] = views/eventbritefield.views.inc
+
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "eventbrite"
+
+; Information added by drupal.org packaging script on 2013-09-18
+version = "7.x-2.0-alpha2"
+core = "7.x"
+project = "eventbrite"
+datestamp = "1379529800"
+
