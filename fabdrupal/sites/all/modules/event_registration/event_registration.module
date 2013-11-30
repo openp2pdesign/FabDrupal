@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the Event Registration feature.
- */
-
-include_once 'event_registration.features.inc';

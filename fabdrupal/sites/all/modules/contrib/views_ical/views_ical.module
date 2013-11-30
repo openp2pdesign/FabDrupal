@@ -1,0 +1,80 @@
+<?php
+
+
+/**
+ * Implements hook_date_format_types().
+ */
+function views_ical_date_format_types() {
+  // Define iCal date format type.
+  return array(
+    'ical' => t('iCal'),
+  );
+}
+
+/**
+ * Implements hook_date_formats().
+ */
+function views_ical_date_formats() {
+  return array(
+    array(
+      'type' => 'ical',
+      'format' => 'Ymd\THi\0\0\Z',
+      'locales' => array(),
+    ),
+  );
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function views_ical_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'views_ical'),
+  );
+}
+
+/**
+ * Implements hook_views_plugins
+ */
+function views_ical_views_plugins() {
+  $module_path = drupal_get_path('module', 'views_ical');
+  $theme_path = $module_path . '/theme';
+
+  $plugins = array(
+    'module' => 'views_ical', // This just tells our themes are elsewhere.
+    'style' => array(
+      'views_ical' => array(
+        'title' => t('Views iCal Feed'),
+        'help' => t('Generates an iCal VCALENDAR feed from a view.'),
+        'handler' => 'views_ical_plugin_style_ical_feed',
+        'path' => $module_path,
+        'theme' => 'views_ical_vcalendar',
+        'theme file' => 'theme.inc',
+        'theme path' => $theme_path,
+        'uses fields' => TRUE,
+        'uses grouping' => FALSE,
+        'uses row plugin' => TRUE,
+        'uses options' => FALSE,
+        'type' => 'feed',
+        'even empty' => TRUE,
+      ),
+    ),
+    'row' => array(
+      'views_ical' => array(
+        'title' => t('Views iCal Fields'),
+        'help' => t('Display fields for an iCal VEVENT item.'),
+        'handler' => 'views_plugin_row',
+        'path' => $module_path,
+        'theme' => 'views_ical_vevent',
+        'theme file' => 'theme.inc',
+        'theme path' => $theme_path,
+        'uses options' => FALSE,
+        'uses fields' => TRUE,
+        'type' => 'feed',
+      ),
+    ),
+  );
+
+  return $plugins;
+}

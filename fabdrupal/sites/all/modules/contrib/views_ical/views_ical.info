@@ -1,0 +1,13 @@
+name = Views iCal
+description = Create iCal feeds with Views.
+dependencies[] = views
+package = Views
+core = 7.x
+files[] = views_ical_plugin_style_ical_feed.inc
+
+; Information added by drupal.org packaging script on 2012-05-30
+version = "7.x-1.0-beta2"
+core = "7.x"
+project = "views_ical"
+datestamp = "1338404798"
+
