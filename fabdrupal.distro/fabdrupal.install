@@ -8,7 +8,21 @@ function fabdrupal_install() {
   // Enable some fabdrupal blocks.
   $default_theme = 'skeletontheme';
   $admin_theme = 'rubik';
-  // disable all themes
+  $enable = array(
+    'theme_default' => 'skeletontheme',
+    'admin_theme' => 'rubik',
+    //'zen'
+  );
+  theme_enable($enable);
+
+  foreach ($enable as $var => $theme) {
+    if (!is_numeric($var)) {
+      variable_set($var, $theme);
+    }
+  }
+
+  // Disable the default Bartik theme
+  theme_disable(array('bartik'));
   db_update('system')
     ->fields(array('status' => 0))
     ->condition('type', 'theme')
@@ -24,7 +38,7 @@ function fabdrupal_install() {
     ->fields(array('status' => 1))
     ->condition('type', 'theme')
     ->condition('name', $admin_theme)
-    ->execute();
+    ->execute();   
   variable_set('admin_theme', $admin_theme);
   // activate admin theme when editing a node
   variable_set('node_admin_theme', '1');
@@ -100,30 +114,12 @@ function fabdrupal_install() {
       'weight' => -17,
     ),
   );
-  shortcut_set_save($shortcut_set);// Create a default role for site administrators, with all available permissions assigned.
-  $admin_role = new stdClass();
-  $admin_role->name = 'administrator';
-  $admin_role->weight = 10;
-  user_role_save($admin_role);
-  user_role_grant_permissions($admin_role->rid, array_keys(module_invoke_all('permission')));
-  // Set this as the administrator role.
-  variable_set('user_admin_role', $admin_role->rid);
-
-  // Assign user 1 the "administrator" role.
-  db_insert('users_roles')
-    ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
-    ->execute();
+  shortcut_set_save($shortcut_set);
   // Update the menu router information.
   menu_rebuild();
   // revert features to ensure they are all installed
   $features = array(
-    'content_types',
-    'event_registration',
-    'fabdrupal_blog',
-    'fabdrupal_community',
-    'machine_reservation',
-    'open_api',
-    'various_settings'
+    ''
   );
   features_revert($features);
   // ignore any rebuild messages
