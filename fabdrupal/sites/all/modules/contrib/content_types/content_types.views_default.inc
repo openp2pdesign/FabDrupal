@@ -545,7 +545,6 @@ function content_types_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'leaflet';
   $handler->display->display_options['style_options']['data_source'] = 'field_suppliers_leaflet';
   $handler->display->display_options['style_options']['name_field'] = 'title';
-  $handler->display->display_options['style_options']['description_field'] = 'title';
   $handler->display->display_options['style_options']['map'] = 'google-roadmap';
   $handler->display->display_options['style_options']['icon'] = array(
     'iconUrl' => '',
@@ -581,11 +580,6 @@ function content_types_views_default_views() {
   $handler->display->display_options['fields']['field_suppliers_leaflet']['settings'] = array(
     'data' => 'full',
   );
-  /* Sort criterion: Content: Post date */
-  $handler->display->display_options['sorts']['created']['id'] = 'created';
-  $handler->display->display_options['sorts']['created']['table'] = 'node';
-  $handler->display->display_options['sorts']['created']['field'] = 'created';
-  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
