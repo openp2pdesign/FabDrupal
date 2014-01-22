@@ -15,6 +15,7 @@ The packages of the custom modules for the distribution
 
 ## fabdrupal + db.sql
 This is the development environment of the FabDrupal distribution: folder and MySQL database.
+*Warning:* use only in the development, not in production! In production, remember to change the admin and the website e-mail.
 
 ### Admin user:
 
