@@ -1,7 +1,7 @@
 FabDrupal
 =========
 ## A Drupal distribution for FabLabs
-Projects documentation, Machine description and reservation, Suppliers and Partners Mapping, Blog, Event registration, Open REST API (anonymous and registered access)
+Projects documentation, Machine description and reservation, Suppliers and Partners Mapping, Blog, Event registration, Open REST API (anonymous and registered access). See it live here at [fablab.muse.it](http://fablab.muse.it/).
 
 # Use FabDrupal
 Download from Releases the [fabdrupal-7.x-0.21.tgz](https://github.com/OpenP2PDesignOrg/FabDrupal/releases/download/v0.21/fabdrupal-7.x-0.21.tgz) package and install as a normal Drupal package. You will be asked to insert a Flickr API key at the end of the installation process. You will have to manually select the option for the machine reservation after the install is done by going to Structure &gt; Content Types &gt; Machines and under MERCI Settings check Resource.
